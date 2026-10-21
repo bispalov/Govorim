@@ -1,4 +1,5 @@
 // Кеш та область дії ізольовані під папочку /govorim/
+// Кеші на одному домені спільні для всіх застосунків, тому видаляємо лише СВОЇ старі кеші (з префіксом govorim-).
 const V = 'govorim-v4',
       F = [
         '/govorim/',
@@ -19,7 +20,7 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(k => Promise.all(k.filter(x => x !== V).map(x => caches.delete(x))))
+      .then(k => Promise.all(k.filter(x => x.startsWith('govorim-') && x !== V).map(x => caches.delete(x))))
       .then(() => self.clients.claim())
   );
 });
@@ -27,7 +28,7 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
-    caches.open(V).then(c => 
+    caches.open(V).then(c =>
       c.match(e.request, { ignoreSearch: true }).then(r => {
         const n = fetch(e.request).then(x => {
           if (x && x.ok) c.put(e.request, x.clone());

@@ -11,7 +11,7 @@
 :root{color-scheme:light;--ink:#14202B;--bg:#EEF2F5;--navy:#16384F;--hdr:#16384F;--surf:#fff;--surf2:#E3E9EE;--line:#16384F;--bm:100%;--tint:12%}
 :root[data-theme=dark]{color-scheme:dark;--ink:#EAF0F5;--bg:#0F161C;--navy:#2C6A99;--hdr:#0B2A3F;--surf:#1A242D;--surf2:#27333E;--line:#7FA6C4;--bm:70%;--tint:24%}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;max-width:100%}
-html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:600 18px/1.2 system-ui,Roboto,sans-serif;overflow-x:hidden}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:600 18px/1.2 system-ui,Roboto,sans-serif;overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
 button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
 :focus-visible{outline:4px solid #F2B705;outline-offset:2px}
@@ -20,7 +20,7 @@ header h1{flex:1;margin:0;font-size:20px;overflow:hidden;white-space:nowrap;text
 .hb{min-width:48px;min-height:48px;border-radius:12px;background:#ffffff26;color:#fff;font-size:22px}
 #stage{flex:1;position:relative;min-height:0;width:100%}
 main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:8px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;width:100%}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
 @media(min-width:480px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
 .sec{margin:4px 2px 6px;font-size:16px;opacity:.75}
 .tile{min-height:120px;border-radius:16px;border:3px solid color-mix(in srgb,var(--c) var(--bm),#fff);background:color-mix(in srgb,var(--c) var(--tint),var(--surf));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px;font-size:20px;font-weight:700;text-align:center;overflow-wrap:anywhere;word-break:break-word}
@@ -35,12 +35,15 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:8px}
 .row{display:flex;gap:8px;width:100%;flex-wrap:wrap;justify-content:center}
 .chip{min-height:48px;padding:0 14px;border-radius:24px;background:var(--surf);border:2px solid var(--line);font-size:18px}
 .chip.on{background:var(--navy);color:#fff}
-.ans{flex:1;min-height:100px;border-radius:16px;font-size:28px;color:#fff;font-weight:800}
+.ans{flex:1;min-width:0;min-height:100px;border-radius:16px;font-size:28px;color:#fff;font-weight:800}
 .yes{background:#1F7A4D}.no{background:#B3261E}.neu{background:var(--navy)}
-#bar{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:4px;background:var(--surf);border-top:2px solid var(--line);width:100%}
-#bar button{min-height:60px;border-radius:10px;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--surf2);font-weight:700;padding:2px}
+#bar{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding:4px;background:var(--surf);border-top:2px solid var(--line);width:100%}
+#bar button{min-height:60px;border-radius:10px;font-size:clamp(10px,3vw,12px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--surf2);font-weight:700;padding:2px;min-width:0;overflow:hidden}
+#bar button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #bar .i{font-size:22px}
 #bar .yes,#bar .no{color:#fff}
+#bar .yes{background:#1F7A4D}
+#bar .no{background:#B3261E}
 #bar .hp{background:#B3261E;color:#fff}
 #ed{position:fixed;inset:0;background:var(--surf);color:var(--ink);display:none;overflow-y:auto;padding:12px;z-index:10;font-size:16px;font-weight:500}
 #ed label{display:block;margin:8px 0 2px;font-weight:700}
@@ -58,7 +61,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:8px}
 .dlg h3{margin:12px 0 0;font-size:18px}
 .dlg input[type=text]{width:100%;font:inherit;font-size:16px;padding:8px;border:2px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
 .scan{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
-.scan .ans{width:100%;flex:none}.scan .row{flex-wrap:nowrap}
+.scan>.ans{width:100%;flex:none}.scan .row{flex-wrap:nowrap}.scan .row .ans{width:auto;flex:1;min-width:0}
 .pbar{position:sticky;top:-8px;z-index:2;background:var(--bg);margin:-8px -8px 6px;padding:8px}
 .ptxt{min-height:2.4em;font-size:26px;font-weight:800;line-height:1.15;border:2px dashed var(--line);border-radius:12px;padding:8px;margin-bottom:6px;overflow-wrap:anywhere}
 .pbar .row{margin:0;flex-wrap:nowrap}.pbar .sb{width:auto;flex:1;min-width:0;margin:0}
@@ -88,7 +91,7 @@ const K=k=>NS+k;
 ['tree','use','set','lang'].forEach(k=>{try{const o=localStorage.getItem('aac.'+k);if(o!==null&&localStorage.getItem(K(k))===null){localStorage.setItem(K(k),o);localStorage.removeItem('aac.'+k)}}catch(e){}});
 const U={
 ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет',back:'Не то',rep:'Повтор',help:'Помощь',pain:'Больно',sure:'Точно?',done:'Готово',cancel:'Отмена',mods:['сейчас','потом','ещё','хватит'],helpSay:'Помогите! Мне нужна помощь!',helpTxt:'МНЕ НУЖНА ПОМОЩЬ'},
-uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні',back:'Не те',rep:'Повтор',help:'Допомога',pain:'Болить',sure:'Точно?',done:'Готово',cancel:'Скасувати',mods:['зараз','потім','ще','досить'],helpSay:'Допоможіть! Мені потрібна допомога!',helpTxt:'МЕНІ ПОТРІБНА ДОПОМОГА'}};
+uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні',back:'Не те',rep:'Повтор',help:'Поміч',pain:'Болить',sure:'Точно?',done:'Готово',cancel:'Скасувати',mods:['зараз','потім','ще','досить'],helpSay:'Допоможіть! Мені потрібна допомога!',helpTxt:'МЕНІ ПОТРІБНА ДОПОМОГА'}};
 let lang=localStorage.getItem(K('lang'))||'ru';
 const u=k=>U[lang][k];
 const t=s=>{const p=String(s||'').split('|');return lang==='uk'&&p[1]?p[1]:p[0]};
@@ -458,7 +461,7 @@ function drawSet(){
   const st2=matchMedia('(display-mode: standalone)').matches;
   d.append(h('p','note',q('Режим: ','Режим: ')+(st2?q('приложение','застосунок'):q('вкладка браузера','вкладка браузера'))+' · '+q('Офлайн: ','Офлайн: ')+(navigator.serviceWorker&&navigator.serviceWorker.controller?q('готово','готово'):q('ещё нет, откройте ещё раз','ще ні, відкрийте ще раз'))+' · '+q('Адрес: ','Адреса: ')+new URL('/govorim/',location.href).pathname));
   if(dip)d.append(h('button','sb','⬇ '+q('Установить приложение','Встановити застосунок'),async()=>{dip.prompt();try{await dip.userChoice}catch(e){}dip=null;drawSet()}));
-  else if(!st2)d.append(h('p','note',q('Нет кнопки установки? Меню Chrome ⋮ → «Установить приложение». Если там «Открыть в приложении», на этом домене уже установлено другое приложение, чей охват (scope) включает этот адрес: удалите его или сузьте его scope.','Немає кнопки встановлення? Меню Chrome ⋮ → «Встановити застосунок». Якщо там «Відкрити в застосунку», на цьому домені вже встановлено інший застосунок, чий охоплення (scope) містить цю адресу: видаліть його або звузьте його scope.')));
+  else if(!st2)d.append(h('p','note',q('Нет кнопки установки? Меню Chrome ⋮ → «Установить приложение». Если там «Открыть в приложении», на этом домене уже установлено другое приложение, чей охват (scope) включает этот адрес: удалите его или сузьте его scope. Список установленных приложений: chrome://webapks (вставьте в адресную строку Chrome).','Немає кнопки встановлення? Меню Chrome ⋮ → «Встановити застосунок». Якщо там «Відкрити в застосунку», на цьому домені вже встановлено інший застосунок, чий охоплення (scope) містить цю адресу: видаліть його або звузьте його scope. Список встановлених застосунків: chrome://webapks (вставте в адресний рядок Chrome).')));
   const eb=h('button','sb alt','✏️ '+q('Редактор плиток (удерживать)','Редактор плиток (утримувати)'));
   let hd;eb.onpointerdown=()=>{hd=setTimeout(()=>{closeSet();openEd()},1500)};
   ['pointerup','pointerleave','pointercancel'].forEach(ev=>eb.addEventListener(ev,()=>clearTimeout(hd)));
