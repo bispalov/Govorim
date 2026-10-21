@@ -1,30 +1,29 @@
 {
-  "id": "/govorim/",
+  "id": "/Govorim/",
   "name": "Говорим вместе",
   "short_name": "Говорим",
   "lang": "ru",
-  "start_url": "/govorim/index.html",
-  "scope": "/govorim/",
+  "start_url": "/Govorim/index.html",
+  "scope": "/Govorim/",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#EEF2F5",
   "theme_color": "#16384F",
-  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/govorim/icon-192.png",
+      "src": "/Govorim/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/govorim/icon-512.png",
+      "src": "/Govorim/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/govorim/icon-512.png",
+      "src": "/Govorim/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

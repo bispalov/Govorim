@@ -2,73 +2,81 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#16384F">
-<link rel="manifest" href="/govorim/manifest.json">
-<link rel="icon" href="/govorim/icon-192.png">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#12181F">
+<link rel="manifest" href="/Govorim/manifest.json">
+<link rel="icon" href="/Govorim/icon-192.png">
 <title>Говорим вместе</title>
 <style>
-:root{color-scheme:light;--ink:#14202B;--bg:#EEF2F5;--navy:#16384F;--hdr:#16384F;--surf:#fff;--surf2:#E3E9EE;--line:#16384F;--bm:100%;--tint:12%}
-:root[data-theme=dark]{color-scheme:dark;--ink:#EAF0F5;--bg:#0F161C;--navy:#2C6A99;--hdr:#0B2A3F;--surf:#1A242D;--surf2:#27333E;--line:#7FA6C4;--bm:70%;--tint:24%}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;max-width:100%}
-html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:600 18px/1.2 system-ui,Roboto,sans-serif;overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+:root {
+  --ink: #EEF2F5;
+  --bg: #12181F;
+  --card-bg: #1E293B;
+  --navy: #1E3A8A;
+  --accent: #3B82F6;
+  --border: #334155;
+}
+
+[data-theme="light"] {
+  --ink: #14202B;
+  --bg: #EEF2F5;
+  --card-bg: #FFFFFF;
+  --navy: #16384F;
+  --accent: #2563EB;
+  --border: #CBD5E1;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:600 20px/1.2 system-ui,Roboto,sans-serif;transition:background 0.2s, color 0.2s}
 body{display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
 button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
 :focus-visible{outline:4px solid #F2B705;outline-offset:2px}
-header{display:flex;gap:6px;align-items:center;padding:8px;background:var(--hdr);color:#fff;width:100%}
-header h1{flex:1;margin:0;font-size:20px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.hb{min-width:48px;min-height:48px;border-radius:12px;background:#ffffff26;color:#fff;font-size:22px}
-#stage{flex:1;position:relative;min-height:0;width:100%}
-main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:8px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
-@media(min-width:480px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
-.sec{margin:4px 2px 6px;font-size:16px;opacity:.75}
-.tile{min-height:120px;border-radius:16px;border:3px solid color-mix(in srgb,var(--c) var(--bm),#fff);background:color-mix(in srgb,var(--c) var(--tint),var(--surf));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px;font-size:20px;font-weight:700;text-align:center;overflow-wrap:anywhere;word-break:break-word}
-.tile .em{font-size:48px;line-height:1}
-.tile img,.big img{width:72px;height:72px;object-fit:cover;border-radius:10px}
-.say{width:100%;min-height:64px;margin-bottom:8px;border-radius:14px;background:var(--navy);color:#fff;font-size:20px;padding:8px}
-#ov{position:absolute;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:12px;text-align:center;overflow-y:auto}
+
+header{display:flex;gap:8px;align-items:center;padding:8px 10px;background:var(--navy);color:#fff}
+header h1{flex:1;margin:0;font-size:22px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.hb{min-width:56px;min-height:56px;border-radius:14px;background:#ffffff26;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center}
+
+#stage{flex:1;position:relative;min-height:0}
+main{position:absolute;inset:0;overflow-y:auto;padding:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sec{margin:8px 2px 4px;font-size:18px;opacity:.8;font-weight:700}
+
+.tile{min-height:130px;border-radius:18px;border:3px solid var(--c);background:color-mix(in srgb, var(--c) 20%, var(--card-bg));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px;font-size:22px;font-weight:700;text-align:center;overflow-wrap:anywhere;color:var(--ink)}
+.tile .em{font-size:52px;line-height:1}
+.tile img,.big img{width:80px;height:80px;object-fit:cover;border-radius:12px}
+
+.say{width:100%;min-height:72px;margin-bottom:10px;border-radius:16px;background:var(--navy);color:#fff;font-size:22px;padding:10px;text-align:left}
+
+#ov{position:absolute;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:14px;text-align:center;overflow-y:auto;z-index:5}
 #ov.red{background:#B3261E;color:#fff}
-.big{font-size:28px;font-weight:800;line-height:1.15;overflow-wrap:anywhere}
+.big{font-size:30px;font-weight:800;line-height:1.15;overflow-wrap:anywhere}
 .big .em{font-size:80px;display:block}
-.big img{width:130px;height:130px}
-.row{display:flex;gap:8px;width:100%;flex-wrap:wrap;justify-content:center}
-.chip{min-height:48px;padding:0 14px;border-radius:24px;background:var(--surf);border:2px solid var(--line);font-size:18px}
+.big img{width:140px;height:140px}
+
+.row{display:flex;gap:10px;width:100%;flex-wrap:wrap;justify-content:center}
+.chip{min-height:52px;padding:0 16px;border-radius:26px;background:var(--card-bg);border:2px solid var(--navy);color:var(--ink);font-size:18px}
 .chip.on{background:var(--navy);color:#fff}
-.ans{flex:1;min-width:0;min-height:100px;border-radius:16px;font-size:28px;color:#fff;font-weight:800}
+
+.ans{flex:1;min-height:100px;border-radius:20px;font-size:28px;color:#fff;font-weight:800}
 .yes{background:#1F7A4D}.no{background:#B3261E}.neu{background:var(--navy)}
-#bar{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding:4px;background:var(--surf);border-top:2px solid var(--line);width:100%}
-#bar button{min-height:60px;border-radius:10px;font-size:clamp(10px,3vw,12px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--surf2);font-weight:700;padding:2px;min-width:0;overflow:hidden}
-#bar button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#bar .i{font-size:22px}
-#bar .yes,#bar .no{color:#fff}
-#bar .yes{background:#1F7A4D}
-#bar .no{background:#B3261E}
+
+#bar{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:6px;background:var(--card-bg);border-top:2px solid var(--border)}
+#bar button{min-height:68px;border-radius:12px;font-size:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:color-mix(in srgb, var(--navy) 15%, var(--card-bg));color:var(--ink);font-weight:700}
+#bar .i{font-size:24px}
+#bar .yes{background:#1F7A4D;color:#fff}
+#bar .no{background:#B3261E;color:#fff}
 #bar .hp{background:#B3261E;color:#fff}
-#ed{position:fixed;inset:0;background:var(--surf);color:var(--ink);display:none;overflow-y:auto;padding:12px;z-index:10;font-size:16px;font-weight:500}
-#ed label{display:block;margin:8px 0 2px;font-weight:700}
-#ed input[type=text],#ed select{width:100%;font:inherit;padding:8px;border:2px solid #789;border-radius:8px;background:var(--bg);color:var(--ink)}
-#set{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:8px;z-index:20}
-.dlg{background:var(--surf);color:var(--ink);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;border-radius:16px;padding:12px;font-weight:600}
-.dlg h2{margin:0 0 4px;font-size:22px}
-.dlg label{display:flex;justify-content:space-between;margin:10px 0 2px;font-size:16px}
-.dlg select{width:100%;font:inherit;font-size:16px;padding:8px;border:2px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
-.dlg input[type=range]{width:100%;height:32px;accent-color:var(--navy)}
-.dlg .note{font-size:14px;opacity:.75;font-weight:500;margin:4px 0}
-.sb{width:100%;min-height:48px;margin-top:10px;border-radius:10px;background:var(--navy);color:#fff;font-size:16px}
-.sb.alt{background:var(--surf2);color:var(--ink)}
-.sb.ok{background:#1F7A4D}
-.dlg h3{margin:12px 0 0;font-size:18px}
-.dlg input[type=text]{width:100%;font:inherit;font-size:16px;padding:8px;border:2px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
-.scan{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
-.scan>.ans{width:100%;flex:none}.scan .row{flex-wrap:nowrap}.scan .row .ans{width:auto;flex:1;min-width:0}
-.pbar{position:sticky;top:-8px;z-index:2;background:var(--bg);margin:-8px -8px 6px;padding:8px}
-.ptxt{min-height:2.4em;font-size:26px;font-weight:800;line-height:1.15;border:2px dashed var(--line);border-radius:12px;padding:8px;margin-bottom:6px;overflow-wrap:anywhere}
-.pbar .row{margin:0;flex-wrap:nowrap}.pbar .sb{width:auto;flex:1;min-width:0;margin:0}
-#ed .row{margin:10px 0}
-#ed button{min-height:44px;padding:0 12px;border-radius:8px;background:var(--navy);color:#fff}
-#ed button.d{background:#B3261E}
-#ed .note{opacity:.7;font-size:14px}
+
+/* Модальные окна: Редактор и Настройки */
+.modal{position:fixed;inset:0;background:var(--bg);color:var(--ink);display:none;overflow-y:auto;padding:16px;z-index:20;font-size:17px;font-weight:500}
+.modal h2{margin-top:0;font-size:24px}
+.modal label{display:block;margin:12px 0 4px;font-weight:700}
+.modal input[type=text],.modal input[type=range],.modal select{width:100%;font:inherit;padding:10px;border:2px solid var(--border);border-radius:10px;background:var(--card-bg);color:var(--ink)}
+.modal .row{margin:14px 0}
+.modal button{min-height:50px;padding:0 16px;border-radius:12px;background:var(--navy);color:#fff;font-weight:700}
+.modal button.d{background:#B3261E}
+.modal .note{opacity:.75;font-size:15px}
+.range-val{float:right;font-weight:normal;opacity:0.8}
 </style>
 </head>
 <body>
@@ -76,145 +84,196 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:8px}
   <button class="hb" id="home" aria-label="Домой">🏠</button>
   <h1 id="ttl"></h1>
   <button class="hb" id="lang" aria-label="Язык">RU</button>
-  <button class="hb" id="gear" aria-label="Настройки">⚙️</button>
+  <button class="hb" id="settingsBtn" aria-label="Настройки">⚙️</button>
+  <button class="hb" id="gear" aria-label="Редактор">✏️</button>
 </header>
-<div id="stage"><main id="main"></main><div id="ov"></div></div>
+
+<div id="stage">
+  <main id="main"></main>
+  <div id="ov"></div>
+</div>
+
 <nav id="bar"></nav>
-<div id="ed"></div>
-<div id="set"></div>
+
+<!-- Модальное окно Редактора -->
+<div id="ed" class="modal"></div>
+
+<!-- Модальное окно Настроек -->
+<div id="sett" class="modal">
+  <h2>⚙️ Настройки / Налаштування</h2>
+  
+  <label>Уровень сложности / Рівень складності:</label>
+  <select id="setSeg">
+    <option value="L1">Тяжелый (Простые слова / Базові потреби)</option>
+    <option value="L2">Средний (Категории / Категорії)</option>
+    <option value="L3">Легкий (Фразовый конструктор / Фрази)</option>
+  </select>
+
+  <label>Тема оформления / Тема оформления:</label>
+  <select id="setTheme">
+    <option value="dark">Тёмная / Темна 🌙</option>
+    <option value="light">Светлая / Світла ☀️</option>
+  </select>
+
+  <label>Голос озвучки / Голос озвучення:</label>
+  <select id="setVoice"></select>
+
+  <label>Скорость речи / Швидкість мовлення: <span id="rateVal" class="range-val">0.85</span></label>
+  <input type="range" id="setRate" min="0.4" max="1.3" step="0.05" value="0.85">
+
+  <label>Высота тона / Висота тону: <span id="pitchVal" class="range-val">1.0</span></label>
+  <input type="range" id="setPitch" min="0.5" max="1.5" step="0.1" value="1.0">
+
+  <div class="row">
+    <button id="testVoiceBtn">🔊 Проверить голос / Перевірити</button>
+  </div>
+
+  <div class="row" style="margin-top:24px">
+    <button id="closeSettBtn" style="width:100%">Закрыть / Закрити</button>
+  </div>
+</div>
 
 <script>
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
-const NS='aac:'+location.pathname.replace(/[^/]*$/,'')+':';
-const K=k=>NS+k;
-['tree','use','set','lang'].forEach(k=>{try{const o=localStorage.getItem('aac.'+k);if(o!==null&&localStorage.getItem(K(k))===null){localStorage.setItem(K(k),o);localStorage.removeItem('aac.'+k)}}catch(e){}});
+
+/* ---------- Интерноционализация ---------- */
 const U={
-ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет',back:'Не то',rep:'Повтор',help:'Помощь',pain:'Больно',sure:'Точно?',done:'Готово',cancel:'Отмена',mods:['сейчас','потом','ещё','хватит'],helpSay:'Помогите! Мне нужна помощь!',helpTxt:'МНЕ НУЖНА ПОМОЩЬ'},
-uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні',back:'Не те',rep:'Повтор',help:'Поміч',pain:'Болить',sure:'Точно?',done:'Готово',cancel:'Скасувати',mods:['зараз','потім','ще','досить'],helpSay:'Допоможіть! Мені потрібна допомога!',helpTxt:'МЕНІ ПОТРІБНА ДОПОМОГА'}};
-let lang=localStorage.getItem(K('lang'))||'ru';
+ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет',back:'Назад',rep:'Повтор',help:'Помощь',pain:'Больно',sure:'Точно?',done:'Готово',cancel:'Отмена',mods:['сейчас','потом','ещё','хватит'],helpSay:'Помогите! Мне нужна помощь!',helpTxt:'МНЕ НУЖНА ПОМОЩЬ'},
+uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні',back:'Назад',rep:'Повтор',help:'Допомога',pain:'Болить',sure:'Точно?',done:'Готово',cancel:'Скасувати',mods:['зараз','потім','ще','досить'],helpSay:'Допоможіть! Мені потрібна допомога!',helpTxt:'МЕНІ ПОТРІБНА ДОПОМОГА'}};
+let lang=localStorage.getItem('aac.lang')||'ru';
 const u=k=>U[lang][k];
 const t=s=>{const p=String(s||'').split('|');return lang==='uk'&&p[1]?p[1]:p[0]};
 
-/* ---------- данные по умолчанию (формат "рус|укр") ---------- */
-const hs=s=>{let x=0;for(const c of s)x=(x*31+c.charCodeAt(0))|0;return (x>>>0).toString(36)};
-const L=(l,s,e)=>({id:'d'+hs(l+s),l,s,e});
-const BASE=()=>[
+/* ---------- Настройки (с поддержкой темы по умолчанию) ---------- */
+const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+let settings = ld('aac.settings', {
+  theme: 'dark',
+  level: 'L2',
+  rate: 0.85,
+  pitch: 1.0,
+  voiceURI: ''
+});
+
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme', settings.theme);
+  const themeMeta = $('meta[name="theme-color"]');
+  if(themeMeta) themeMeta.setAttribute('content', settings.theme === 'dark' ? '#12181F' : '#16384F');
+}
+applyTheme();
+
+/* ---------- Словари под разные уровни нарушения речи ---------- */
+const L=(l,s,e)=>({id:'d'+Math.random().toString(36).slice(2,8),l,s,e});
+
+// L1: Тяжелая степень - пиктограммы прямого действия
+const DEF_L1 = () => [
+  {id:'drink_1',col:'#2B6CB0',l:'Вода|Вода',s:'Я хочу пить|Я хочу пити',e:'💧'},
+  {id:'eat_1',col:'#C27C0E',l:'Еда|Їжа',s:'Я хочу есть|Я хочу їсти',e:'🍽️'},
+  {id:'wc_1',col:'#0F8B8D',l:'Туалет|Туалет',s:'Мне нужно в туалет|Мені потрібно в туалет',e:'🚽'},
+  {id:'pain_1',col:'#B3261E',l:'Больно|Болить',s:'Мне больно|Мені боляче',e:'🤕'},
+  {id:'bed_1',col:'#8A6D00',l:'Лячь|Лягти',s:'Я хочу лечь|Я хочу лягти',e:'🛏️'},
+  {id:'cold_1',col:'#B83280',l:'Холодно|Холодно',s:'Мне холодно|Мені холодно',e:'🥶'},
+  {id:'hot_1',col:'#C27C0E',l:'Жарко|Жарко',s:'Мне жарко|Мені гаряче',e:'🥵'},
+  {id:'bad_1',col:'#6B46C1',l:'Плохо|Погано',s:'Мне плохо|Мені погано',e:'🤢'}
+];
+
+// L2: Средняя степень - категориальная структура
+const DEF_L2 = () => [
 {id:'drink',col:'#2B6CB0',l:'Пить|Пити',s:'Я хочу пить|Я хочу пити',e:'🥤',c:[
  L('Вода|Вода','Я хочу воды|Я хочу води','💧'),L('Чай|Чай','Я хочу чай|Я хочу чай','🍵'),L('Кофе|Кава','Я хочу кофе|Я хочу каву','☕'),
- L('Сок|Сік','Я хочу сок|Я хочу сік','🧃'),L('Молоко|Молоко','Я хочу молоко|Я хочу молоко','🥛'),L('Компот|Компот','Я хочу компот|Я хочу компот','🍹')]},
+ L('Сок|Сік','Я хочу сок|Я хочу сік','🧃'),L('Молоко|Молоко','Я хочу молоко|Я хочу молоко','🥛')]},
 {id:'eat',col:'#C27C0E',l:'Есть|Їсти',s:'Я хочу есть|Я хочу їсти',e:'🍽️',c:[
  L('Суп|Суп','Я хочу суп|Я хочу суп','🍲'),L('Каша|Каша','Я хочу кашу|Я хочу кашу','🥣'),L('Хлеб|Хліб','Я хочу хлеб|Я хочу хліб','🍞'),
- L('Мясо|М\'ясо','Я хочу мясо|Я хочу м\'ясо','🍗'),L('Рыба|Риба','Я хочу рыбу|Я хочу рибу','🐟'),L('Овощи|Овочі','Я хочу овощи|Я хочу овочі','🥕'),
- L('Фрукты|Фрукти','Я хочу фрукты|Я хочу фрукти','🍎'),L('Яйцо|Яйце','Я хочу яйцо|Я хочу яйце','🥚'),L('Сладкое|Солодке','Я хочу сладкое|Я хочу солодке','🍰')]},
-{id:'wc',col:'#0F8B8D',l:'Туалет и гигиена|Туалет і гігієна',s:'Мне нужна помощь с гигиеной|Мені потрібна допомога з гігієною',e:'🚻',c:[
+ L('Мясо|М\'ясо','Я хочу мясо|Я хочу м\'ясо','🍗'),L('Фрукты|Фрукти','Я хочу фрукты|Я хочу фрукти','🍎')]},
+{id:'wc',col:'#0F8B8D',l:'Туалет|Туалет',s:'Мне нужно в туалет|Мені потрібно в туалет',e:'🚻',c:[
  L('Туалет|Туалет','Мне нужно в туалет|Мені потрібно в туалет','🚽'),L('Умыться|Вмитися','Я хочу умыться|Я хочу вмитися','🚿'),
- L('Душ|Душ','Я хочу в душ|Я хочу в душ','🛁'),L('Зубы|Зуби','Я хочу почистить зубы|Я хочу почистити зуби','🪥'),
- L('Переодеться|Переодягтися','Я хочу переодеться|Я хочу переодягтися','👕')]},
+ L('Душ|Душ','Я хочу в душ|Я хочу в душ','🛁')]},
 {id:'pain',col:'#B3261E',crit:1,l:'Болит|Болить',s:'У меня что-то болит|У мене щось болить',e:'🤕',c:[
- L('Голова|Голова','У меня болит голова|У мене болить голова','🧠'),L('Горло|Горло','У меня болит горло|У мене болить горло','🗣️'),
- L('Грудь|Груди','У меня болит грудь|У мене болить у грудях','🫁'),L('Сердце|Серце','У меня болит сердце|У мене болить серце','❤️'),
- L('Живот|Живіт','У меня болит живот|У мене болить живіт','🤢'),L('Спина|Спина','У меня болит спина|У мене болить спина','🧍'),
- L('Рука|Рука','У меня болит рука|У мене болить рука','💪'),L('Нога|Нога','У меня болит нога|У мене болить нога','🦵')]},
-{id:'med',col:'#6B46C1',crit:1,l:'Лекарства и врач|Ліки і лікар',s:'Мне нужна медицинская помощь|Мені потрібна медична допомога',e:'💊',c:[
- L('Таблетки|Таблетки','Мне пора принять лекарство|Мені час прийняти ліки','💊'),L('Давление|Тиск','Измерьте мне давление|Виміряйте мені тиск','🩺'),
- L('Врач|Лікар','Я хочу к врачу|Я хочу до лікаря','👩‍⚕️'),L('Вызвать врача|Викликати лікаря','Вызовите врача|Викличте лікаря','📞'),
- L('Лекарство кончилось|Ліки закінчились','Лекарство закончилось|Ліки закінчились','📦')]},
+ L('Голова|Голова','У меня болит голова|У мене болить голова','🧠'),L('Сердце|Серце','У меня болит сердце|У мене болить серце','❤️'),
+ L('Живот|Живіт','У меня болит живот|У мене болить живіт','🤢'),L('Спина|Спина','У меня болит спина|У мене болить спина','🧍')]},
 {id:'ppl',col:'#2F855A',l:'Люди|Люди',s:'Я хочу поговорить|Я хочу поговорити',e:'👥',c:[
- L('Позвонить|Подзвонити','Я хочу позвонить|Я хочу подзвонити','📱'),L('Где все?|Де всі?','Где все?|Де всі?','❓'),
- L('Кто придёт?|Хто прийде?','Кто придёт?|Хто прийде?','🚪'),L('Видеть семью|Бачити родину','Я хочу увидеть семью|Я хочу побачити родину','👨‍👩‍👧'),
- L('Тишина|Тиша','Я хочу побыть в тишине|Я хочу побути в тиші','🤫'),L('Спасибо|Дякую','Спасибо|Дякую','🙏'),
- L('Медленнее|Повільніше','Говорите, пожалуйста, медленнее|Говоріть, будь ласка, повільніше','🐢'),L('Подождите|Зачекайте','Подождите, я думаю|Зачекайте, я думаю','⏳')]},
-{id:'act',col:'#8A6D00',l:'Занятия|Заняття',s:'Я хочу чем-нибудь заняться|Я хочу чимось зайнятися',e:'📺',c:[
- L('Телевизор|Телевізор','Включите телевизор|Увімкніть телевізор','📺'),L('Музыка|Музика','Включите музыку|Увімкніть музику','🎵'),
- L('Прогулка|Прогулянка','Я хочу на прогулку|Я хочу на прогулянку','🚶'),L('Спать|Спати','Я хочу спать|Я хочу спати','🛏️'),
- L('Свет|Світло','Включите свет|Увімкніть світло','💡'),L('Окно|Вікно','Откройте окно|Відчиніть вікно','🪟'),
- L('Лечь|Лягти','Я хочу лечь|Я хочу лягти','🛌'),L('Сесть|Сісти','Я хочу сесть|Я хочу сісти','🪑')]},
-{id:'feel',col:'#B83280',l:'Чувства|Почуття',s:'Я хочу сказать, как я себя чувствую|Я хочу сказати, як я себе почуваю',e:'🙂',c:[
- L('Хорошо|Добре','Мне хорошо|Мені добре','😊'),L('Плохо|Погано','Мне плохо|Мені погано','😟'),L('Нужно отдохнуть|Треба відпочити','Мне нужно отдохнуть|Мені потрібно відпочити','😮‍💨'),
- L('Холодно|Холодно','Мне холодно|Мені холодно','🥶'),L('Жарко|Жарко','Мне жарко|Мені спекотно','🥵'),
- L('Грустно|Сумно','Мне грустно|Мені сумно','😢'),L('Страшно|Страшно','Мне страшно|Мені страшно','😨'),L('Не понимаю|Не розумію','Я не понимаю|Я не розумію','🤷')]}
+ L('Позвонить|Подзвонити','Я хочу позвонить|Я хочу подзвонити','📱'),L('Врач|Лікар','Мне нужен врач|Мені потрібен лікар','👩‍⚕️'),
+ L('Тишина|Тиша','Я хочу побыть в тишине|Я хочу побути в тиші','🤫')]}
 ];
 
-const E=(id,col,l,s,e,a)=>({id,col,x:1,l,s,e,c:a.map(z=>{const[l,s,e]=z.split('/');return{id:'x'+hs(l+s),l,s,e}})});
-const EXT=()=>[
-E('home','#7A5C2E','Дом и быт|Дім і побут','Давайте поговорим о делах по дому|Давайте поговоримо про домашні справи','🏠',[
-'Постирать|Попрати/Нужно постирать вещи|Потрібно попрати речі/🧺','Убрать|Прибрати/Давайте уберём|Давайте приберемо/🧹','Готовить|Готувати/Давайте приготовим еду|Давайте приготуємо їжу/🍳',
-'Посуда|Посуд/Нужно помыть посуду|Потрібно помити посуд/🍽️','Мусор|Сміття/Вынесите мусор|Винесіть сміття/🗑️','Сломалось|Зламалось/Что-то сломалось|Щось зламалось/🔧']),
-E('clothes','#3182A6','Одежда и погода|Одяг і погода','Давайте поговорим об одежде и погоде|Давайте поговоримо про одяг і погоду','🧥',[
-'Одеться|Одягнутися/Помогите одеться|Допоможіть одягнутися/👕','Тёплая одежда|Тепла одіж/Дайте тёплую одежду|Дайте теплий одяг/🧥','Обувь|Взуття/Помогите с обувью|Допоможіть із взуттям/👟',
-'Погода|Погода/Какая сегодня погода?|Яка сьогодні погода?/⛅','Дождь|Дощ/Идёт дождь?|Іде дощ?/🌧️','Холодно на улице|Надворі холодно/На улице холодно?|Надворі холодно?/🌡️']),
-E('family','#A0527A','Семья и гости|Родина і гості','Давайте поговорим о семье|Давайте поговоримо про родину','👨‍👩‍👧',[
-'Как дела?|Як справи?/Как у вас дела?|Як у вас справи?/🙂','Дети|Діти/Как дети?|Як діти?/👨‍👩‍👧','Внуки|Онуки/Как внуки?|Як онуки?/🧒','Гости|Гості/Кто придёт в гости?|Хто прийде в гості?/🎉',
-'Праздник|Свято/Когда праздник?|Коли свято?/🎂','Новости|Новини/Расскажите новости|Розкажіть новини/📰','Скучаю|Сумую/Я скучаю по вам|Я сумую за вами/💛']),
-E('shop','#1F8A70','Покупки и деньги|Покупки і гроші','Давайте поговорим о покупках|Давайте поговоримо про покупки','🛒',[
-'Магазин|Магазин/Нужно сходить в магазин|Треба сходить до магазину/🛒','Список|Список/Давайте составим список покупок|Складімо список покупок/📝','Аптека|Аптека/Нужно в аптеку|Треба до аптеки/💊',
-'Деньги|Гроші/Мне нужны деньги|Мені потрібні гроші/💶','Заплатить|Заплатити/Нужно заплатить|Потрібно заплатити/💳','Дорого|Дорого/Это слишком дорого|Це занадто дорого/🏷️']),
-E('hobby','#8E5BB5','Досуг и хобби|Дозвілля і хобі','Давайте займёмся чем-нибудь приятным|Давайте займемося чимось приємним','🧩',[
-'Читать|Читати/Хочу почитать|Хочу почитати/📖','Газета|Газета/Дайте газету|Дайте газету/📰','Кроссворд|Кросворд/Давайте разгадаем кроссворд|Давайте розгадаємо кросворд/🧩',
-'Карты|Карти/Давайте сыграем в карты|Давайте зіграємо в карти/🃏','Фото|Фото/Давайте посмотрим фотографии|Давайте подивимось фотографії/🖼️','Сад|Сад/Хочу в сад|Хочу в сад/🌱','Рисовать|Малювати/Хочу порисовать|Хочу помалювати/✏️']),
-E('trips','#4B6584','Дела и поездки|Справи і поїздки','Давайте поговорим о делах и поездках|Давайте поговоримо про справи і поїздки','🚌',[
-'Поликлиника|Поліклініка/Мне нужно в поликлинику|Мені потрібно в поліклініку/🏥','Банк|Банк/Нужно в банк|Треба в банк/🏦','Почта|Пошта/Нужно на почту|Треба на пошту/📮',
-'Транспорт|Транспорт/Как добраться на транспорте?|Як дістатися транспортом?/🚌','Такси|Таксі/Вызовите такси|Викличте таксі/🚕','Документы|Документи/Где мои документы?|Де мої документи?/📄']),
-E('talk','#5D6D7E','Разговор|Розмова','Мне нужно время, чтобы сказать|Мені потрібен час, щоб сказати','💭',[
-'Подбираю слово|Добираю слово/Подождите, я подбираю слово|Зачекайте, я добираю слово/⏳','Другими словами|Іншими словами/Я скажу другими словами|Я скажу іншими словами/🔄','Что думаете?|Що думаєте?/А что вы об этом думаете?|А що ви про це думаєте?/💭',
-'Вспомню|Згадаю/Я сейчас вспомню|Я зараз згадаю/🧠','Расскажите|Розкажіть/Расскажите, пожалуйста|Розкажіть, будь ласка/🗣️','Помолчим|Помовчимо/Давайте помолчим|Давайте помовчимо/🤫'])
+// L3: Легкая степень - последовательный конструктор сообщений
+const DEF_L3 = () => [
+{id:'subj',col:'#2B6CB0',l:'Кто? | Хто?',s:'Я|Я',e:'👤',c:[
+ L('Я|Я','Я|Я','🙋'),L('Мне|Мені','Мне|Мені','👈'),L('Нам|Нам','Нам|Нам','👥')]},
+{id:'action',col:'#C27C0E',l:'Действие | Дія',s:'хочу|хочу',e:'⚡',c:[
+ L('Хочу|Хочу','хочу|хочу','💭'),L('Нужно|Потрібно','нужно|потрібно','❗'),L('Чувствую|Почуваю','чувствую|почуваю','❤️')]},
+{id:'obj',col:'#0F8B8D',l:'Что? | Що?',s:'помощь|допомогу',e:'📦',c:[
+ L('Отдохнуть|Відпочити','отдохнуть|відпочити','🛌'),L('Позвонить врачу|Зателефонувати лікарю','позвонить врачу|зателефонувати лікарю','📞'),
+ L('Гулять|Гуляти','пойти на прогулку|піти на прогулянку','🚶'),L('Новости|Новини','узнать новости|дізнатися новини','📰')]}
 ];
-const DEF=()=>BASE().concat(EXT());
 
-/* ---------- состояние ---------- */
-const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
-let tree=ld(K('tree'),null)||DEF();
-let use=ld(K('use'),{});
-let path=[],last='',cn=null,stage=0,mod='',tmr=null,sel='';
-const save=()=>{try{localStorage.setItem(K('tree'),JSON.stringify(tree))}catch(e){alert('Не хватает памяти для фото')}};
-let set=Object.assign({voice:{},rate:.85,pitch:1,vol:1,tap:'label',theme:'auto',level:2,auto:true,people:'',seen:null},ld(K('set'),{}));
-{const had=!!localStorage.getItem(K('tree')),seen=set.seen||(had?[]:DEF().map(n=>n.id));
- DEF().forEach(d=>{if(!seen.includes(d.id)){if(!tree.some(n=>n.id===d.id))tree.push(d);seen.push(d.id)}});
- set.seen=seen;try{localStorage.setItem(K('set'),JSON.stringify(set));if(had)localStorage.setItem(K('tree'),JSON.stringify(tree))}catch(e){}}
+function getTreeForLevel(){
+  if(settings.level === 'L1') return DEF_L1();
+  if(settings.level === 'L3') return DEF_L3();
+  return DEF_L2();
+}
+
+let tree = ld('aac.tree_' + settings.level, null) || getTreeForLevel();
+let use = ld('aac.use', {});
+let path = [], last = '', cn = null, stage = 0, mod = '', tmr = null, sel = '';
+
+const save = () => {
+  try {
+    localStorage.setItem('aac.tree_' + settings.level, JSON.stringify(tree));
+  } catch(e){ alert('Не хватает памяти'); }
+};
+
 const flat=()=>{const r=[];const w=(l,top)=>l.forEach(n=>{const tp=top||n;r.push({n,top:tp});if(n.c)w(n.c,tp)});w(tree);return r};
 const score=id=>{const x=use[id];return x?x.n*Math.pow(.9,(Date.now()-x.t)/864e5):0};
-const bump=id=>{use[id]={n:score(id)+1,t:Date.now()};try{localStorage.setItem(K('use'),JSON.stringify(use))}catch(e){}};
+const bump=id=>{use[id]={n:score(id)+1,t:Date.now()};try{localStorage.setItem('aac.use',JSON.stringify(use))}catch(e){}};
 
-/* ---------- озвучивание ---------- */
-const voices=()=>'speechSynthesis' in window?speechSynthesis.getVoices():[];
-const vlang=x=>x.lang.toLowerCase().replace('_','-').startsWith(lang);
-function pickVoice(){const vs=voices().filter(vlang);return vs.find(x=>x.name===(set.voice||{})[lang])||vs[0]}
-function speak(txt){
-  if(!('speechSynthesis' in window)||!txt)return;
-  speechSynthesis.cancel();
-  const v=pickVoice(),m=new SpeechSynthesisUtterance(txt);
-  m.lang=lang==='uk'?'uk-UA':'ru-RU';if(v)m.voice=v;m.rate=set.rate;m.pitch=set.pitch;m.volume=set.vol;speechSynthesis.speak(m);
+/* ---------- Синтез речи (SpeechSynthesis) ---------- */
+function getVoices(){
+  if(!('speechSynthesis' in window)) return [];
+  return speechSynthesis.getVoices();
 }
-const sp=n=>{const p=(n.p||'').split('|');return (lang==='uk'?p[1]:p[0])||t(n.l)};
-function onTap(n){if(set.tap==='label')speak(sp(n));else if(set.tap==='phrase')speak(t(n.s))}
 
-/* ---------- главный экран ---------- */
+function speak(txt){
+  if(!('speechSynthesis' in window))return;
+  speechSynthesis.cancel();
+  const m = new SpeechSynthesisUtterance(txt);
+  m.lang = lang === 'uk' ? 'uk-UA' : 'ru-RU';
+  m.rate = parseFloat(settings.rate) || 0.85;
+  m.pitch = parseFloat(settings.pitch) || 1.0;
+
+  const voices = getVoices();
+  if(settings.voiceURI){
+    const v = voices.find(x => x.voiceURI === settings.voiceURI);
+    if(v) m.voice = v;
+  } else {
+    const code = lang === 'uk' ? 'uk' : 'ru';
+    const v = voices.find(x => x.lang.toLowerCase().startsWith(code));
+    if(v) m.voice = v;
+  }
+  speechSynthesis.speak(m);
+}
+
+/* ---------- Отрисовка интерфейса ---------- */
 function tile(n,top,fn){
-  const b=h('button','tile',null,()=>{onTap(n);fn()});b.style.setProperty('--c',top.col||'#16384F');
+  const b=h('button','tile',null,fn);b.style.setProperty('--c',top.col||'#1E3A8A');
   if(n.img){const i=h('img');i.src=n.img;i.alt='';b.append(i)}else b.append(h('span','em',n.e||'💬'));
   b.append(h('span',null,t(n.l)));return b;
 }
-function rank(k){
-  const b=n=>{const s=score(n.id);return s>=3?Math.floor(s):0};
-  return k.map((n,i)=>[n,i]).sort((a,c)=>b(c[0])-b(a[0])||a[1]-c[1]).map(x=>x[0]);
-}
+
 function render(){
-  if(view==='scan'){scanShow();return}if(view==='build'){buildShow();return}
   const m=$('#main'),c=path.length?path[path.length-1]:null;m.innerHTML='';m.scrollTop=0;
   $('#ttl').textContent=c?path.map(n=>t(n.l)).join(' › '):u('title');
-  if(c){m.append(h('button','say','🔊 '+t(c.s),()=>{if(set.tap!=='off')speak(t(c.s));ask(c)}))}
-  else{
-    const fr=flat().filter(x=>!x.n.c&&vis(x.top)&&score(x.n.id)>=1).sort((a,b)=>score(b.n.id)-score(a.n.id)).slice(0,4);
+  if(c){m.append(h('button','say','🔊 '+t(c.s),()=>ask(c)))}
+  else if(settings.level !== 'L1'){
+    const fr=flat().filter(x=>!x.n.c&&score(x.n.id)>=1).sort((a,b)=>score(b.n.id)-score(a.n.id)).slice(0,4);
     if(fr.length){m.append(h('div','sec',u('freq')));const g=h('div','grid');fr.forEach(x=>g.append(tile(x.n,x.top,()=>ask(x.n))));m.append(g,h('div','sec',' '))}
   }
   const g=h('div','grid');
-  if(!c&&set.level===3)g.append(tile({l:'Собрать фразу|Скласти фразу',e:'✍️'},{col:'#16384F'},()=>{view='build';render()}));
-  (c?rank(c.c):tree).filter(vis).forEach(n=>g.append(tile(n,path[0]||n,()=>{if(n.c&&n.c.length){path.push(n);render()}else ask(n)})));
+  (c?c.c:tree).forEach(n=>g.append(tile(n,path[0]||n,()=>{if(n.c&&n.c.length){path.push(n);render()}else ask(n)})));
   m.append(g);
 }
 
-/* ---------- окно подтверждения / «сказано» ---------- */
+/* ---------- Окно подтверждения / Сказано ---------- */
 const ov=$('#ov');
 function closeOv(){ov.style.display='none';ov.className='';ov.innerHTML='';clearInterval(tmr);tmr=null;cn=null}
 function pic(n){const d=h('div','big');if(n.img){const i=h('img');i.src=n.img;i.alt='';d.append(i)}else d.append(h('span','em',n.e||'💬'));return d}
@@ -225,7 +284,7 @@ function showAsk(){
   ov.innerHTML='';ov.className='';ov.style.display='flex';
   ov.append(pic(cn),h('div','big',(stage?u('sure')+' ':'')+txt+'?'));
   const r=h('div','row');
-  u('mods').forEach(w=>{const c=h('button','chip'+(mod===w?' on':''),w,()=>{mod=mod===w?'':w;if(mod)speak(w);showAsk()});r.append(c)});
+  u('mods').forEach(w=>{const c=h('button','chip'+(mod===w?' on':''),w,()=>{mod=mod===w?'':w;showAsk()});r.append(c)});
   const a=h('div','row');
   a.append(h('button','ans yes','✔ '+u('yes'),()=>answer(true)),h('button','ans no','✖ '+u('no'),()=>answer(false)));
   ov.append(r,a);
@@ -241,7 +300,7 @@ function say(txt,silent){
   last=txt;if(!silent)speak(txt);cn=null;
   ov.innerHTML='';ov.className='';ov.style.display='flex';clearInterval(tmr);
   const r=h('div','row');
-  r.append(h('button','ans neu','🔊 '+u('rep'),()=>speak(last)),h('button','ans yes',u('done'),()=>{closeOv();path=[];sc=[];bReset();view=VIEW();render()}));
+  r.append(h('button','ans neu','🔊 '+u('rep'),()=>speak(last)),h('button','ans yes',u('done'),()=>{closeOv();path=[];render()}));
   ov.append(h('div','big',txt),r);
 }
 function helpMe(){
@@ -250,8 +309,8 @@ function helpMe(){
   ov.append(h('div','big','🆘'),h('div','big',u('helpTxt')),h('button','ans neu',u('cancel'),()=>{closeOv();render()}));
 }
 
-/* ---------- нижняя панель (всегда на одних местах) ---------- */
-[['yes','✔','yes'],['no','✖','no'],['back','↩','back'],['rep','🔊','rep'],['help','🆘','help'],['pain','🤕','pain']].forEach(([k,ic,id])=>{
+/* ---------- Нижняя панель ---------- */
+[['yes','✔','yes'],['no','✖','no'],['back','↩','back'],['rep','🔊','rep'],['help','🆘','help'],['pain','🤕','pain']].forEach(([k,ic])=>{
   const b=h('button',k==='yes'?'yes':k==='no'?'no':k==='help'?'hp':'',null);b.dataset.k=k;
   b.append(h('span','i',ic),h('span',null,''));
   b.onclick=()=>bar(k);$('#bar').append(b);
@@ -260,221 +319,126 @@ function labels(){document.querySelectorAll('#bar button').forEach(b=>b.lastChil
 function bar(k){
   if(k==='yes'||k==='no'){
     if(cn){answer(k==='yes');return}
-    if(view==='scan'&&ov.style.display!=='flex'){scanAns(k==='yes');return}
     const w=u(k);say(w);return;
   }
   if(k==='back'){
     if(tmr){closeOv();render();return}
     if(ov.style.display==='flex'){closeOv();return}
-    if(view==='scan'){scanBack();return}if(view==='build'){bUndo();return}
-    if(view==='tree'&&!path.length&&set.level===3){view='build';render();return}
     path.pop();render();return;
   }
-  if(k==='rep'){if(view==='build'&&ph.length){speak(ptxt());return}if(last){speak(last);if(ov.style.display!=='flex')say(last,true)}return}
+  if(k==='rep'){if(last){speak(last);if(ov.style.display!=='flex')say(last,true)}return}
   if(k==='help'){helpMe();return}
-  if(k==='pain'){closeOv();const pn=tree.find(n=>n.id==='pain')||tree[0];
-    if(view==='scan')startScan(pn);else if(view==='build'){bReset();bPush(t(FR.find(f=>f.id==='hurt').l),1,FR.find(f=>f.id==='hurt'))}else{path=[pn];render()}}
+  if(k==='pain'){closeOv();path=[tree.find(n=>n.id==='pain'||n.id==='pain_1')||tree[0]];render()}
 }
-$('#home').onclick=()=>{closeOv();path=[];sc=[];bReset();view=VIEW();render()};
-$('#lang').onclick=()=>{lang=lang==='ru'?'uk':'ru';localStorage.setItem(K('lang'),lang);$('#lang').textContent=lang.toUpperCase();document.documentElement.lang=lang;labels();closeOv();sc=[];bReset();render()};
 
-/* ---------- редактор для родственника (⚙️ → удерживать кнопку редактора) ---------- */
-$('#gear').onclick=()=>openSet();
+$('#home').onclick=()=>{closeOv();path=[];render()};
+$('#lang').onclick=()=>{
+  lang=lang==='ru'?'uk':'ru';
+  localStorage.setItem('aac.lang',lang);
+  $('#lang').textContent=lang.toUpperCase();
+  document.documentElement.lang=lang;
+  labels();closeOv();populateVoices();render();
+};
+
+/* ---------- Модальное окно НАСТРОЕК ---------- */
+const settModal = $('#sett');
+$('#settingsBtn').onclick = () => {
+  settModal.style.display = 'block';
+  $('#setTheme').value = settings.theme;
+  $('#setSeg').value = settings.level;
+  $('#setRate').value = settings.rate;
+  $('#rateVal').textContent = settings.rate;
+  $('#setPitch').value = settings.pitch;
+  $('#pitchVal').textContent = settings.pitch;
+  populateVoices();
+};
+
+function populateVoices(){
+  const select = $('#setVoice');
+  select.innerHTML = '';
+  const voices = getVoices();
+  voices.forEach(v => {
+    const opt = new Option(`${v.name} (${v.lang})`, v.voiceURI);
+    if(v.voiceURI === settings.voiceURI) opt.selected = true;
+    select.append(opt);
+  });
+}
+
+$('#setRate').oninput = (e) => { $('#rateVal').textContent = e.target.value; };
+$('#setPitch').oninput = (e) => { $('#pitchVal').textContent = e.target.value; };
+
+$('#testVoiceBtn').onclick = () => {
+  settings.rate = $('#setRate').value;
+  settings.pitch = $('#setPitch').value;
+  settings.voiceURI = $('#setVoice').value;
+  speak(lang === 'uk' ? 'Це перевірка голосу' : 'Это проверка голоса');
+};
+
+$('#closeSettBtn').onclick = () => {
+  const oldLevel = settings.level;
+  settings.theme = $('#setTheme').value;
+  settings.level = $('#setSeg').value;
+  settings.rate = $('#setRate').value;
+  settings.pitch = $('#setPitch').value;
+  settings.voiceURI = $('#setVoice').value;
+
+  localStorage.setItem('aac.settings', JSON.stringify(settings));
+  applyTheme();
+
+  if(oldLevel !== settings.level){
+    tree = ld('aac.tree_' + settings.level, null) || getTreeForLevel();
+    path = [];
+  }
+
+  settModal.style.display = 'none';
+  render();
+};
+
+/* ---------- Модальное окно РЕДАКТОРА ---------- */
 const ed=$('#ed');
+$('#gear').onclick = () => openEd();
 const find=id=>{let r=null;const w=(l)=>l.forEach(n=>{if(n.id===id)r={n,l};if(n.c)w(n.c)});w(tree);return r};
 function openEd(){ed.style.display='block';drawEd()}
 function drawEd(){
   ed.innerHTML='';
-  ed.append(h('h2',null,'Редактор (для родственника)'),h('p','note','Здесь меняют плитки: тексты, значки, фото. Фото хранятся только на этом устройстве.'));
+  ed.append(h('h2',null,'✏️ Редактор'),h('p','note','Управление плитками словаря текущего уровня.'));
   const s=h('select');s.append(new Option('— Главный экран —',''));
   const w=(l,d)=>l.forEach(n=>{s.append(new Option('· '.repeat(d)+t(n.l)+' '+(n.e||''),n.id));if(n.c)w(n.c,d+1)});w(tree,0);
   s.value=sel;s.onchange=()=>{sel=s.value;drawEd()};ed.append(h('label',null,'Плитка'),s);
   const f=sel&&find(sel);
   const fld=(lb,val)=>{const i=h('input');i.type='text';i.value=val;ed.append(h('label',null,lb),i);return i};
-  let ir,iu,sr,su,ie,pr,pu;
+  let ir,iu,sr,su,ie;
   if(f){
     const n=f.n,[lr,lu]=(n.l||'').split('|'),[a,b]=(n.s||'').split('|');
     ir=fld('Название (русский)',lr||'');iu=fld('Название (украинский)',lu||'');
-    sr=fld('Фраза (русский)',a||'');su=fld('Фраза (украинский)',b||'');ie=fld('Значок (эмодзи)',n.e||'');const pp=(n.p||'').split('|');
-    pr=fld('Как озвучить название — русский (если голос читает неверно; напишите по слогам или с ударной гласной)',pp[0]||'');pu=fld('Як озвучити назву — українська',pp[1]||'');
-    const fi=h('input');fi.type='file';fi.accept='image/*';
-    fi.onchange=()=>photo(fi.files[0],d=>{n.img=d;save();drawEd()});
-    ed.append(h('label',null,'Фото (вместо значка)'),fi);
-    if(n.img){const i=h('img');i.src=n.img;i.style.cssText='width:90px;height:90px;object-fit:cover;border-radius:10px;margin-top:8px';ed.append(i)}
+    sr=fld('Фраза (русский)',a||'');su=fld('Фраза (украинский)',b||'');ie=fld('Значок (эмодзи)',n.e||'');
   }
   const r=h('div','row');
   if(f){
-    r.append(h('button',null,'Сохранить',()=>{const n=f.n;n.l=ir.value+'|'+iu.value;n.s=sr.value+'|'+su.value;n.e=ie.value;n.p=(pr.value||pu.value)?pr.value+'|'+pu.value:'';save();drawEd()}));
-    r.append(h('button',null,'↑',()=>mv(f,-1)),h('button',null,'↓',()=>mv(f,1)));
-    if(f.n.img)r.append(h('button',null,'Убрать фото',()=>{delete f.n.img;save();drawEd()}));
+    r.append(h('button',null,'Сохранить',()=>{const n=f.n;n.l=ir.value+'|'+iu.value;n.s=sr.value+'|'+su.value;n.e=ie.value;save();drawEd()}));
     r.append(h('button','d','Удалить',()=>{if(confirm('Удалить плитку?')){f.l.splice(f.l.indexOf(f.n),1);sel='';save();drawEd()}}));
   }
-  r.append(h('button',null,'+ Добавить плитку сюда',()=>{
+  r.append(h('button',null,'+ Добавить плитку',()=>{
     const n={id:'n'+Date.now(),l:'Новая|Нова',s:'Я хочу|Я хочу',e:'💬'};
-    if(f){(f.n.c=f.n.c||[]).push(n)}else{n.col='#16384F';tree.push(n)}
+    if(f){(f.n.c=f.n.c||[]).push(n)}else{n.col='#1E3A8A';tree.push(n)}
     sel=n.id;save();drawEd()}));
   ed.append(r);
-  const r2=h('div','row');
-  r2.append(h('button',null,'Сохранить копию (файл)',()=>{
-    const a=h('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(tree)],{type:'application/json'}));a.download='govorim-backup.json';a.click()}));
-  const imp=h('input');imp.type='file';imp.accept='.json';
-  imp.onchange=()=>{const fr=new FileReader();fr.onload=()=>{try{const d=JSON.parse(fr.result);if(!Array.isArray(d))throw 0;tree=d;save();sel='';drawEd()}catch(e){alert('Файл не подходит')}};fr.readAsText(imp.files[0])};
-  r2.append(h('button','d','Сбросить всё',()=>{if(confirm('Вернуть стандартные плитки и стереть историю?')){tree=DEF();use={};localStorage.removeItem(K('use'));sel='';save();drawEd()}}));
-  ed.append(r2,h('label',null,'Загрузить копию'),imp,h('div','row'));
-  ed.append(h('button',null,'Закрыть редактор',()=>{ed.style.display='none';path=[];sc=[];bReset();closeOv();render()}));
-}
-function mv(f,d){const i=f.l.indexOf(f.n),j=i+d;if(j<0||j>=f.l.length)return;[f.l[i],f.l[j]]=[f.l[j],f.l[i]];save();drawEd()}
-function photo(file,cb){
-  if(!file)return;const fr=new FileReader();
-  fr.onload=()=>{const im=new Image();im.onload=()=>{
-    const S=200,c=document.createElement('canvas');c.width=c.height=S;const x=c.getContext('2d'),m=Math.min(im.width,im.height);
-    x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);cb(c.toDataURL('image/jpeg',.72))};im.src=fr.result};
-  fr.readAsDataURL(file);
+  ed.append(h('button',null,'Закрыть редактор',()=>{ed.style.display='none';path=[];closeOv();render()}));
 }
 
-/* ---------- уровни речи: 1 вопросы по одному · 2 плитки · 3 сборка фразы ---------- */
-U.ru.ok='Понятно';U.uk.ok='Зрозуміло';
-const VIEW=()=>set.level===1?'scan':set.level===3?'build':'tree';
-const vis=n=>!n.x||set.level===3;
-let view,sc=[],ph=[],hist=[],bs=0,bf=null;
-/* уровень 1: варианты по одному, ответ «Да»/«Нет» */
-function scanRoot(){
-  const fr=flat().filter(x=>!x.n.c&&!x.top.x&&score(x.n.id)>=1).sort((a,b)=>score(b.n.id)-score(a.n.id)).slice(0,3).map(x=>x.n);
-  return fr.concat(tree.filter(n=>!n.x));
-}
-function startScan(n){sc=[{list:n?rank(n.c):scanRoot(),i:0,ttl:n?t(n.l):''}];scanShow()}
-function scanShow(){
-  if(!sc.length){startScan();return}
-  const m=$('#main');m.innerHTML='';m.scrollTop=0;
-  const f=sc[sc.length-1],n=f.list[f.i];$('#ttl').textContent=f.ttl||u('title');
-  const d=h('div','scan');
-  if(!n)d.append(h('div','big',q('Больше вариантов нет','Більше варіантів немає')),h('button','ans neu','↺ '+q('Сначала','Спочатку'),()=>{f.i=0;scanShow()}));
-  else{
-    d.append(pic(n),h('div','big',t(n.l)+'?'));
-    const a=h('div','row');a.append(h('button','ans yes','✔ '+u('yes'),()=>scanAns(true)),h('button','ans no','✖ '+u('no'),()=>scanAns(false)));d.append(a);
-    if(set.tap!=='off')speak(sp(n));
-  }
-  m.append(d);
-}
-function scanAns(yes){
-  const f=sc[sc.length-1],n=f&&f.list[f.i];if(!n)return;
-  if(!yes){f.i++;scanShow();return}
-  if(n.c&&n.c.length){sc.push({list:rank(n.c),i:0,ttl:t(n.l)});scanShow();return}
-  const tp=flat().find(x=>x.n.id===n.id);
-  if(tp&&tp.top.crit)ask(n);else{bump(n.id);say(t(n.s))}
-}
-function scanBack(){const f=sc[sc.length-1];if(!f)return;if(f.i>0)f.i--;else if(sc.length>1)sc.pop();scanShow()}
-/* уровень 3: фраза собирается по шагам и звучит по ходу, собеседник может понять в любой момент */
-const FR=[['want','Хочу|Хочу',0,'want','🙋'],['need','Мне нужно|Мені потрібно',0,'need','❗'],['give','Дайте|Дайте',0,'give','🤲'],['on','Включите|Увімкніть',0,'on','💡'],['off','Выключите|Вимкніть',0,'on','🔌'],
-['open','Откройте|Відчиніть',0,'open','🪟'],['shut','Закройте|Зачиніть',0,'open','🚪'],['call','Позвоните|Подзвоніть',0,'call','📞'],['go','Пойдём|Ходімо',0,'go','🚶'],['hurt','Болит|Болить',0,'hurt','🤕'],
-['feel','Мне|Мені',0,'feel','🙂'],['where','Где|Де',1,'where','🔎'],['when','Когда|Коли',1,'when','🕒'],['who','Кто|Хто',1,'who','❓']].map(a=>({id:a[0],l:a[1],q:a[2],k:a[3],e:a[4]}));
-const LS={
-want:'пить|пити;есть|їсти;спать|спати;чай|чай;кофе|каву;воду|воду;суп|суп;хлеб|хліб;фрукты|фрукти;сладкое|солодке;домой|додому;на улицу|на вулицю;в туалет|у туалет;лечь|лягти;позвонить|подзвонити;телевизор|телевізор;тишины|тиші',
-need:'в туалет|у туалет;к врачу|до лікаря;принять лекарство|прийняти ліки;отдохнуть|відпочити;умыться|вмитися;переодеться|переодягнутися;позвонить|подзвонити;измерить давление|виміряти тиск;поговорить|поговорити;выйти|вийти',
-give:'воды|води;чаю|чаю;таблетку|таблетку;очки|окуляри;телефон|телефон;одеяло|ковдру;пульт|пульт;газету|газету;ручку|ручку;бумагу|папір;руку|руку',
-on:'свет|світло;телевизор|телевізор;музыку|музику;радио|радіо;отопление|опалення;вентилятор|вентилятор',
-open:'окно|вікно;дверь|двері;шторы|штори',
-call:'врачу|лікарю;родным|рідним;в аптеку|в аптеку;соседям|сусідам',
-go:'домой|додому;гулять|гуляти;в магазин|до магазину;в парк|до парку;в аптеку|до аптеки;к врачу|до лікаря;во двор|у двір;на кухню|на кухню;в комнату|до кімнати;в ванную|у ванну',
-hurt:'голова|голова;горло|горло;в груди|у грудях;сердце|серце;живот|живіт;спина|спина;рука|рука;нога|нога;шея|шия;плечо|плече',
-feel:'хорошо|добре;плохо|погано;холодно|холодно;жарко|спекотно;скучно|нудно;грустно|сумно;страшно|страшно;весело|весело;тяжело|важко;душно|душно;тревожно|тривожно',
-where:'все|всі;мои очки|мої окуляри;мой телефон|мій телефон;мои таблетки|мої таблетки;пульт|пульт;туалет|туалет;врач|лікар;мои вещи|мої речі',
-when:'обед|обід;ужин|вечеря;завтрак|сніданок;домой|додому;придёт врач|прийде лікар;придут гости|прийдуть гості',
-who:'звонил|дзвонив;пришёл|прийшов;там|там;это|це'};
-const MODS='сейчас|зараз;потом|потім;сегодня|сьогодні;завтра|завтра;утром|вранці;вечером|ввечері;ещё|ще;пожалуйста|будь ласка;быстрее|швидше;помедленнее|повільніше;вместе|разом';
-const READY='Да|Так;Нет|Ні;Не надо|Не треба;Хорошо|Добре;Спасибо|Дякую;Пожалуйста|Будь ласка;Извините|Вибачте;Подождите|Зачекайте;Повторите, пожалуйста|Повторіть, будь ласка;Говорите медленнее|Говоріть повільніше;Я понимаю|Я розумію;Я не понимаю|Я не розумію;Это не то|Це не те;Не могу вспомнить слово|Не можу згадати слово;Скажите по-другому|Скажіть інакше;Доброе утро|Доброго ранку;Добрый день|Добрий день;Добрый вечер|Добрий вечір;Спокойной ночи|На добраніч;До свидания|До побачення;Как дела?|Як справи?;У меня всё хорошо|У мене все добре;Помогите|Допоможіть';
-const L2=x=>x.split(';').map(y=>t(y));
-function bReset(){ph=[];hist=[];bs=0;bf=null}
-const ptxt=()=>{const x=ph.join(' ');return x.charAt(0).toUpperCase()+x.slice(1)+(bf&&bf.q&&bs>=2?'?':'')};
-function bPush(txt,nbs,nbf){hist.push({bs,bf});ph.push(txt);bs=nbs;bf=nbf;if(set.auto!==false)speak(ptxt());buildShow()}
-function bUndo(){if(bs===3){bs=0;buildShow();return}if(!ph.length)return;const p=hist.pop();ph.pop();bs=p.bs;bf=p.bf;buildShow()}
-function bClear(){bReset();buildShow()}
-function opts(f){
-  let a=L2(LS[f.k]);
-  if(f.id==='where'||f.id==='when'){const nm=(set.people||'').split(',').map(x=>x.trim()).filter(Boolean);a=a.concat(nm.map(x=>f.id==='when'?(lang==='uk'?'прийде ':'придёт ')+x:x))}
-  return a;
-}
-function buildShow(){
-  const m=$('#main');m.innerHTML='';m.scrollTop=0;$('#ttl').textContent=u('title');
-  const pb=h('div','pbar');pb.append(h('div','ptxt',ph.length?ptxt():'…'));
-  const r=h('div','row');r.append(h('button','sb','🔊',()=>speak(ptxt())),h('button','sb','⌫',bUndo),h('button','sb ok','✔ '+u('ok'),bClear));
-  pb.append(r);m.append(pb);
-  const g=h('div','grid'),ct=(txt,col,fn,e)=>{const b=h('button','tile',null,fn);b.style.setProperty('--c',col);if(e)b.append(h('span','em',e));b.append(h('span',null,txt));return b};
-  if(bs===0){
-    FR.forEach(f=>g.append(ct(t(f.l),'#16384F',()=>bPush(t(f.l),1,f),f.e)));
-    g.append(ct(q('Готовые фразы','Готові фрази'),'#2F855A',()=>{bs=3;buildShow()},'💬'));
-    g.append(ct(q('Темы','Теми'),'#8A6D00',()=>{view='tree';path=[];render()},'📚'));
-  }else if(bs===1)opts(bf).forEach(o=>g.append(ct(o,'#2B6CB0',()=>bPush(o,2,bf))));
-  else if(bs===3)L2(READY).forEach(o=>g.append(ct(o,'#2F855A',()=>bPush(o,2,null))));
-  else{L2(MODS).forEach(o=>g.append(ct(o,'#6B46C1',()=>bPush(o,2,bf))));g.append(ct(q('Новая фраза','Нова фраза'),'#16384F',bClear,'➕'))}
-  m.append(g);
-}
-let dip=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e});
+/* ---------- Запуск приложения ---------- */
+$('#lang').textContent=lang.toUpperCase();
+document.documentElement.lang=lang;
+labels();
+render();
 
-/* ---------- настройки (модальное окно) ---------- */
-const sm=$('#set'),q=(a,b)=>lang==='uk'?b:a;
-const saveSet=()=>{try{localStorage.setItem(K('set'),JSON.stringify(set))}catch(e){}};
-const test=()=>speak(q('Я хочу чай','Я хочу чай'));
-function applyTheme(){
-  const d=set.theme==='dark'||(set.theme==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches);
-  document.documentElement.dataset.theme=d?'dark':'light';
-  document.querySelector('meta[name=theme-color]').content=d?'#0B2A3F':'#16384F';
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged = () => populateVoices();
 }
-matchMedia('(prefers-color-scheme:dark)').addEventListener('change',applyTheme);
-function openSet(){sm.style.display='flex';drawSet()}
-function closeSet(){sm.style.display='none';sm.innerHTML='';render()}
-function drawSet(){
-  sm.innerHTML='';sm.onclick=e=>{if(e.target===sm)closeSet()};
-  const d=h('div','dlg');d.append(h('h2',null,q('Настройки','Налаштування')));
-  const lab=(txt,val)=>{const l=h('label');l.append(h('span',null,txt));const v=h('span',null,val==null?'':val);l.append(v);d.append(l);return v};
-  lab(q('Уровень речи','Рівень мовлення'));
-  const lr=h('div','row');
-  [[1,q('Тяжёлый','Тяжкий')],[2,q('Средний','Середній')],[3,q('Лёгкий','Легкий')]].forEach(([k,n])=>lr.append(h('button','chip'+(set.level===k?' on':''),n,()=>{set.level=k;saveSet();closeOv();path=[];sc=[];bReset();view=VIEW();drawSet()})));
-  d.append(lr,h('p','note',[q('Варианты по одному: отвечать «Да» или «Нет».','Варіанти по одному: відповідати «Так» чи «Ні».'),q('Плитки с картинками, 2–3 шага, подтверждение.','Плитки з картинками, 2–3 кроки, підтвердження.'),q('Фраза собирается из слов по шагам и звучит по ходу; больше тем.','Фраза складається зі слів по кроках і звучить по ходу; більше тем.')][set.level-1]));
-  lab(q('Голос','Голос'));
-  const vs=voices().filter(vlang),sv=h('select');
-  if(!vs.length)sv.append(new Option(q('Голос не найден','Голос не знайдено'),''));
-  vs.forEach(x=>sv.append(new Option(x.name+' ('+x.lang+')',x.name)));
-  const cv=pickVoice();if(cv)sv.value=cv.name;
-  sv.onchange=()=>{set.voice[lang]=sv.value;saveSet();test()};d.append(sv);
-  if(!vs.length)d.append(h('p','note',q('Установите голос: Настройки Android → Язык → Синтез речи.','Встановіть голос: Налаштування Android → Мова → Синтез мовлення.')));
-  const sl=(txt,key,min,max,step)=>{const v=lab(txt,set[key]),i=h('input');i.type='range';i.min=min;i.max=max;i.step=step;i.value=set[key];
-    i.oninput=()=>{set[key]=+i.value;v.textContent=i.value;saveSet()};i.onchange=test;d.append(i)};
-  sl(q('Скорость','Швидкість'),'rate',.5,1.5,.05);sl(q('Высота голоса','Висота голосу'),'pitch',.5,1.5,.05);sl(q('Громкость','Гучність'),'vol',.2,1,.1);
-  d.append(h('button','sb','▶ '+q('Проверить звук','Перевірити звук'),test));
-  lab(q('Озвучивать при нажатии','Озвучувати при натисканні'));
-  const st=h('select');
-  [['label',q('Название плитки','Назва плитки')],['phrase',q('Полную фразу','Повну фразу')],['off',q('Не озвучивать','Не озвучувати')]].forEach(([k,n])=>st.append(new Option(n,k)));
-  st.value=set.tap;st.onchange=()=>{set.tap=st.value;saveSet()};d.append(st);
-  lab(q('Тема','Тема'));
-  const r=h('div','row');
-  [['auto',q('Как в системе','Як у системі')],['light',q('Светлая','Світла')],['dark',q('Тёмная','Темна')]].forEach(([k,n])=>
-    r.append(h('button','chip'+(set.theme===k?' on':''),n,()=>{set.theme=k;saveSet();applyTheme();drawSet()})));
-  d.append(r);
-  if(set.level===3){
-    lab(q('Озвучивать фразу по ходу сборки','Озвучувати фразу по ходу складання'));
-    const sa=h('select');sa.append(new Option(q('Да','Так'),'1'),new Option(q('Нет','Ні'),'0'));sa.value=set.auto===false?'0':'1';sa.onchange=()=>{set.auto=sa.value==='1';saveSet()};d.append(sa);
-    lab(q('Имена близких (через запятую)','Імена близьких (через кому)'));
-    const pi=h('input');pi.type='text';pi.value=set.people||'';pi.onchange=()=>{set.people=pi.value;saveSet()};d.append(pi);
-  }
-  d.append(h('h3',null,q('Установка','Встановлення')));
-  const st2=matchMedia('(display-mode: standalone)').matches;
-  d.append(h('p','note',q('Режим: ','Режим: ')+(st2?q('приложение','застосунок'):q('вкладка браузера','вкладка браузера'))+' · '+q('Офлайн: ','Офлайн: ')+(navigator.serviceWorker&&navigator.serviceWorker.controller?q('готово','готово'):q('ещё нет, откройте ещё раз','ще ні, відкрийте ще раз'))+' · '+q('Адрес: ','Адреса: ')+new URL('/govorim/',location.href).pathname));
-  if(dip)d.append(h('button','sb','⬇ '+q('Установить приложение','Встановити застосунок'),async()=>{dip.prompt();try{await dip.userChoice}catch(e){}dip=null;drawSet()}));
-  else if(!st2)d.append(h('p','note',q('Нет кнопки установки? Меню Chrome ⋮ → «Установить приложение». Если там «Открыть в приложении», на этом домене уже установлено другое приложение, чей охват (scope) включает этот адрес: удалите его или сузьте его scope. Список установленных приложений: chrome://webapks (вставьте в адресную строку Chrome).','Немає кнопки встановлення? Меню Chrome ⋮ → «Встановити застосунок». Якщо там «Відкрити в застосунку», на цьому домені вже встановлено інший застосунок, чий охоплення (scope) містить цю адресу: видаліть його або звузьте його scope. Список встановлених застосунків: chrome://webapks (вставте в адресний рядок Chrome).')));
-  const eb=h('button','sb alt','✏️ '+q('Редактор плиток (удерживать)','Редактор плиток (утримувати)'));
-  let hd;eb.onpointerdown=()=>{hd=setTimeout(()=>{closeSet();openEd()},1500)};
-  ['pointerup','pointerleave','pointercancel'].forEach(ev=>eb.addEventListener(ev,()=>clearTimeout(hd)));
-  d.append(eb,h('p','note',q('Редактор для родственника: держите кнопку 1,5 секунды.','Редактор для родичів: утримуйте кнопку 1,5 секунди.')),h('button','sb',q('Закрыть','Закрити'),closeSet));
-  sm.append(d);
-}
-if('speechSynthesis' in window)speechSynthesis.onvoiceschanged=()=>{if(sm.style.display==='flex')drawSet()};
 
-/* ---------- запуск ---------- */
-applyTheme();
-$('#lang').textContent=lang.toUpperCase();document.documentElement.lang=lang;labels();view=VIEW();render();
-if('speechSynthesis' in window)speechSynthesis.getVoices();
-if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/govorim/sw.js',{scope:'/govorim/'}).catch(()=>{}));
+if('serviceWorker' in navigator){
+  addEventListener('load',()=>navigator.serviceWorker.register('/Govorim/sw.js',{scope:'/Govorim/'}).catch(()=>{}));
+}
 </script>
 </body>
 </html>
