@@ -1,4 +1,4 @@
-const V = 'govorim-v2',
+const V = 'govorim-v3',
       F = [
         '/Govorim/',
         '/Govorim/index.html',
