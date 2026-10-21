@@ -1,5 +1,5 @@
 // Кеш та область дії ізольовані під папочку /govorim/
-const V = 'govorim-v3',
+const V = 'govorim-v4',
       F = [
         '/govorim/',
         '/govorim/index.html',
