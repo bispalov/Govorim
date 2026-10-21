@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#16384F">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<title>Говорим вместе</title>
+<style>
+:root{--ink:#14202B;--bg:#EEF2F5;--navy:#16384F}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:600 20px/1.2 system-ui,Roboto,sans-serif}
+body{display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:4px solid #F2B705;outline-offset:2px}
+header{display:flex;gap:8px;align-items:center;padding:8px 10px;background:var(--navy);color:#fff}
+header h1{flex:1;margin:0;font-size:22px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.hb{min-width:56px;min-height:56px;border-radius:14px;background:#ffffff26;color:#fff;font-size:24px}
+#stage{flex:1;position:relative;min-height:0}
+main{position:absolute;inset:0;overflow-y:auto;padding:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.sec{margin:4px 2px 8px;font-size:18px;opacity:.75}
+.tile{min-height:140px;border-radius:18px;border:4px solid var(--c);background:color-mix(in srgb,var(--c) 12%,#fff);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px;font-size:26px;font-weight:700;text-align:center;overflow-wrap:anywhere}
+.tile .em{font-size:58px;line-height:1}
+.tile img,.big img{width:84px;height:84px;object-fit:cover;border-radius:12px}
+.say{width:100%;min-height:72px;margin-bottom:10px;border-radius:16px;background:var(--navy);color:#fff;font-size:24px;padding:10px}
+#ov{position:absolute;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:14px;text-align:center;overflow-y:auto}
+#ov.red{background:#B3261E;color:#fff}
+.big{font-size:34px;font-weight:800;line-height:1.15;overflow-wrap:anywhere}
+.big .em{font-size:90px;display:block}
+.big img{width:150px;height:150px}
+.row{display:flex;gap:10px;width:100%;flex-wrap:wrap;justify-content:center}
+.chip{min-height:56px;padding:0 16px;border-radius:28px;background:#fff;border:3px solid var(--navy);font-size:20px}
+.chip.on{background:var(--navy);color:#fff}
+.ans{flex:1;min-height:120px;border-radius:20px;font-size:34px;color:#fff;font-weight:800}
+.yes{background:#1F7A4D}.no{background:#B3261E}.neu{background:var(--navy)}
+#bar{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:6px;background:#fff;border-top:3px solid var(--navy)}
+#bar button{min-height:72px;border-radius:12px;font-size:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:#E3E9EE;font-weight:700}
+#bar .i{font-size:26px}
+#bar .yes,#bar .no{color:#fff}
+#bar .hp{background:#B3261E;color:#fff}
+#ed{position:fixed;inset:0;background:#fff;display:none;overflow-y:auto;padding:14px;z-index:10;font-size:17px;font-weight:500}
+#ed label{display:block;margin:10px 0 2px;font-weight:700}
+#ed input[type=text],#ed select{width:100%;font:inherit;padding:10px;border:2px solid #789;border-radius:8px}
+#ed .row{margin:12px 0}
+#ed button{min-height:48px;padding:0 14px;border-radius:10px;background:var(--navy);color:#fff}
+#ed button.d{background:#B3261E}
+#ed .note{opacity:.7;font-size:15px}
+</style>
+</head>
+<body>
+<header>
+  <button class="hb" id="home" aria-label="Домой">🏠</button>
+  <h1 id="ttl"></h1>
+  <button class="hb" id="lang" aria-label="Язык">RU</button>
+  <button class="hb" id="gear" aria-label="Редактор (удерживать)">⚙️</button>
+</header>
+<div id="stage"><main id="main"></main><div id="ov"></div></div>
+<nav id="bar"></nav>
+<div id="ed"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
+const U={
+ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет',back:'Не то',rep:'Повтор',help:'Помощь',pain:'Больно',sure:'Точно?',done:'Готово',cancel:'Отмена',mods:['сейчас','потом','ещё','хватит'],helpSay:'Помогите! Мне нужна помощь!',helpTxt:'МНЕ НУЖНА ПОМОЩЬ'},
+uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні',back:'Не те',rep:'Повтор',help:'Допомога',pain:'Болить',sure:'Точно?',done:'Готово',cancel:'Скасувати',mods:['зараз','потім','ще','досить'],helpSay:'Допоможіть! Мені потрібна допомога!',helpTxt:'МЕНІ ПОТРІБНА ДОПОМОГА'}};
+let lang=localStorage.getItem('aac.lang')||'ru';
+const u=k=>U[lang][k];
+const t=s=>{const p=String(s||'').split('|');return lang==='uk'&&p[1]?p[1]:p[0]};
+
+/* ---------- данные по умолчанию (формат "рус|укр") ---------- */
+const L=(l,s,e)=>({id:'d'+Math.random().toString(36).slice(2,8),l,s,e});
+const DEF=()=>[
+{id:'drink',col:'#2B6CB0',l:'Пить|Пити',s:'Я хочу пить|Я хочу пити',e:'🥤',c:[
+ L('Вода|Вода','Я хочу воды|Я хочу води','💧'),L('Чай|Чай','Я хочу чай|Я хочу чай','🍵'),L('Кофе|Кава','Я хочу кофе|Я хочу каву','☕'),
+ L('Сок|Сік','Я хочу сок|Я хочу сік','🧃'),L('Молоко|Молоко','Я хочу молоко|Я хочу молоко','🥛'),L('Компот|Компот','Я хочу компот|Я хочу компот','🍹')]},
+{id:'eat',col:'#C27C0E',l:'Есть|Їсти',s:'Я хочу есть|Я хочу їсти',e:'🍽️',c:[
+ L('Суп|Суп','Я хочу суп|Я хочу суп','🍲'),L('Каша|Каша','Я хочу кашу|Я хочу кашу','🥣'),L('Хлеб|Хліб','Я хочу хлеб|Я хочу хліб','🍞'),
+ L('Мясо|М\'ясо','Я хочу мясо|Я хочу м\'ясо','🍗'),L('Рыба|Риба','Я хочу рыбу|Я хочу рибу','🐟'),L('Овощи|Овочі','Я хочу овощи|Я хочу овочі','🥕'),
+ L('Фрукты|Фрукти','Я хочу фрукты|Я хочу фрукти','🍎'),L('Яйцо|Яйце','Я хочу яйцо|Я хочу яйце','🥚'),L('Сладкое|Солодке','Я хочу сладкое|Я хочу солодке','🍰')]},
+{id:'wc',col:'#0F8B8D',l:'Туалет и гигиена|Туалет і гігієна',s:'Мне нужна помощь с гигиеной|Мені потрібна допомога з гігієною',e:'🚻',c:[
+ L('Туалет|Туалет','Мне нужно в туалет|Мені потрібно в туалет','🚽'),L('Умыться|Вмитися','Я хочу умыться|Я хочу вмитися','🚿'),
+ L('Душ|Душ','Я хочу в душ|Я хочу в душ','🛁'),L('Зубы|Зуби','Я хочу почистить зубы|Я хочу почистити зуби','🪥'),
+ L('Переодеться|Переодягтися','Я хочу переодеться|Я хочу переодягтися','👕')]},
+{id:'pain',col:'#B3261E',crit:1,l:'Болит|Болить',s:'У меня что-то болит|У мене щось болить',e:'🤕',c:[
+ L('Голова|Голова','У меня болит голова|У мене болить голова','🧠'),L('Горло|Горло','У меня болит горло|У мене болить горло','🗣️'),
+ L('Грудь|Груди','У меня болит грудь|У мене болить у грудях','🫁'),L('Сердце|Серце','У меня болит сердце|У мене болить серце','❤️'),
+ L('Живот|Живіт','У меня болит живот|У мене болить живіт','🤢'),L('Спина|Спина','У меня болит спина|У мене болить спина','🧍'),
+ L('Рука|Рука','У меня болит рука|У мене болить рука','💪'),L('Нога|Нога','У меня болит нога|У мене болить нога','🦵')]},
+{id:'med',col:'#6B46C1',crit:1,l:'Лекарства и врач|Ліки і лікар',s:'Мне нужна медицинская помощь|Мені потрібна медична допомога',e:'💊',c:[
+ L('Таблетки|Таблетки','Мне пора принять лекарство|Мені час прийняти ліки','💊'),L('Давление|Тиск','Измерьте мне давление|Виміряйте мені тиск','🩺'),
+ L('Врач|Лікар','Я хочу к врачу|Я хочу до лікаря','👩‍⚕️'),L('Вызвать врача|Викликати лікаря','Вызовите врача|Викличте лікаря','📞'),
+ L('Лекарство кончилось|Ліки закінчились','Лекарство закончилось|Ліки закінчились','📦')]},
+{id:'ppl',col:'#2F855A',l:'Люди|Люди',s:'Я хочу поговорить|Я хочу поговорити',e:'👥',c:[
+ L('Позвонить|Подзвонити','Я хочу позвонить|Я хочу подзвонити','📱'),L('Где все?|Де всі?','Где все?|Де всі?','❓'),
+ L('Кто придёт?|Хто прийде?','Кто придёт?|Хто прийде?','🚪'),L('Видеть семью|Бачити родину','Я хочу увидеть семью|Я хочу побачити родину','👨‍👩‍👧'),
+ L('Тишина|Тиша','Я хочу побыть в тишине|Я хочу побути в тиші','🤫'),L('Спасибо|Дякую','Спасибо|Дякую','🙏'),
+ L('Медленнее|Повільніше','Говорите, пожалуйста, медленнее|Говоріть, будь ласка, повільніше','🐢'),L('Подождите|Зачекайте','Подождите, я думаю|Зачекайте, я думаю','⏳')]},
+{id:'act',col:'#8A6D00',l:'Занятия|Заняття',s:'Я хочу чем-нибудь заняться|Я хочу чимось зайнятися',e:'📺',c:[
+ L('Телевизор|Телевізор','Включите телевизор|Увімкніть телевізор','📺'),L('Музыка|Музика','Включите музыку|Увімкніть музику','🎵'),
+ L('Прогулка|Прогулянка','Я хочу на прогулку|Я хочу на прогулянку','🚶'),L('Спать|Спати','Я хочу спать|Я хочу спати','🛏️'),
+ L('Свет|Світло','Включите свет|Увімкніть світло','💡'),L('Окно|Вікно','Откройте окно|Відчиніть вікно','🪟'),
+ L('Лечь|Лягти','Я хочу лечь|Я хочу лягти','🛌'),L('Сесть|Сісти','Я хочу сесть|Я хочу сісти','🪑')]},
+{id:'feel',col:'#B83280',l:'Чувства|Почуття',s:'Я хочу сказать, как я себя чувствую|Я хочу сказати, як я себе почуваю',e:'🙂',c:[
+ L('Хорошо|Добре','Мне хорошо|Мені добре','😊'),L('Плохо|Погано','Мне плохо|Мені погано','😟'),L('Нужно отдохнуть|Треба відпочити','Мне нужно отдохнуть|Мені потрібно відпочити','😮‍💨'),
+ L('Холодно|Холодно','Мне холодно|Мені холодно','🥶'),L('Жарко|Жарко','Мне жарко|Мені спекотно','🥵'),
+ L('Грустно|Сумно','Мне грустно|Мені сумно','😢'),L('Страшно|Страшно','Мне страшно|Мені страшно','😨'),L('Не понимаю|Не розумію','Я не понимаю|Я не розумію','🤷')]}
+];
+
+/* ---------- состояние ---------- */
+const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+let tree=ld('aac.tree',null)||DEF();
+let use=ld('aac.use',{});
+let path=[],last='',cn=null,stage=0,mod='',tmr=null,sel='';
+const save=()=>{try{localStorage.setItem('aac.tree',JSON.stringify(tree))}catch(e){alert('Не хватает памяти для фото')}};
+const flat=()=>{const r=[];const w=(l,top)=>l.forEach(n=>{const tp=top||n;r.push({n,top:tp});if(n.c)w(n.c,tp)});w(tree);return r};
+const score=id=>{const x=use[id];return x?x.n*Math.pow(.9,(Date.now()-x.t)/864e5):0};
+const bump=id=>{use[id]={n:score(id)+1,t:Date.now()};try{localStorage.setItem('aac.use',JSON.stringify(use))}catch(e){}};
+
+/* ---------- озвучивание ---------- */
+function speak(txt){
+  if(!('speechSynthesis' in window))return;
+  speechSynthesis.cancel();
+  const code=lang==='uk'?'uk':'ru',v=speechSynthesis.getVoices().find(x=>x.lang.toLowerCase().startsWith(code));
+  const m=new SpeechSynthesisUtterance(txt);m.lang=lang==='uk'?'uk-UA':'ru-RU';if(v)m.voice=v;m.rate=.85;speechSynthesis.speak(m);
+}
+
+/* ---------- главный экран ---------- */
+function tile(n,top,fn){
+  const b=h('button','tile',null,fn);b.style.setProperty('--c',top.col||'#16384F');
+  if(n.img){const i=h('img');i.src=n.img;i.alt='';b.append(i)}else b.append(h('span','em',n.e||'💬'));
+  b.append(h('span',null,t(n.l)));return b;
+}
+function rank(k){
+  const b=n=>{const s=score(n.id);return s>=3?Math.floor(s):0};
+  return k.map((n,i)=>[n,i]).sort((a,c)=>b(c[0])-b(a[0])||a[1]-c[1]).map(x=>x[0]);
+}
+function render(){
+  const m=$('#main'),c=path.length?path[path.length-1]:null;m.innerHTML='';m.scrollTop=0;
+  $('#ttl').textContent=c?path.map(n=>t(n.l)).join(' › '):u('title');
+  if(c){m.append(h('button','say','🔊 '+t(c.s),()=>ask(c)))}
+  else{
+    const fr=flat().filter(x=>!x.n.c&&score(x.n.id)>=1).sort((a,b)=>score(b.n.id)-score(a.n.id)).slice(0,4);
+    if(fr.length){m.append(h('div','sec',u('freq')));const g=h('div','grid');fr.forEach(x=>g.append(tile(x.n,x.top,()=>ask(x.n))));m.append(g,h('div','sec',' '))}
+  }
+  const g=h('div','grid');
+  (c?rank(c.c):tree).forEach(n=>g.append(tile(n,path[0]||n,()=>{if(n.c&&n.c.length){path.push(n);render()}else ask(n)})));
+  m.append(g);
+}
+
+/* ---------- окно подтверждения / «сказано» ---------- */
+const ov=$('#ov');
+function closeOv(){ov.style.display='none';ov.className='';ov.innerHTML='';clearInterval(tmr);tmr=null;cn=null}
+function pic(n){const d=h('div','big');if(n.img){const i=h('img');i.src=n.img;i.alt='';d.append(i)}else d.append(h('span','em',n.e||'💬'));return d}
+function ask(n){cn=n;stage=0;mod='';showAsk()}
+function showAsk(){
+  const top=flat().find(x=>x.n.id===cn.id);
+  const txt=t(cn.s)+(mod?' '+mod:'');
+  ov.innerHTML='';ov.className='';ov.style.display='flex';
+  ov.append(pic(cn),h('div','big',(stage?u('sure')+' ':'')+txt+'?'));
+  const r=h('div','row');
+  u('mods').forEach(w=>{const c=h('button','chip'+(mod===w?' on':''),w,()=>{mod=mod===w?'':w;showAsk()});r.append(c)});
+  const a=h('div','row');
+  a.append(h('button','ans yes','✔ '+u('yes'),()=>answer(true)),h('button','ans no','✖ '+u('no'),()=>answer(false)));
+  ov.append(r,a);
+  ov._crit=top&&top.top.crit;
+}
+function answer(yes){
+  if(!cn)return;
+  if(!yes){closeOv();return}
+  if(ov._crit&&!stage){stage=1;showAsk();return}
+  const txt=t(cn.s)+(mod?' '+mod:'');bump(cn.id);say(txt);
+}
+function say(txt,silent){
+  last=txt;if(!silent)speak(txt);cn=null;
+  ov.innerHTML='';ov.className='';ov.style.display='flex';clearInterval(tmr);
+  const r=h('div','row');
+  r.append(h('button','ans neu','🔊 '+u('rep'),()=>speak(last)),h('button','ans yes',u('done'),()=>{closeOv();path=[];render()}));
+  ov.append(h('div','big',txt),r);
+}
+function helpMe(){
+  clearInterval(tmr);ov.innerHTML='';ov.className='red';ov.style.display='flex';cn=null;
+  const go=()=>speak(u('helpSay'));go();tmr=setInterval(go,6000);
+  ov.append(h('div','big','🆘'),h('div','big',u('helpTxt')),h('button','ans neu',u('cancel'),()=>{closeOv();render()}));
+}
+
+/* ---------- нижняя панель (всегда на одних местах) ---------- */
+[['yes','✔','yes'],['no','✖','no'],['back','↩','back'],['rep','🔊','rep'],['help','🆘','help'],['pain','🤕','pain']].forEach(([k,ic,id])=>{
+  const b=h('button',k==='yes'?'yes':k==='no'?'no':k==='help'?'hp':'',null);b.dataset.k=k;
+  b.append(h('span','i',ic),h('span',null,''));
+  b.onclick=()=>bar(k);$('#bar').append(b);
+});
+function labels(){document.querySelectorAll('#bar button').forEach(b=>b.lastChild.textContent=u(b.dataset.k))}
+function bar(k){
+  if(k==='yes'||k==='no'){
+    if(cn){answer(k==='yes');return}
+    const w=u(k);say(w);return;
+  }
+  if(k==='back'){
+    if(tmr){closeOv();render();return}
+    if(ov.style.display==='flex'){closeOv();return}
+    path.pop();render();return;
+  }
+  if(k==='rep'){if(last){speak(last);if(ov.style.display!=='flex')say(last,true)}return}
+  if(k==='help'){helpMe();return}
+  if(k==='pain'){closeOv();path=[tree.find(n=>n.id==='pain')||tree[0]];render()}
+}
+$('#home').onclick=()=>{closeOv();path=[];render()};
+$('#lang').onclick=()=>{lang=lang==='ru'?'uk':'ru';localStorage.setItem('aac.lang',lang);$('#lang').textContent=lang.toUpperCase();document.documentElement.lang=lang;labels();closeOv();render()};
+
+/* ---------- редактор для родственника (удерживать ⚙️ 1,5 с) ---------- */
+let hold;const g=$('#gear');
+g.onpointerdown=()=>{hold=setTimeout(openEd,1500)};
+['pointerup','pointerleave','pointercancel'].forEach(e=>g.addEventListener(e,()=>clearTimeout(hold)));
+const ed=$('#ed');
+const find=id=>{let r=null;const w=(l)=>l.forEach(n=>{if(n.id===id)r={n,l};if(n.c)w(n.c)});w(tree);return r};
+function openEd(){ed.style.display='block';drawEd()}
+function drawEd(){
+  ed.innerHTML='';
+  ed.append(h('h2',null,'Редактор (для родственника)'),h('p','note','Здесь меняют плитки: тексты, значки, фото. Фото хранятся только на этом устройстве.'));
+  const s=h('select');s.append(new Option('— Главный экран —',''));
+  const w=(l,d)=>l.forEach(n=>{s.append(new Option('· '.repeat(d)+t(n.l)+' '+(n.e||''),n.id));if(n.c)w(n.c,d+1)});w(tree,0);
+  s.value=sel;s.onchange=()=>{sel=s.value;drawEd()};ed.append(h('label',null,'Плитка'),s);
+  const f=sel&&find(sel);
+  const fld=(lb,val)=>{const i=h('input');i.type='text';i.value=val;ed.append(h('label',null,lb),i);return i};
+  let ir,iu,sr,su,ie;
+  if(f){
+    const n=f.n,[lr,lu]=(n.l||'').split('|'),[a,b]=(n.s||'').split('|');
+    ir=fld('Название (русский)',lr||'');iu=fld('Название (украинский)',lu||'');
+    sr=fld('Фраза (русский)',a||'');su=fld('Фраза (украинский)',b||'');ie=fld('Значок (эмодзи)',n.e||'');
+    const fi=h('input');fi.type='file';fi.accept='image/*';
+    fi.onchange=()=>photo(fi.files[0],d=>{n.img=d;save();drawEd()});
+    ed.append(h('label',null,'Фото (вместо значка)'),fi);
+    if(n.img){const i=h('img');i.src=n.img;i.style.cssText='width:90px;height:90px;object-fit:cover;border-radius:10px;margin-top:8px';ed.append(i)}
+  }
+  const r=h('div','row');
+  if(f){
+    r.append(h('button',null,'Сохранить',()=>{const n=f.n;n.l=ir.value+'|'+iu.value;n.s=sr.value+'|'+su.value;n.e=ie.value;save();drawEd()}));
+    r.append(h('button',null,'↑',()=>mv(f,-1)),h('button',null,'↓',()=>mv(f,1)));
+    if(f.n.img)r.append(h('button',null,'Убрать фото',()=>{delete f.n.img;save();drawEd()}));
+    r.append(h('button','d','Удалить',()=>{if(confirm('Удалить плитку?')){f.l.splice(f.l.indexOf(f.n),1);sel='';save();drawEd()}}));
+  }
+  r.append(h('button',null,'+ Добавить плитку сюда',()=>{
+    const n={id:'n'+Date.now(),l:'Новая|Нова',s:'Я хочу|Я хочу',e:'💬'};
+    if(f){(f.n.c=f.n.c||[]).push(n)}else{n.col='#16384F';tree.push(n)}
+    sel=n.id;save();drawEd()}));
+  ed.append(r);
+  const r2=h('div','row');
+  r2.append(h('button',null,'Сохранить копию (файл)',()=>{
+    const a=h('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(tree)],{type:'application/json'}));a.download='govorim-backup.json';a.click()}));
+  const imp=h('input');imp.type='file';imp.accept='.json';
+  imp.onchange=()=>{const fr=new FileReader();fr.onload=()=>{try{const d=JSON.parse(fr.result);if(!Array.isArray(d))throw 0;tree=d;save();sel='';drawEd()}catch(e){alert('Файл не подходит')}};fr.readAsText(imp.files[0])};
+  r2.append(h('button','d','Сбросить всё',()=>{if(confirm('Вернуть стандартные плитки и стереть историю?')){tree=DEF();use={};localStorage.removeItem('aac.use');sel='';save();drawEd()}}));
+  ed.append(r2,h('label',null,'Загрузить копию'),imp,h('div','row'));
+  ed.append(h('button',null,'Закрыть редактор',()=>{ed.style.display='none';path=[];closeOv();render()}));
+}
+function mv(f,d){const i=f.l.indexOf(f.n),j=i+d;if(j<0||j>=f.l.length)return;[f.l[i],f.l[j]]=[f.l[j],f.l[i]];save();drawEd()}
+function photo(file,cb){
+  if(!file)return;const fr=new FileReader();
+  fr.onload=()=>{const im=new Image();im.onload=()=>{
+    const S=200,c=document.createElement('canvas');c.width=c.height=S;const x=c.getContext('2d'),m=Math.min(im.width,im.height);
+    x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);cb(c.toDataURL('image/jpeg',.72))};im.src=fr.result};
+  fr.readAsDataURL(file);
+}
+
+/* ---------- запуск ---------- */
+$('#lang').textContent=lang.toUpperCase();document.documentElement.lang=lang;labels();render();
+if('speechSynthesis' in window)speechSynthesis.getVoices();
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
