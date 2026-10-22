@@ -95,6 +95,26 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 .modal li{margin:5px 0}
 .helphead{position:sticky;top:-16px;z-index:2;display:flex;gap:10px;align-items:center;justify-content:space-between;margin:-16px -16px 8px;padding:10px 16px;background:var(--bg);border-bottom:2px solid var(--border)}
 .helphead h2{margin:0;font-size:22px}
+.modal .chk{display:flex;align-items:flex-start;gap:12px;font-weight:600;margin:14px 0}
+.modal input[type=checkbox]{width:26px;height:26px;flex:none;margin-top:1px}
+.modal button.wide{width:100%;margin:6px 0}
+.ans.sm{min-height:64px;font-size:clamp(18px,5.4vw,22px)}
+.tile.armed{outline:5px solid #F2B705;outline-offset:2px}
+[data-size="l"] .grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr))}
+[data-size="l"] .tile{min-height:170px;font-size:clamp(18px,5.6vw,26px)}
+[data-size="xl"] .grid{grid-template-columns:1fr}
+[data-size="xl"] .tile{min-height:150px;font-size:clamp(22px,7vw,30px)}
+.letters{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:8px}
+.lt{min-height:62px;border-radius:14px;background:var(--card-bg);border:2px solid var(--navy);color:var(--ink);font-size:26px;font-weight:800}
+.wd{min-height:64px;padding:6px 10px;border-radius:14px;background:var(--card-bg);border:3px solid var(--accent);color:var(--ink);font-size:clamp(20px,6vw,26px);font-weight:700;overflow-wrap:anywhere}
+.pfx{font-size:clamp(30px,9vw,40px);font-weight:800}
+.sylw{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:6px 0}
+.syl{min-height:70px;min-width:64px;padding:0 14px;border-radius:16px;background:var(--navy);color:#fff;font-size:clamp(26px,8vw,36px);font-weight:800}
+.bars{display:flex;gap:6px;align-items:flex-end;height:96px;margin:8px 0}
+.bars .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;font-size:12px;gap:2px}
+.bars i{display:block;width:100%;background:var(--accent);border-radius:6px 6px 0 0}
+.dl{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:16px}
+.dl b{flex:none}
 </style>
 </head>
 <body>
@@ -120,10 +140,11 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <!-- Модальное окно Редактора -->
 <div id="ed" class="modal"></div>
 
-<!-- Модальное окно Настроек (все подписи подставляются на текущем языке) -->
+<!-- Модальное окно Настроек (подписи подставляются на языке меню) -->
 <div id="sett" class="modal">
   <h2 data-i="s_title"></h2>
 
+  <h3 data-i="g_main"></h3>
   <label data-i="s_level"></label>
   <select id="setSeg"></select>
   <div class="note" id="lvNote"></div>
@@ -131,9 +152,13 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
   <label data-i="s_gender"></label>
   <select id="setGender"></select>
 
+  <label data-i="s_uilang"></label>
+  <select id="setUiLang"></select>
+
   <label data-i="s_theme"></label>
   <select id="setTheme"></select>
 
+  <h3 data-i="g_voice"></h3>
   <label data-i="s_voice"></label>
   <select id="setVoice"></select>
   <div class="note" id="voiceNote"></div>
@@ -148,14 +173,43 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
     <button id="testVoiceBtn" data-i="s_test"></button>
   </div>
 
+  <h3 data-i="g_touch"></h3>
+  <label data-i="s_size"></label>
+  <select id="setSize"></select>
+
+  <label data-i="s_guard"></label>
+  <select id="setGuard"></select>
+
+  <label data-i="s_hand"></label>
+  <select id="setHand"></select>
+
+  <label class="chk"><input type="checkbox" id="setHear"><span data-i="s_hear"></span></label>
+  <label class="chk"><input type="checkbox" id="setSyll"><span data-i="s_syll"></span></label>
+  <label class="chk"><input type="checkbox" id="setVib"><span data-i="s_vib"></span></label>
+  <label class="chk"><input type="checkbox" id="setAwake"><span data-i="s_awake"></span></label>
+
+  <h3 data-i="g_ease"></h3>
+  <label class="chk"><input type="checkbox" id="setQuick"><span data-i="s_quick"></span></label>
+  <label class="chk"><input type="checkbox" id="setFreq"><span data-i="s_freq"></span></label>
+
+  <h3 data-i="g_data"></h3>
+  <label class="chk"><input type="checkbox" id="setLog"><span data-i="s_log"></span></label>
+  <button class="wide" id="diaryBtn" data-i="b_diary"></button>
+  <button class="wide" id="backupBtn" data-i="b_save"></button>
+  <button class="wide" id="restoreBtn" data-i="b_load"></button>
+  <input type="file" id="restoreFile" accept="application/json,.json" hidden>
+
   <div class="row" style="margin-top:24px">
     <button id="closeSettBtn" style="width:100%" data-i="s_close"></button>
   </div>
   <div class="note" id="ver" style="text-align:center"></div>
 </div>
 
+<!-- Дневник общения -->
+<div id="diary" class="modal"></div>
+
 <script>
-const APP_VERSION = 7;   // держите в соответствии с V = 'govorim-v7' в sw.js
+const APP_VERSION = 8;   // держите в соответствии с V = 'govorim-v8' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -166,6 +220,22 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
   built:'Ваша фраза',sayso:'Сказать так',cont:'Продолжите фразу — выберите слово:',pick:'Выберите тему:',ver:'Версия приложения',
   aHome:'Домой',aLang:'Язык',aSet:'Настройки',aEd:'Редактор',nomem:'Не хватает памяти',testSay:'Это проверка голоса',
   aHelp:'Справка',v_auto:'Автоматически (голос по умолчанию)',v_none:'Для этого языка в телефоне нет голосов. Как их установить — см. «Справка» → «Голос и озвучка».',
+  abc:'Азбука',abcHint:'Нажмите первую букву слова',abcNext:'Следующая буква:',abcNone:'Слов на эти буквы нет',slow:'Медленно',
+  g_main:'Основное',g_voice:'Озвучка',g_touch:'Управление и нажатия',g_ease:'Меньше усталости',g_data:'Данные',
+  s_uilang:'Язык меню и справки (фразы и озвучка переключаются кнопкой RU/UK вверху)',ui_auto:'Как у фраз и озвучки',
+  s_size:'Размер плиток',sz_m:'Обычный',sz_l:'Крупный',sz_xl:'Очень крупный (по одной в ряд)',
+  s_guard:'Защита от случайных нажатий (повторное касание быстрее этого времени игнорируется)',gd_0:'Выключена',gd_400:'0,4 с',gd_800:'0,8 с',gd_1500:'1,5 с',
+  s_hand:'Нижняя панель кнопок',hd_right:'Для правой руки (как сейчас)',hd_left:'Для левой руки (зеркально)',
+  s_hear:'Сначала услышать, потом выбрать: первое нажатие на плитку произносит слово, второе выбирает её',
+  s_syll:'Долгое нажатие на плитку открывает слово по слогам и произносит медленно (по рекомендации логопеда)',
+  s_vib:'Вибрация при нажатии',s_awake:'Не гасить экран, пока приложение открыто',
+  s_quick:'Говорить сразу, без вопроса «…?» (в темах «Здоровье» и «Лекарства» вопрос остаётся)',
+  s_freq:'Показывать блок «Часто» на главном экране (если выключить, плитки всегда стоят на своих местах)',
+  s_log:'Вести дневник общения (хранится только на этом телефоне)',
+  b_diary:'📒 Дневник общения',b_save:'💾 Сохранить копию данных',b_load:'📂 Загрузить копию данных',
+  b_confirm:'Заменить текущие настройки, правки и дневник данными из файла? Это действие нельзя отменить.',b_bad:'Файл не похож на копию этого приложения.',
+  d_title:'📒 Дневник общения',d_total:'Всего фраз',d_days:'Дней с записями',d_week:'Последние 7 дней',d_top:'Самые частые фразы',d_recent:'Последние фразы',d_empty:'Записей пока нет.',d_off:'Ведение дневника выключено в настройках.',
+  d_export:'⬇️ Сохранить как текст',d_clear:'🗑️ Очистить дневник',d_cclear:'Удалить весь дневник? Это действие нельзя отменить.',d_exp_title:'Говорим вместе — дневник общения',
   helpDoc:{title:'❓ Справка',s:[
    ['Для чего приложение','Приложение помогает общаться с человеком, у которого после инсульта нарушена речь (афазия). Вместо того чтобы подбирать слова, достаточно нажимать на крупные плитки — телефон произнесёт фразу вслух. Всё работает без интернета.'],
    ['Быстрый старт',['Выберите тему на главном экране (например, «Еда и питьё»).','Нажимайте плитки: фраза выбирается по шагам.','Приложение спросит, например, «Я хочу чай?». Нажмите «Да» — фраза прозвучит, «Нет» — отмена.','После озвучивания можно нажать «Повтор» или «Готово».']],
@@ -178,6 +248,15 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
    ['Часто используемое','На главном экране показываются до четырёх самых частых фраз — так нужное находится быстрее.'],
    ['Здоровье и лекарства','Темы «Здоровье» и «Лекарства» просят второе подтверждение «Точно?», чтобы случайное нажатие не ввело в заблуждение. Приложение не заменяет врача. В опасной ситуации звоните 103 (скорая помощь) или 112.'],
    ['Голос и озвучка',['Озвучку делает синтезатор речи телефона. В настройках показываются только голоса выбранного языка интерфейса.','Если голосов нет: Настройки Android → Система → Язык и ввод → Синтез речи → Google → установите голосовые данные русского или украинского языка.','Лучше немного снизить скорость речи (0,7–0,85) — так проще разобрать слова. Кнопка «Проверить голос» позволяет послушать результат.']],
+   ['Азбука (подсказка по первой букве)',['На главном экране последняя плитка — «Азбука» (кроме тяжёлого уровня).','Нажмите первую букву слова: появятся слова из словаря, которые с неё начинаются. Можно нажать следующую букву, чтобы сузить список.','Нажатие на слово добавляет его в строку фразы. «Сказать так» произносит всю строку, ⌫ убирает последнее слово.']],
+   ['Ситуации','На уровнях «Лёгкое 1–3» в конце главного экрана есть плитка «Ситуации»: визит к врачу, аптека, магазин, гости, телефонный разговор. Фразы в них подобраны под конкретную ситуацию. Если вы раньше правили плитки лёгкого уровня, нажмите в редакторе «Сбросить уровень», чтобы получить новые темы.'],
+   ['Услышать, потом выбрать (⚙️)','Если включено, первое нажатие на плитку только произносит слово и обводит плитку жёлтой рамкой, а второе нажатие на ту же плитку выбирает её. Нажатие на другую плитку снова только озвучивает её.'],
+   ['Разбор по слогам (⚙️)','Если включено, долгое нажатие на плитку открывает слово по слогам: оно произносится медленно, а нажатие на слог произносит его отдельно. Деление на слоги примерное. Используйте по рекомендации логопеда.'],
+   ['Управление и защита от нажатий (⚙️)','Размер плиток (обычный, крупный, по одной в ряд); защита от случайных нажатий (повторные касания быстрее выбранного времени игнорируются); нижняя панель для правой или левой руки; вибрация; «не гасить экран».'],
+   ['Меньше усталости (⚙️)','«Говорить сразу» убирает вопрос «…?»: фраза звучит после нажатия на плитку (в темах «Здоровье» и «Лекарства» вопрос остаётся). Блок «Часто» можно отключить, чтобы плитки всегда стояли на своих местах.'],
+   ['Дневник общения','Открывается из настроек. На телефоне хранятся произнесённые фразы с датой и временем (последние 1000). Видны активность за 7 дней и самые частые фразы; можно сохранить текстовый файл для логопеда. Дневник можно выключить и очистить.'],
+   ['Резервная копия','В настройках: «Сохранить копию данных» создаёт файл со всеми настройками, правками плиток и дневником, «Загрузить копию данных» восстанавливает их (например, на новом телефоне). Сделайте копию перед очисткой данных браузера или сменой телефона.'],
+   ['Язык меню','В настройках можно задать язык меню и справки отдельно от языка фраз и озвучки: например, фразы и голос на украинском, а меню на русском. Подписи для самого человека (кнопки «Да», «Нет» и т. п.) следуют за языком фраз.'],
    ['Редактор плиток','Нажмите ✏️, выберите плитку и измените название, фразу или значок, добавьте новую или удалите ненужную. «Сбросить уровень» возвращает стандартный набор. Правки хранятся на этом устройстве. В лёгких уровнях плитка — часть фразы; формы по полу пишутся так: вып{ил~ила}.'],
    ['Установка и обновление',['В Chrome откройте меню ⋮ → «Установить приложение» (или «Добавить на главный экран»).','После первого запуска приложение работает без интернета.','Новая версия подгружается сама при открытии с интернетом. Номер версии виден внизу настроек.']],
    ['Советы по общению',['Давайте время: не торопите и не договаривайте за человека.','Задавайте вопросы, на которые можно ответить «да» или «нет».','Говорите короткими фразами, спокойно и не перебивая.','Хвалите попытки — важна сама попытка сказать, а не безошибочность.']]
@@ -195,6 +274,22 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
   built:'Ваша фраза',sayso:'Сказати так',cont:'Продовжте фразу — оберіть слово:',pick:'Оберіть тему:',ver:'Версія застосунку',
   aHome:'Додому',aLang:'Мова',aSet:'Налаштування',aEd:'Редактор',nomem:'Не вистачає пам’яті',testSay:'Це перевірка голосу',
   aHelp:'Довідка',v_auto:'Автоматично (голос за замовчуванням)',v_none:'Для цієї мови в телефоні немає голосів. Як їх встановити — див. «Довідка» → «Голос і озвучення».',
+  abc:'Абетка',abcHint:'Натисніть першу літеру слова',abcNext:'Наступна літера:',abcNone:'Слів на ці літери немає',slow:'Повільно',
+  g_main:'Основне',g_voice:'Озвучення',g_touch:'Керування й натискання',g_ease:'Менше втоми',g_data:'Дані',
+  s_uilang:'Мова меню та довідки (фрази й озвучення перемикаються кнопкою RU/UK вгорі)',ui_auto:'Як у фраз та озвучення',
+  s_size:'Розмір плиток',sz_m:'Звичайний',sz_l:'Великий',sz_xl:'Дуже великий (по одній у ряд)',
+  s_guard:'Захист від випадкових натискань (повторне торкання швидше за цей час ігнорується)',gd_0:'Вимкнено',gd_400:'0,4 с',gd_800:'0,8 с',gd_1500:'1,5 с',
+  s_hand:'Нижня панель кнопок',hd_right:'Для правої руки (як зараз)',hd_left:'Для лівої руки (дзеркально)',
+  s_hear:'Спершу почути, потім обрати: перше натискання на плитку вимовляє слово, друге обирає її',
+  s_syll:'Довге натискання на плитку відкриває слово по складах і вимовляє повільно (за рекомендацією логопеда)',
+  s_vib:'Вібрація під час натискання',s_awake:'Не гасити екран, поки застосунок відкритий',
+  s_quick:'Говорити одразу, без запитання «…?» (у темах «Здоров’я» та «Ліки» запитання залишається)',
+  s_freq:'Показувати блок «Часто» на головному екрані (якщо вимкнути, плитки завжди стоять на своїх місцях)',
+  s_log:'Вести щоденник спілкування (зберігається лише на цьому телефоні)',
+  b_diary:'📒 Щоденник спілкування',b_save:'💾 Зберегти копію даних',b_load:'📂 Завантажити копію даних',
+  b_confirm:'Замінити поточні налаштування, правки й щоденник даними з файлу? Цю дію не можна скасувати.',b_bad:'Файл не схожий на копію цього застосунку.',
+  d_title:'📒 Щоденник спілкування',d_total:'Усього фраз',d_days:'Днів із записами',d_week:'Останні 7 днів',d_top:'Найчастіші фрази',d_recent:'Останні фрази',d_empty:'Записів поки немає.',d_off:'Ведення щоденника вимкнено в налаштуваннях.',
+  d_export:'⬇️ Зберегти як текст',d_clear:'🗑️ Очистити щоденник',d_cclear:'Видалити весь щоденник? Цю дію не можна скасувати.',d_exp_title:'Говоримо разом — щоденник спілкування',
   helpDoc:{title:'❓ Довідка',s:[
    ['Для чого застосунок','Застосунок допомагає спілкуватися з людиною, у якої після інсульту порушене мовлення (афазія). Замість того щоб добирати слова, достатньо натискати великі плитки — телефон вимовить фразу вголос. Усе працює без інтернету.'],
    ['Швидкий старт',['Оберіть тему на головному екрані (наприклад, «Їжа та напої»).','Натискайте плитки: фраза обирається по кроках.','Застосунок запитає, наприклад, «Я хочу чай?». Натисніть «Так» — фраза пролунає, «Ні» — скасування.','Після озвучення можна натиснути «Повтор» або «Готово».']],
@@ -207,6 +302,15 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
    ['Часто вживане','На головному екрані показуються до чотирьох найчастіших фраз — так потрібне знаходиться швидше.'],
    ['Здоров’я та ліки','Теми «Здоров’я» та «Ліки» просять друге підтвердження «Точно?», щоб випадкове натискання не ввело в оману. Застосунок не замінює лікаря. У небезпечній ситуації телефонуйте 103 (швидка допомога) або 112.'],
    ['Голос і озвучення',['Озвучення виконує синтезатор мовлення телефона. У налаштуваннях показуються лише голоси обраної мови інтерфейсу.','Якщо голосів немає: Налаштування Android → Система → Мова та введення → Синтез мовлення → Google → встановіть голосові дані російської або української мови.','Краще трохи знизити швидкість мовлення (0,7–0,85) — так легше розібрати слова. Кнопка «Перевірити голос» дає змогу послухати результат.']],
+   ['Абетка (підказка за першою літерою)',['На головному екрані остання плитка — «Абетка» (крім важкого рівня).','Натисніть першу літеру слова: з’являться слова зі словника, що з неї починаються. Можна натиснути наступну літеру, щоб звузити список.','Натискання на слово додає його до рядка фрази. «Сказати так» вимовляє весь рядок, ⌫ прибирає останнє слово.']],
+   ['Ситуації','На рівнях «Легке 1–3» наприкінці головного екрана є плитка «Ситуації»: візит до лікаря, аптека, магазин, гості, телефонна розмова. Фрази в них підібрано під конкретну ситуацію. Якщо ви раніше правили плитки легкого рівня, натисніть у редакторі «Скинути рівень», щоб отримати нові теми.'],
+   ['Почути, потім обрати (⚙️)','Якщо увімкнено, перше натискання на плитку лише вимовляє слово й обводить плитку жовтою рамкою, а друге натискання на ту саму плитку обирає її. Натискання на іншу плитку знову лише озвучує її.'],
+   ['Розбір по складах (⚙️)','Якщо увімкнено, довге натискання на плитку відкриває слово по складах: воно вимовляється повільно, а натискання на склад вимовляє його окремо. Поділ на склади приблизний. Використовуйте за рекомендацією логопеда.'],
+   ['Керування й захист від натискань (⚙️)','Розмір плиток (звичайний, великий, по одній у ряд); захист від випадкових натискань (повторні торкання швидше за обраний час ігноруються); нижня панель для правої чи лівої руки; вібрація; «не гасити екран».'],
+   ['Менше втоми (⚙️)','«Говорити одразу» прибирає запитання «…?»: фраза звучить після натискання на плитку (у темах «Здоров’я» та «Ліки» запитання залишається). Блок «Часто» можна вимкнути, щоб плитки завжди стояли на своїх місцях.'],
+   ['Щоденник спілкування','Відкривається з налаштувань. На телефоні зберігаються вимовлені фрази з датою й часом (останні 1000). Видно активність за 7 днів і найчастіші фрази; можна зберегти текстовий файл для логопеда. Щоденник можна вимкнути й очистити.'],
+   ['Резервна копія','У налаштуваннях: «Зберегти копію даних» створює файл з усіма налаштуваннями, правками плиток і щоденником, «Завантажити копію даних» відновлює їх (наприклад, на новому телефоні). Зробіть копію перед очищенням даних браузера чи зміною телефона.'],
+   ['Мова меню','У налаштуваннях можна задати мову меню й довідки окремо від мови фраз та озвучення: наприклад, фрази й голос українською, а меню російською. Підписи для самої людини (кнопки «Так», «Ні» тощо) йдуть за мовою фраз.'],
    ['Редактор плиток','Натисніть ✏️, оберіть плитку й змініть назву, фразу або значок, додайте нову чи видаліть непотрібну. «Скинути рівень» повертає стандартний набір. Правки зберігаються на цьому пристрої. У легких рівнях плитка — частина фрази; форми за статтю пишуться так: вип{ив~ила}.'],
    ['Встановлення й оновлення',['У Chrome відкрийте меню ⋮ → «Установити застосунок» (або «Додати на головний екран»).','Після першого запуску застосунок працює без інтернету.','Нова версія підтягується сама під час відкриття з інтернетом. Номер версії видно внизу налаштувань.']],
    ['Поради щодо спілкування',['Давайте час: не поспішайте й не договорюйте за людину.','Ставте запитання, на які можна відповісти «так» або «ні».','Говоріть короткими фразами, спокійно й не перебиваючи.','Хваліть спроби — важлива сама спроба сказати, а не безпомилковість.']]
@@ -221,24 +325,32 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
   e_save:'Зберегти',e_del:'Видалити',e_add:'+ Додати плитку',e_cdel:'Видалити плитку?',e_reset:'Скинути рівень до стандартного',
   e_creset:'Повернути стандартний набір плиток для цього рівня? Ваші правки буде видалено.',e_close:'Закрити редактор'}};
 let lang=localStorage.getItem('aac.lang')||'ru';
-const u=k=>U[lang][k];
+const u=k=>U[lang][k];                                   // подписи для человека (язык фраз)
+const uiL=()=>settings.uiLang==='ru'||settings.uiLang==='uk'?settings.uiLang:lang;
+const uh=k=>U[uiL()][k];                                  // подписи меню, настроек и справки (для помощника)
 // Формы по полу: вып{ил~ила} — слева мужской, справа женский вариант
 const G=s=>s.replace(/\{([^~}]*)~([^}]*)\}/g,(m,a,b)=>settings.gender==='m'?a:b);
 const t=s=>{const p=String(s||'').split('|');return G(lang==='uk'&&p[1]?p[1]:p[0])};
 
 /* ---------- Настройки ---------- */
 const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
-let settings = ld('aac.settings', {
-  theme: 'dark',
-  level: 'L2',
-  rate: 0.85,
-  pitch: 1.0,
-  voices: {},
-  gender: 'f'
-});
+const DEFAULTS = {
+  theme: 'dark', level: 'L2', rate: 0.85, pitch: 1.0, voices: {}, gender: 'f',
+  uiLang: 'auto',   // язык меню и справки: auto = как у фраз
+  size: 'm',        // размер плиток: m / l / xl
+  guard: 0,         // защита от случайных нажатий, мс
+  hand: 'right',    // положение нижней панели: right / left
+  hear: false, syll: false, quick: false, freq: true, vib: false, awake: false, log: true
+};
+let settings = Object.assign({}, DEFAULTS, ld('aac.settings', {}));
 if(settings.gender!=='m') settings.gender = 'f';
 if(!settings.voices || typeof settings.voices !== 'object') settings.voices = {};
 if(!['L1','L2','L3','L4','L5'].includes(settings.level)) settings.level = 'L2';
+if(!['auto','ru','uk'].includes(settings.uiLang)) settings.uiLang = 'auto';
+if(!['m','l','xl'].includes(settings.size)) settings.size = 'm';
+if(![0,400,800,1500].includes(+settings.guard)) settings.guard = 0;
+settings.guard = +settings.guard;
+if(settings.hand!=='left') settings.hand = 'right';
 
 function applyTheme(){
   document.documentElement.setAttribute('data-theme', settings.theme);
@@ -653,18 +765,101 @@ const CORPUS=`
 🛂 Мне нужен/паспорт = Мені потрібен/паспорт
 🧾 Покажи/мне/квитанцию = Покажи/мені/квитанцію
 💰 У меня/не хватает/денег = У мене/не вистачає/грошей
+
+## sc_doc|Визит к врачу|Візит до лікаря|🏥|#3182CE||scenes
+🏥 Я/приш{ёл~ла}/на приём = Я/прийш{ов~ла}/на прийом
+🗣️ Мне/трудно/говорить/после инсульта = Мені/важко/говорити/після інсульту
+🐢 Говорите/пожалуйста/медленно = Говоріть/будь ласка/повільно
+⏳ Подождите/я/думаю = Зачекайте/я/думаю
+🤕 У меня/болит/голова/уже/несколько дней = У мене/болить/голова/вже/кілька днів
+❤️ У меня/болит/сердце/уже/несколько дней = У мене/болить/серце/вже/кілька днів
+🧍 У меня/болит/спина/уже/неделю = У мене/болить/спина/вже/тиждень
+🤢 У меня/болит/живот/уже/неделю = У мене/болить/живіт/вже/тиждень
+💊 Я/принимаю/эти/лекарства = Я/приймаю/ці/ліки
+💊 Объясните/как/принимать/лекарство = Поясніть/як/приймати/ліки
+📝 Напишите/мне/на бумаге = Напишіть/мені/на папері
+🔁 Повторите/пожалуйста = Повторіть/будь ласка
+❓ Что/мне/делать = Що/мені/робити
+❓ Когда/мне/прийти/снова = Коли/мені/прийти/знову
+📄 Мне нужен/рецепт = Мені потрібен/рецепт
+📄 Мне нужно/направление/к специалисту = Мені потрібне/направлення/до спеціаліста
+
+## sc_pharm|Аптека|Аптека|💊|#B7791F||scenes
+💊 Мне нужны/таблетки/от давления = Мені потрібні/таблетки/від тиску
+💊 Мне нужны/таблетки/от головной боли = Мені потрібні/таблетки/від головного болю
+💊 Мне нужны/таблетки/для сердца = Мені потрібні/таблетки/для серця
+💊 Мне нужны/витамины = Мені потрібні/вітаміни
+📄 У меня/есть/рецепт = У мене/є/рецепт
+📄 Вот/мой/рецепт = Ось/мій/рецепт
+❓ Сколько/это/стоит = Скільки/це/коштує
+❓ Как/это/принимать = Як/це/приймати
+❓ Есть/что-нибудь/подешевле = Чи є/щось/дешевше
+❓ Это/можно/принимать/с/моими лекарствами = Це/можна/приймати/з/моїми ліками
+💳 Я/заплачу/картой = Я/заплачу/карткою
+💵 Я/заплачу/наличными = Я/заплачу/готівкою
+🧾 Дайте/мне/чек = Дайте/мені/чек
+🛍️ Мне/нужен/пакет = Мені/потрібен/пакет
+
+## sc_shop|В магазине|У магазині|🛒|#8A6D00||scenes
+📍 Где/здесь/хлеб = Де/тут/хліб
+📍 Где/здесь/молоко = Де/тут/молоко
+📍 Где/здесь/касса = Де/тут/каса
+🙏 Мне/нужна/помощь = Мені/потрібна/допомога
+🔎 Помогите/мне/найти/хлеб = Допоможіть/мені/знайти/хліб
+🔎 Помогите/мне/найти/молоко = Допоможіть/мені/знайти/молоко
+❓ Сколько/это/стоит = Скільки/це/коштує
+🧾 Это/слишком/дорого = Це/занадто/дорого
+🛍️ Дайте/мне/пакет = Дайте/мені/пакет
+💳 Я/заплачу/картой = Я/заплачу/карткою
+🪑 Мне/нужно/присесть = Мені/потрібно/присісти
+👛 Подождите/я/ищу/кошелёк = Зачекайте/я/шукаю/гаманець
+🙏 Спасибо/до свидания = Дякую/до побачення
+
+## sc_guest|Гости|Гості|👋|#B83280||scenes
+👋 Проходите/пожалуйста = Проходьте/будь ласка
+🪑 Садитесь/пожалуйста = Сідайте/будь ласка
+☕ Хотите/чай/или/кофе = Хочете/чай/чи/каву
+🍪 Хотите/что-нибудь/поесть = Хочете/щось/поїсти
+😊 Мне/приятно/вас/видеть = Мені/приємно/вас/бачити
+💬 Как/ваши/дела = Як/ваші/справи
+💬 Расскажите/как/ваши/дети = Розкажіть/як/ваші/діти
+🙏 Спасибо/что/пришли = Дякую/що/прийшли
+👋 Приходите/ещё = Приходьте/ще
+😪 Я/немного/уста{л~ла} = Я/трохи/втом{ився~илася}
+🐢 Говорите/пожалуйста/медленнее = Говоріть/будь ласка/повільніше
+💬 Передайте/привет/семье = Передайте/привіт/родині
+
+## sc_call|Телефонный разговор|Телефонна розмова|📞|#1E3A8A||scenes
+📞 Алло/это/я = Алло/це/я
+🗣️ Мне/трудно/говорить/по телефону = Мені/важко/говорити/по телефону
+🐢 Говорите/медленнее/пожалуйста = Говоріть/повільніше/будь ласка
+✋ Подождите/минутку = Зачекайте/хвилинку
+👂 Я/вас/плохо/слышу = Я/вас/погано/чую
+🔁 Повторите/пожалуйста = Повторіть/будь ласка
+📲 Позвоните/мне/позже = Зателефонуйте/мені/пізніше
+📲 Я/перезвоню/позже = Я/передзвоню/пізніше
+💬 Передайте/привет/всем = Передайте/привіт/всім
+💬 Как/ваши/дела = Як/ваші/справи
+🙏 Спасибо/что/позвонили = Дякую/що/зателефонували
+👋 Всего/доброго = Всього/доброго
 `;
 
 // Эмодзи для самых частых начал фраз
-const SE={'Я хочу':'🙋','Я не хочу':'🙅','Мне нужно':'❗','Мне нужен':'❗','Мне нужна':'❗','Мне нужны':'❗','Дай мне':'🤲','Принеси мне':'🎁','Помоги мне':'🤝','У меня':'👤','Мне':'💭','Меня':'💭','Где':'📍','Когда':'🕒','Кто':'🧑','Что':'❔','Как':'🤔','Какой':'📅','Какое':'📅','Который':'🕒','Куда':'🧭','Сколько':'🔢','Почему':'🤷','Давай':'👐','Включи':'🔛','Выключи':'📴','Сделай':'🛠️','Открой':'🪟','Закрой':'🚪','Позвоните':'📞','Вызовите':'🚑','Напиши':'💬','Набери':'📞','Купи':'🛒','Нужно':'❗','На улице':'🌦️','Я':'🙋','Напомни':'⏰','Покажи':'👀','Я уже':'✅','Я ещё не':'⏳','Таблетки':'💊'};
+const SE={'Я хочу':'🙋','Я не хочу':'🙅','Мне нужно':'❗','Мне нужен':'❗','Мне нужна':'❗','Мне нужны':'❗','Дай мне':'🤲','Принеси мне':'🎁','Помоги мне':'🤝','У меня':'👤','Мне':'💭','Меня':'💭','Где':'📍','Когда':'🕒','Кто':'🧑','Что':'❔','Как':'🤔','Какой':'📅','Какое':'📅','Который':'🕒','Куда':'🧭','Сколько':'🔢','Почему':'🤷','Давай':'👐','Включи':'🔛','Выключи':'📴','Сделай':'🛠️','Открой':'🪟','Закрой':'🚪','Позвоните':'📞','Вызовите':'🚑','Напиши':'💬','Набери':'📞','Купи':'🛒','Нужно':'❗','На улице':'🌦️','Я':'🙋','Напомни':'⏰','Покажи':'👀','Я уже':'✅','Я ещё не':'⏳','Таблетки':'💊','Говорите':'🗣️','Подождите':'✋','Повторите':'🔁','Спасибо':'🙏','Проходите':'👋','Садитесь':'🪑','Хотите':'❓','Дайте':'🤲','Вот':'👉','Помогите':'🙏','Объясните':'💡','Напишите':'📝','Алло':'📞'};
 
 function buildPhraseTree(lv){
-  const {n,max}=BL[lv],topics=[],idx={};let cur=null;
+  const {n,max}=BL[lv],topics=[],idx={},groups={};let cur=null;
   CORPUS.split('\n').forEach(raw=>{
     const line=raw.trim();if(!line)return;
     if(line.startsWith('##')){
-      const [id,ru,uk,e,col,crit]=line.slice(2).split('|').map(x=>x.trim());
-      cur={id,col,l:ru+'|'+uk,s:ru+'|'+uk,e,c:[]};if(crit)cur.crit=1;topics.push(cur);return;
+      const [id,ru,uk,e,col,crit,grp]=line.slice(2).split('|').map(x=>x.trim());
+      cur={id,col,l:ru+'|'+uk,s:ru+'|'+uk,e,c:[],tp:1};if(crit)cur.crit=1;
+      if(grp){                                   // тема внутри группы (например, «Ситуации»)
+        let g=groups[grp];
+        if(!g){g=groups[grp]={id:grp,col:'#5A5A8A',l:'Ситуации|Ситуації',s:'Ситуации|Ситуації',e:'🎭',c:[],tp:1};topics.push(g)}
+        g.c.push(cur);
+      }else topics.push(cur);
+      return;
     }
     const sp=line.indexOf(' '),e=line.slice(0,sp),[ru,uk]=line.slice(sp+1).split(' = ');
     let a=ru.split('/'),b=uk.split('/');
@@ -708,8 +903,10 @@ const flat=()=>{const r=[];const w=(l,top,ch)=>l.forEach(n=>{const tp=top||n,c2=
 const score=id=>{const x=use[id];return x?x.n*Math.pow(.9,(Date.now()-x.t)/864e5):0};
 const bump=id=>{use[id]={n:score(id)+1,t:Date.now()};try{localStorage.setItem('aac.use',JSON.stringify(use))}catch(e){}};
 
-// Фраза, собранная по цепочке плиток (без плитки-темы): «ru|uk»
-const phr=ch=>{const a=ch.slice(1).map(n=>String(n.s||'').split('|'));return a.map(x=>x[0]).join(' ')+'|'+a.map(x=>x[1]||x[0]).join(' ')};
+// Фраза, собранная по цепочке плиток (без плиток-тем): «ru|uk»
+const tpIdx=ch=>{let k=-1;ch.forEach((n,i)=>{if(n.tp)k=i});return k};
+const parts=ch=>ch.slice(Math.max(tpIdx(ch),0)+1);
+const phr=ch=>{const a=parts(ch).map(n=>String(n.s||'').split('|'));return a.map(x=>x[0]).join(' ')+'|'+a.map(x=>x[1]||x[0]).join(' ')};
 const synth=ch=>{const n=ch[ch.length-1],p=phr(ch);return {id:n.id,l:p,s:p,e:n.e}};
 
 /* ---------- Синтез речи (SpeechSynthesis) ---------- */
@@ -720,35 +917,59 @@ function getVoices(){
   return speechSynthesis.getVoices();
 }
 
-function speak(txt){
+function speak(txt,f){
   if(!('speechSynthesis' in window))return;
   speechSynthesis.cancel();
   const m = new SpeechSynthesisUtterance(txt);
   m.lang = lang === 'uk' ? 'uk-UA' : 'ru-RU';
-  m.rate = parseFloat(settings.rate) || 0.85;
+  m.rate = Math.max(0.1, (parseFloat(settings.rate) || 0.85) * (f || 1));
   m.pitch = parseFloat(settings.pitch) || 1.0;
 
   const voices = getVoices();
   const chosen = (settings.voices || {})[lang];
   const v = (chosen && voices.find(x => x.voiceURI === chosen && voiceOk(x))) || voices.find(voiceOk);
-  if(v) m.voice = v;
+  try{ if(v) m.voice = v; }catch(e){}
   speechSynthesis.speak(m);
 }
 
 /* ---------- Отрисовка интерфейса ---------- */
+let armed=null, longUntil=0, abc=null;
+
 function tile(n,top,fn){
-  const b=h('button','tile',null,fn);b.style.setProperty('--c',top.col||'#1E3A8A');
+  const b=h('button','tile',null);b.style.setProperty('--c',top.col||'#1E3A8A');
   if(n.img){const i=h('img');i.src=n.img;i.alt='';b.append(i)}else b.append(h('span','em',n.e||'💬'));
-  b.append(h('span',null,t(n.l)));return b;
+  b.append(h('span',null,t(n.l)));
+  // «Сначала услышать, потом выбрать»: первое нажатие произносит слово, второе выбирает плитку
+  b.onclick=()=>{
+    if(settings.hear&&armed!==b){
+      if(armed)armed.classList.remove('armed');
+      armed=b;b.classList.add('armed');speak(t(n.l));return;
+    }
+    armed=null;fn();
+  };
+  // Долгое нажатие: слово по слогам и медленное произношение
+  if(settings.syll){
+    let tm=null,sx=0,sy=0;
+    const stop=()=>{if(tm){clearTimeout(tm);tm=null}};
+    b.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;stop();tm=setTimeout(()=>{tm=null;longUntil=Date.now()+500;showSyll(t(n.l))},600)});
+    b.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>10||Math.abs(e.clientY-sy)>10)stop()});
+    ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));
+    b.addEventListener('contextmenu',e=>e.preventDefault());
+  }
+  return b;
 }
 
 function render(){
+  armed=null;
+  if(abc){renderAbc();return}
   const B=isB();
   const m=$('#main'),c=path.length?path[path.length-1]:null;m.innerHTML='';m.scrollTop=0;
-  $('#ttl').textContent=!c?u('title'):(B?t(path[0].l):path.map(n=>t(n.l)).join(' › '));
+  const pp=(c&&B)?parts(path):[];
+  const topics=path.filter(n=>n.tp);
+  $('#ttl').textContent=!c?u('title'):(B?(topics.length?topics:[path[0]]).map(n=>t(n.l)).join(' › '):path.map(n=>t(n.l)).join(' › '));
 
   if(c&&B){
-    if(path.length>1){
+    if(pp.length){
       const more=c.c&&c.c.length;
       const bx=h('div','build');
       bx.append(h('div','bl',u('built')),h('div','bt',t(phr(path))+(more?' …':'')));
@@ -758,11 +979,13 @@ function render(){
   }else if(c){
     m.append(h('button','say','🔊 '+t(c.s),()=>ask(c)));
   }else if(settings.level !== 'L1'){
-    const fr=flat().filter(x=>(B?x.chain.length>1:!x.n.c)&&score(x.n.id)>=1).sort((a,b)=>score(b.n.id)-score(a.n.id)).slice(0,4);
-    if(fr.length){
-      m.append(h('div','sec',u('freq')));const g=h('div','grid');
-      fr.forEach(x=>g.append(B?tile({l:phr(x.chain),e:x.n.e},x.top,()=>ask(synth(x.chain))):tile(x.n,x.top,()=>ask(x.n))));
-      m.append(g,h('div','sec',' '));
+    if(settings.freq){
+      const fr=flat().filter(x=>(B?parts(x.chain).length>0:!x.n.c)&&score(x.n.id)>=1).sort((a,b)=>score(b.n.id)-score(a.n.id)).slice(0,4);
+      if(fr.length){
+        m.append(h('div','sec',u('freq')));const g=h('div','grid');
+        fr.forEach(x=>g.append(B?tile({l:phr(x.chain),e:x.n.e},x.top,()=>ask(synth(x.chain))):tile(x.n,x.top,()=>ask(x.n))));
+        m.append(g,h('div','sec',' '));
+      }
     }
     if(B)m.append(h('div','sec',u('pick')));
   }
@@ -770,16 +993,108 @@ function render(){
   const g=h('div','grid');
   (c?c.c:tree).forEach(n=>g.append(tile(n,path[0]||n,()=>{
     if(n.c&&n.c.length){path.push(n);render()}
-    else ask(B&&path.length?synth([...path,n]):n);
+    else{const ch=[...path,n];ask(B&&parts(ch).length?synth(ch):n)}
   })));
+  if(!c&&settings.level!=='L1')g.append(tile({l:'Азбука|Абетка',e:'🔤'},{col:'#4A5568'},abcOpen));
   m.append(g);
+}
+
+/* ---------- Азбука: подсказка по первой букве ---------- */
+const ALPHA={ru:'абвгдежзийклмнопрстуфхцчшщэюя',uk:'абвгґдеєжзиіїйклмнопрстуфхцчшщюя'};
+function buildDict(){
+  const cnt={};
+  const add=txt=>String(txt).toLowerCase().split(/[\s,.!?…:;«»"()—–]+/).forEach(w=>{
+    w=w.replace(/^[-'’ʼ]+|[-]+$/g,'');
+    if(w.length>=2&&/^[\p{L}'’ʼ-]+$/u.test(w))cnt[w]=(cnt[w]||0)+1;
+  });
+  CORPUS.split('\n').forEach(raw=>{
+    const line=raw.trim();if(!line||line.startsWith('##'))return;
+    const p=line.slice(line.indexOf(' ')+1).split(' = ');
+    add(G(lang==='uk'?p[1]:p[0]).replace(/\//g,' '));
+  });
+  flat().forEach(x=>{add(t(x.n.l));add(t(x.n.s))});
+  return Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]||a.localeCompare(b,lang));
+}
+function abcOpen(){closeOv();path=[];abc={prefix:'',line:[],dict:buildDict()};render()}
+function renderAbc(){
+  const m=$('#main');m.innerHTML='';m.scrollTop=0;$('#ttl').textContent=u('abc');
+  const bx=h('div','build');
+  bx.append(h('div','bl',u('built')),h('div','bt',abc.line.length?abc.line.join(' '):'…'));
+  m.append(bx);
+  if(abc.line.length){
+    const r=h('div','row');
+    r.append(h('button','ans neu sm','🔊 '+u('sayso'),()=>say(abc.line.join(' '))),h('button','ans no sm','⌫',()=>{abc.line.pop();render()}));
+    m.append(r);
+  }
+  if(!abc.prefix){
+    m.append(h('div','sec',u('abcHint')));
+    const g=h('div','letters');
+    ALPHA[lang].split('').forEach(ch=>g.append(h('button','lt',ch.toUpperCase(),()=>{abc.prefix=ch;render()})));
+    m.append(g);
+    return;
+  }
+  const pre=abc.prefix, words=abc.dict.filter(w=>w.startsWith(pre));
+  const pr=h('div','row');
+  pr.append(h('div','pfx',pre.toUpperCase()+'…'),h('button','ans no sm','⌫',()=>{abc.prefix=pre.slice(0,-1);render()}));
+  m.append(pr);
+  const next=[...new Set(words.filter(w=>w.length>pre.length).map(w=>w[pre.length]))].filter(ch=>/\p{L}/u.test(ch));
+  if(next.length>1){
+    m.append(h('div','sec',u('abcNext')));
+    const g=h('div','letters');
+    next.sort((a,b)=>a.localeCompare(b,lang)).forEach(ch=>g.append(h('button','lt',ch.toUpperCase(),()=>{abc.prefix=pre+ch;render()})));
+    m.append(g);
+  }
+  if(!words.length){m.append(h('div','sec',u('abcNone')));return}
+  m.append(h('div','sec',' '));
+  const g=h('div','grid');
+  words.slice(0,60).forEach(w=>g.append(h('button','wd',w,()=>{abc.line.push(w);abc.prefix='';render()})));
+  m.append(g);
+}
+
+/* ---------- Слоги (примерное деление) ---------- */
+const VOW={ru:'аеёиоуыэюя',uk:'аеєиіїоуюя'};
+function syllables(word){
+  const lw=word.toLowerCase(),V=VOW[lang],idx=[];
+  for(let i=0;i<lw.length;i++)if(V.includes(lw[i]))idx.push(i);
+  if(idx.length<2)return [word];
+  const cuts=[];
+  for(let k=0;k<idx.length-1;k++){
+    let a=idx[k]+1;const b=idx[k+1];
+    while(a<b&&"йьъ'’ʼ".includes(lw[a]))a++;      // й, ь, ъ и апостроф остаются в предыдущем слоге
+    const n=b-a;
+    cuts.push(n<=1?b-n:a+1);                       // 0–1 согласная — слог начинается с неё, больше — после первой
+  }
+  const out=[];let from=0;
+  cuts.forEach(c=>{out.push(word.slice(from,c));from=c});
+  out.push(word.slice(from));
+  return out.filter(Boolean);
+}
+function showSyll(text){
+  clearInterval(tmr);tmr=null;cn=null;
+  ov.innerHTML='';ov.className='';ov.style.display='flex';
+  const box=h('div','big');
+  text.split(/\s+/).forEach(w=>{
+    const clean=w.replace(/[^\p{L}'’ʼ-]/gu,'');if(!clean)return;
+    const row=h('div','sylw');
+    clean.split('-').filter(Boolean).forEach(part=>syllables(part).forEach(sy=>row.append(h('button','syl',sy,()=>speak(sy,0.6)))));
+    box.append(row);
+  });
+  const r=h('div','row');
+  r.append(h('button','ans neu sm','🐢 '+u('slow'),()=>speak(text,0.5)),h('button','ans yes sm',u('done'),()=>closeOv()));
+  ov.append(box,r);
+  speak(text,0.5);
 }
 
 /* ---------- Окно подтверждения / Сказано ---------- */
 const ov=$('#ov');
 function closeOv(){ov.style.display='none';ov.className='';ov.innerHTML='';clearInterval(tmr);tmr=null;cn=null}
 function pic(n){const d=h('div','big');if(n.img){const i=h('img');i.src=n.img;i.alt='';d.append(i)}else d.append(h('span','em',n.e||'💬'));return d}
-function ask(n){cn=n;stage=0;mod='';showAsk()}
+function ask(n){
+  const top=flat().find(x=>x.n.id===n.id);
+  // «Говорить сразу»: без вопроса, кроме тем с двойным подтверждением
+  if(settings.quick&&!(top&&top.top.crit)){cn=n;mod='';bump(n.id);say(t(n.s));return}
+  cn=n;stage=0;mod='';showAsk();
+}
 function showAsk(){
   const top=flat().find(x=>x.n.id===cn.id);
   const txt=t(cn.s)+(mod?' '+mod:'');
@@ -799,7 +1114,7 @@ function answer(yes){
   const txt=t(cn.s)+(mod?' '+mod:'');bump(cn.id);say(txt);
 }
 function say(txt,silent){
-  last=txt;if(!silent)speak(txt);cn=null;
+  last=txt;if(!silent){speak(txt);logPhrase(txt)}cn=null;
   ov.innerHTML='';ov.className='';ov.style.display='flex';clearInterval(tmr);
   const r=h('div','row');
   r.append(h('button','ans neu','🔊 '+u('rep'),()=>speak(last)),h('button','ans yes',u('done'),()=>{closeOv();path=[];render()}));
@@ -807,8 +1122,18 @@ function say(txt,silent){
 }
 function helpMe(){
   clearInterval(tmr);ov.innerHTML='';ov.className='red';ov.style.display='flex';cn=null;
+  logPhrase('🆘 '+u('helpTxt'));
   const go=()=>speak(u('helpSay'));go();tmr=setInterval(go,6000);
   ov.append(h('div','big','🆘'),h('div','big',u('helpTxt')),h('button','ans neu',u('cancel'),()=>{closeOv();render()}));
+}
+
+/* ---------- Дневник общения ---------- */
+function logPhrase(txt){
+  if(!settings.log)return;
+  const a=ld('aac.log',[]);
+  a.push({t:Date.now(),s:txt,l:lang});
+  while(a.length>1000)a.shift();
+  try{localStorage.setItem('aac.log',JSON.stringify(a))}catch(e){}
 }
 
 /* ---------- Нижняя панель ---------- */
@@ -826,14 +1151,46 @@ function bar(k){
   if(k==='back'){
     if(tmr){closeOv();render();return}
     if(ov.style.display==='flex'){closeOv();return}
+    if(abc){if(abc.prefix)abc.prefix=abc.prefix.slice(0,-1);else abc=null;render();return}
     path.pop();render();return;
   }
   if(k==='rep'){if(last){speak(last);if(ov.style.display!=='flex')say(last,true)}return}
   if(k==='help'){helpMe();return}
-  if(k==='pain'){closeOv();path=[tree.find(n=>n.id==='pain'||n.id==='pain_1')||tree[0]];render()}
+  if(k==='pain'){closeOv();abc=null;path=[tree.find(n=>n.id==='pain'||n.id==='pain_1')||tree[0]];render()}
 }
 
-$('#home').onclick=()=>{closeOv();path=[];render()};
+/* ---------- Защита от случайных нажатий, вибрация ---------- */
+let lastTap=0;
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('button');
+  if(!b||b.closest('.modal'))return;
+  const now=Date.now();
+  if(now<longUntil){e.stopPropagation();e.preventDefault();return}      // клик после долгого нажатия
+  const g=+settings.guard||0;
+  if(g&&now-lastTap<g){e.stopPropagation();e.preventDefault();return}   // слишком быстрое повторное касание
+  lastTap=now;
+  if(settings.vib&&navigator.vibrate){try{navigator.vibrate(20)}catch(_){}}
+},true);
+
+/* ---------- Не гасить экран (Wake Lock) ---------- */
+let wl=null;
+async function setAwake(){
+  try{
+    if(settings.awake&&'wakeLock' in navigator&&!document.hidden){
+      if(!wl){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null})}
+    }else if(wl){await wl.release();wl=null}
+  }catch(e){wl=null}
+}
+document.addEventListener('visibilitychange',setAwake);
+
+// Размер плиток, положение нижней панели, экран
+function applyUI(){
+  document.documentElement.setAttribute('data-size',settings.size);
+  document.querySelectorAll('#bar button').forEach((b,i)=>{b.style.order=settings.hand==='left'?5-i:i});
+  setAwake();
+}
+
+$('#home').onclick=()=>{closeOv();abc=null;path=[];render()};
 $('#lang').onclick=()=>{
   lang=lang==='ru'?'uk':'ru';
   localStorage.setItem('aac.lang',lang);
@@ -844,19 +1201,18 @@ $('#lang').onclick=()=>{
 
 /* ---------- Модальное окно НАСТРОЕК ---------- */
 const settModal = $('#sett');
-const showLvNote=()=>{$('#lvNote').textContent=(U[lang].lv||{})[$('#setSeg').value]||''};
+const showLvNote=()=>{$('#lvNote').textContent=(U[uiL()].lv||{})[$('#setSeg').value]||''};
 $('#setSeg').onchange=showLvNote;
 $('#settingsBtn').onclick = () => {
   settModal.style.display = 'block';
-  $('#setTheme').value = settings.theme;
-  $('#setSeg').value = settings.level;
-  $('#setGender').value = settings.gender;
+  applyI18n();                       // списки на языке меню, значения из сохранённых настроек
   $('#setRate').value = settings.rate;
   $('#rateVal').textContent = settings.rate;
   $('#setPitch').value = settings.pitch;
   $('#pitchVal').textContent = settings.pitch;
-  $('#ver').textContent = u('ver') + ': ' + APP_VERSION;
-  showLvNote();
+  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Log','log']]
+    .forEach(([id,k])=>{$('#set'+id).checked=!!settings[k]});
+  $('#ver').textContent = uh('ver') + ': ' + APP_VERSION;
   populateVoices();
 };
 
@@ -864,12 +1220,12 @@ function populateVoices(){
   const select = $('#setVoice');
   select.innerHTML = '';
   const list = getVoices().filter(voiceOk);
-  select.append(new Option(u('v_auto'), ''));
+  select.append(new Option(uh('v_auto'), ''));
   list.forEach(v => select.append(new Option(`${v.name} (${v.lang})`, v.voiceURI)));
   const saved = (settings.voices || {})[lang] || '';
   select.value = saved;
   if(select.value !== saved) select.value = '';
-  $('#voiceNote').textContent = list.length ? '' : u('v_none');
+  $('#voiceNote').textContent = list.length ? '' : uh('v_none');
 }
 
 $('#setRate').oninput = (e) => { $('#rateVal').textContent = e.target.value; };
@@ -887,20 +1243,97 @@ $('#closeSettBtn').onclick = () => {
   settings.theme = $('#setTheme').value;
   settings.level = $('#setSeg').value;
   settings.gender = $('#setGender').value;
+  settings.uiLang = $('#setUiLang').value;
+  settings.size = $('#setSize').value;
+  settings.guard = +$('#setGuard').value;
+  settings.hand = $('#setHand').value;
+  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Log','log']]
+    .forEach(([id,k])=>{settings[k]=$('#set'+id).checked});
   settings.rate = $('#setRate').value;
   settings.pitch = $('#setPitch').value;
   (settings.voices = settings.voices || {})[lang] = $('#setVoice').value;
 
-  localStorage.setItem('aac.settings', JSON.stringify(settings));
-  applyTheme();
+  try{localStorage.setItem('aac.settings', JSON.stringify(settings))}catch(e){}
+  applyTheme();applyUI();applyI18n();
 
   if(oldLevel !== settings.level){
     tree = ld(tk(), null) || getTreeForLevel();
-    path = [];sel = '';
+    path = [];sel = '';abc = null;
   }
 
   settModal.style.display = 'none';
   render();
+};
+
+/* ---------- Дневник общения: экран ---------- */
+const diaryEl=$('#diary');
+const locale=()=>uiL()==='uk'?'uk-UA':'ru-RU';
+const fmtDT=ts=>new Date(ts).toLocaleString(locale(),{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+const dayKey=ts=>{const d=new Date(ts);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+function diaryStats(){
+  const a=ld('aac.log',[]),cnt={},days={};
+  a.forEach(x=>{cnt[x.s]=(cnt[x.s]||0)+1;const k=dayKey(x.t);days[k]=(days[k]||0)+1});
+  const top=Object.entries(cnt).sort((x,y)=>y[1]-x[1]).slice(0,10);
+  const week=[];
+  for(let i=6;i>=0;i--){const k=dayKey(Date.now()-i*864e5);week.push([k.slice(8)+'.'+k.slice(5,7),days[k]||0])}
+  return {a,top,week,nd:Object.keys(days).length};
+}
+function download(name,text,type){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;
+  document.body.append(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
+}
+const today=()=>dayKey(Date.now());
+function drawDiary(){
+  const S=diaryStats();
+  diaryEl.innerHTML='';
+  const head=h('div','helphead');
+  head.append(h('h2',null,uh('d_title')),h('button',null,uh('s_close'),()=>{diaryEl.style.display='none'}));
+  diaryEl.append(head);
+  if(!settings.log)diaryEl.append(h('p','note',uh('d_off')));
+  if(!S.a.length){diaryEl.append(h('p',null,uh('d_empty')));return}
+  diaryEl.append(h('p',null,uh('d_total')+': '+S.a.length+' · '+uh('d_days')+': '+S.nd));
+  diaryEl.append(h('h3',null,uh('d_week')));
+  const mx=Math.max(1,...S.week.map(x=>x[1])),bars=h('div','bars');
+  S.week.forEach(([d,n])=>{const col=h('div','col');const bar=h('i');bar.style.height=(n?Math.round(n/mx*64)+4:0)+'px';col.append(h('span',null,n?String(n):''),bar,h('span',null,d));bars.append(col)});
+  diaryEl.append(bars,h('h3',null,uh('d_top')));
+  S.top.forEach(([s2,n])=>{const r=h('div','dl');r.append(h('span',null,s2),h('b',null,'×'+n));diaryEl.append(r)});
+  diaryEl.append(h('h3',null,uh('d_recent')));
+  S.a.slice(-30).reverse().forEach(x=>{const r=h('div','dl');r.append(h('span',null,x.s),h('span','note',fmtDT(x.t)));diaryEl.append(r)});
+  const row=h('div','row');
+  row.append(h('button',null,uh('d_export'),()=>{
+    const lines=[uh('d_exp_title'),fmtDT(Date.now()),'',uh('d_total')+': '+S.a.length,'',uh('d_top')+':'];
+    S.top.forEach(([s2,n])=>lines.push('  '+s2+' ×'+n));
+    lines.push('',uh('d_recent')+':');
+    S.a.forEach(x=>lines.push(fmtDT(x.t)+'  '+x.s));
+    download('govorim-diary-'+today()+'.txt',lines.join('\n'),'text/plain;charset=utf-8');
+  }),h('button','d',uh('d_clear'),()=>{if(confirm(uh('d_cclear'))){try{localStorage.removeItem('aac.log')}catch(e){}drawDiary()}}));
+  diaryEl.append(row);
+}
+$('#diaryBtn').onclick=()=>{drawDiary();diaryEl.style.display='block';diaryEl.scrollTop=0};
+
+/* ---------- Резервная копия ---------- */
+$('#backupBtn').onclick=()=>{
+  const data={};
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('aac.'))data[k]=localStorage.getItem(k)}
+  download('govorim-backup-'+today()+'.json',JSON.stringify({app:'govorim',version:APP_VERSION,saved:new Date().toISOString(),data}),'application/json');
+};
+$('#restoreBtn').onclick=()=>$('#restoreFile').click();
+$('#restoreFile').onchange=e=>{
+  const f=e.target.files&&e.target.files[0];e.target.value='';
+  if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    let j;try{j=JSON.parse(r.result)}catch(_){j=null}
+    if(!j||j.app!=='govorim'||!j.data||typeof j.data!=='object'){alert(uh('b_bad'));return}
+    if(!confirm(uh('b_confirm')))return;
+    const old=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('aac.'))old.push(k)}
+    old.forEach(k=>localStorage.removeItem(k));
+    Object.entries(j.data).forEach(([k,v])=>{if(k.startsWith('aac.')&&typeof v==='string'){try{localStorage.setItem(k,v)}catch(_){}}});
+    location.reload();
+  };
+  r.readAsText(f);
 };
 
 /* ---------- Модальное окно РЕДАКТОРА ---------- */
@@ -910,37 +1343,37 @@ const find=id=>{let r=null;const w=(l)=>l.forEach(n=>{if(n.id===id)r={n,l};if(n.
 function openEd(){ed.style.display='block';drawEd()}
 function drawEd(){
   ed.innerHTML='';
-  ed.append(h('h2',null,u('e_title')),h('p','note',isB()?u('e_noteB'):u('e_note')));
-  const s=h('select');s.append(new Option(u('e_main'),''));
+  ed.append(h('h2',null,uh('e_title')),h('p','note',isB()?uh('e_noteB'):uh('e_note')));
+  const s=h('select');s.append(new Option(uh('e_main'),''));
   const w=(l,d)=>l.forEach(n=>{s.append(new Option('· '.repeat(d)+t(n.l)+' '+(n.e||''),n.id));if(n.c)w(n.c,d+1)});w(tree,0);
-  s.value=sel;s.onchange=()=>{sel=s.value;drawEd()};ed.append(h('label',null,u('e_tile')),s);
+  s.value=sel;s.onchange=()=>{sel=s.value;drawEd()};ed.append(h('label',null,uh('e_tile')),s);
   const f=sel&&find(sel);
   const fld=(lb,val)=>{const i=h('input');i.type='text';i.value=val;ed.append(h('label',null,lb),i);return i};
   let ir,iu,sr,su,ie;
   if(f){
     const n=f.n,[lr,lu]=(n.l||'').split('|'),[a,b]=(n.s||'').split('|');
-    ir=fld(u('e_nl'),lr||'');iu=fld(u('e_nu'),lu||'');
-    sr=fld(u('e_pl'),a||'');su=fld(u('e_pu'),b||'');ie=fld(u('e_em'),n.e||'');
+    ir=fld(uh('e_nl'),lr||'');iu=fld(uh('e_nu'),lu||'');
+    sr=fld(uh('e_pl'),a||'');su=fld(uh('e_pu'),b||'');ie=fld(uh('e_em'),n.e||'');
   }
   const r=h('div','row');
   if(f){
-    r.append(h('button',null,u('e_save'),()=>{const n=f.n;n.l=ir.value+'|'+iu.value;n.s=sr.value+'|'+su.value;n.e=ie.value;save();drawEd()}));
-    r.append(h('button','d',u('e_del'),()=>{if(confirm(u('e_cdel'))){f.l.splice(f.l.indexOf(f.n),1);sel='';save();drawEd()}}));
+    r.append(h('button',null,uh('e_save'),()=>{const n=f.n;n.l=ir.value+'|'+iu.value;n.s=sr.value+'|'+su.value;n.e=ie.value;save();drawEd()}));
+    r.append(h('button','d',uh('e_del'),()=>{if(confirm(uh('e_cdel'))){f.l.splice(f.l.indexOf(f.n),1);sel='';save();drawEd()}}));
   }
-  r.append(h('button',null,u('e_add'),()=>{
+  r.append(h('button',null,uh('e_add'),()=>{
     const n={id:'n'+Date.now(),l:'Новая|Нова',s:(isB()?'слово|слово':'Я хочу|Я хочу'),e:'💬'};
     if(f){(f.n.c=f.n.c||[]).push(n)}else{n.col='#1E3A8A';tree.push(n)}
     sel=n.id;save();drawEd()}));
   ed.append(r);
   const r2=h('div','row');
-  r2.append(h('button','d',u('e_reset'),()=>{
-    if(confirm(u('e_creset'))){
+  r2.append(h('button','d',uh('e_reset'),()=>{
+    if(confirm(uh('e_creset'))){
       try{localStorage.removeItem(tk())}catch(e){}
       tree=getTreeForLevel();sel='';drawEd();
     }}));
   ed.append(r2);
   const r3=h('div','row');
-  r3.append(h('button',null,u('e_close'),()=>{ed.style.display='none';path=[];closeOv();render()}));
+  r3.append(h('button',null,uh('e_close'),()=>{ed.style.display='none';path=[];closeOv();render()}));
   ed.append(r3);
 }
 
@@ -948,9 +1381,9 @@ function drawEd(){
 const helpEl=$('#help');
 function drawHelp(){
   helpEl.innerHTML='';
-  const H=u('helpDoc');
+  const H=uh('helpDoc');
   const head=h('div','helphead');
-  head.append(h('h2',null,H.title),h('button',null,u('s_close'),()=>{helpEl.style.display='none'}));
+  head.append(h('h2',null,H.title),h('button',null,uh('s_close'),()=>{helpEl.style.display='none'}));
   helpEl.append(head);
   H.s.forEach(([title,...items])=>{
     helpEl.append(h('h3',null,title));
@@ -959,19 +1392,23 @@ function drawHelp(){
       else helpEl.append(h('p',null,it));
     });
   });
-  helpEl.append(h('div','row',null),h('button',null,u('s_close'),()=>{helpEl.style.display='none'}));
+  helpEl.append(h('div','row',null),h('button',null,uh('s_close'),()=>{helpEl.style.display='none'}));
 }
 $('#helpBtn').onclick=()=>{drawHelp();helpEl.style.display='block';helpEl.scrollTop=0};
 
 /* ---------- Подписи интерфейса на выбранном языке ---------- */
 function fill(sel,opts,val){const el=$(sel);el.innerHTML='';opts.forEach(([v,txt])=>el.append(new Option(txt,v)));el.value=val}
 function applyI18n(){
-  document.querySelectorAll('[data-i]').forEach(e=>e.textContent=u(e.dataset.i));
-  [['#home','aHome'],['#lang','aLang'],['#settingsBtn','aSet'],['#helpBtn','aHelp'],['#gear','aEd']].forEach(([q,k])=>$(q).setAttribute('aria-label',u(k)));
+  document.querySelectorAll('[data-i]').forEach(e=>e.textContent=uh(e.dataset.i));
+  [['#home','aHome'],['#lang','aLang'],['#settingsBtn','aSet'],['#helpBtn','aHelp'],['#gear','aEd']].forEach(([q,k])=>$(q).setAttribute('aria-label',uh(k)));
   document.title=u('title');
-  fill('#setSeg',Object.entries(u('lvl')),settings.level);
-  fill('#setGender',[['f',u('g_f')],['m',u('g_m')]],settings.gender);
-  fill('#setTheme',[['dark',u('th_dark')],['light',u('th_light')]],settings.theme);
+  fill('#setSeg',Object.entries(uh('lvl')),settings.level);
+  fill('#setGender',[['f',uh('g_f')],['m',uh('g_m')]],settings.gender);
+  fill('#setUiLang',[['auto',uh('ui_auto')],['ru','Русский'],['uk','Українська']],settings.uiLang);
+  fill('#setTheme',[['dark',uh('th_dark')],['light',uh('th_light')]],settings.theme);
+  fill('#setSize',[['m',uh('sz_m')],['l',uh('sz_l')],['xl',uh('sz_xl')]],settings.size);
+  fill('#setGuard',[['0',uh('gd_0')],['400',uh('gd_400')],['800',uh('gd_800')],['1500',uh('gd_1500')]],String(settings.guard));
+  fill('#setHand',[['right',uh('hd_right')],['left',uh('hd_left')]],settings.hand);
   showLvNote();
 }
 
@@ -979,8 +1416,12 @@ function applyI18n(){
 $('#lang').textContent=lang.toUpperCase();
 document.documentElement.lang=lang;
 labels();
+applyUI();
 applyI18n();
 render();
+
+// Просим браузер не удалять данные приложения при нехватке места
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
 
 if('speechSynthesis' in window){
   speechSynthesis.onvoiceschanged = () => populateVoices();
