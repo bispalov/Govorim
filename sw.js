@@ -1,4 +1,6 @@
-const V = 'govorim-v3',
+// Версия кэша. При каждом изменении файлов приложения увеличивайте число —
+// тогда установленное приложение скачает новые файлы и обновится само.
+const V = 'govorim-v4',
       F = [
         '/Govorim/',
         '/Govorim/index.html',
@@ -10,7 +12,8 @@ const V = 'govorim-v3',
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(V)
-      .then(c => c.addAll(F))
+      // cache:'reload' — берём свежие файлы с сервера, а не из HTTP-кэша браузера
+      .then(c => c.addAll(F.map(u => new Request(u, { cache: 'reload' }))))
       .then(() => self.skipWaiting())
   );
 });

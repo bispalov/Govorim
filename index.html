@@ -27,48 +27,60 @@
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
-html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:600 20px/1.2 system-ui,Roboto,sans-serif;transition:background 0.2s, color 0.2s}
-body{display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+html,body{height:100%;margin:0;max-width:100%;overflow-x:hidden;background:var(--bg);color:var(--ink);font:600 20px/1.2 system-ui,Roboto,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;transition:background 0.2s, color 0.2s}
+body{display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
 :focus-visible{outline:4px solid #F2B705;outline-offset:2px}
 
-header{display:flex;gap:8px;align-items:center;padding:8px 10px;background:var(--navy);color:#fff}
-header h1{flex:1;margin:0;font-size:22px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.hb{min-width:56px;min-height:56px;border-radius:14px;background:#ffffff26;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center}
+/* Шапка: название — отдельной строкой, кнопки — ниже на всю ширину */
+header{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;padding:8px 10px;background:var(--navy);color:#fff}
+header h1{order:-1;flex:1 0 100%;min-width:0;margin:0;padding:2px 4px 0;font-size:clamp(18px,5.6vw,24px);line-height:1.15;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+.hb{flex:1 1 0;min-width:0;min-height:50px;border-radius:14px;background:#ffffff26;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center}
+@media (min-width:640px){
+  header{flex-wrap:nowrap}
+  header h1{order:0;flex:1 1 auto;padding:0;font-size:24px}
+  .hb{flex:0 0 56px;min-height:56px}
+}
 
 #stage{flex:1;position:relative;min-height:0}
-main{position:absolute;inset:0;overflow-y:auto;padding:10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,140px),1fr));gap:10px}
 .sec{margin:8px 2px 4px;font-size:18px;opacity:.8;font-weight:700}
 
-.tile{min-height:130px;border-radius:18px;border:3px solid var(--c);background:color-mix(in srgb, var(--c) 20%, var(--card-bg));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px;font-size:22px;font-weight:700;text-align:center;overflow-wrap:anywhere;color:var(--ink)}
-.tile .em{font-size:52px;line-height:1}
+.tile{min-width:0;min-height:120px;border-radius:18px;border:3px solid var(--c);background:color-mix(in srgb, var(--c) 20%, var(--card-bg));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 6px;font-size:clamp(15px,4.8vw,22px);font-weight:700;text-align:center;overflow-wrap:break-word;color:var(--ink)}
+.tile .em{font-size:clamp(40px,12vw,52px);line-height:1}
 .tile img,.big img{width:80px;height:80px;object-fit:cover;border-radius:12px}
 
-.say{width:100%;min-height:72px;margin-bottom:10px;border-radius:16px;background:var(--navy);color:#fff;font-size:22px;padding:10px;text-align:left}
+.say{width:100%;min-height:64px;margin-bottom:10px;border-radius:16px;background:var(--navy);color:#fff;font-size:clamp(18px,5.4vw,22px);padding:10px;text-align:left;overflow-wrap:anywhere}
 
-#ov{position:absolute;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:14px;text-align:center;overflow-y:auto;z-index:5}
+.build{padding:10px 14px;margin-bottom:10px;border-radius:16px;border:2px dashed var(--border);background:var(--card-bg)}
+.build .bl{font-size:14px;opacity:.7;font-weight:700;margin-bottom:2px}
+.build .bt{font-size:clamp(22px,6.6vw,30px);font-weight:800;line-height:1.2;overflow-wrap:anywhere}
+
+#ov{position:absolute;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:14px;text-align:center;overflow-y:auto;overflow-x:hidden;z-index:5}
 #ov.red{background:#B3261E;color:#fff}
-.big{font-size:30px;font-weight:800;line-height:1.15;overflow-wrap:anywhere}
-.big .em{font-size:80px;display:block}
+.big{max-width:100%;font-size:clamp(24px,7.4vw,30px);font-weight:800;line-height:1.15;overflow-wrap:anywhere}
+.big .em{font-size:clamp(60px,20vw,80px);display:block}
 .big img{width:140px;height:140px}
 
 .row{display:flex;gap:10px;width:100%;flex-wrap:wrap;justify-content:center}
 .chip{min-height:52px;padding:0 16px;border-radius:26px;background:var(--card-bg);border:2px solid var(--navy);color:var(--ink);font-size:18px}
 .chip.on{background:var(--navy);color:#fff}
 
-.ans{flex:1;min-height:100px;border-radius:20px;font-size:28px;color:#fff;font-weight:800}
+.ans{flex:1 1 130px;min-width:0;min-height:96px;border-radius:20px;font-size:clamp(22px,7vw,28px);color:#fff;font-weight:800}
 .yes{background:#1F7A4D}.no{background:#B3261E}.neu{background:var(--navy)}
 
-#bar{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:6px;background:var(--card-bg);border-top:2px solid var(--border)}
-#bar button{min-height:68px;border-radius:12px;font-size:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:color-mix(in srgb, var(--navy) 15%, var(--card-bg));color:var(--ink);font-weight:700}
-#bar .i{font-size:24px}
+/* Нижняя панель: 6 равных колонок, ничего не вылезает за экран */
+#bar{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding:6px 4px;background:var(--card-bg);border-top:2px solid var(--border)}
+#bar button{min-width:0;min-height:64px;padding:2px 1px;border-radius:12px;font-size:clamp(8px,2.6vw,12px);letter-spacing:-.2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:color-mix(in srgb, var(--navy) 15%, var(--card-bg));color:var(--ink);font-weight:700;overflow:hidden}
+#bar button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#bar .i{font-size:clamp(20px,6vw,24px)}
 #bar .yes{background:#1F7A4D;color:#fff}
 #bar .no{background:#B3261E;color:#fff}
 #bar .hp{background:#B3261E;color:#fff}
 
 /* Модальные окна: Редактор и Настройки */
-.modal{position:fixed;inset:0;background:var(--bg);color:var(--ink);display:none;overflow-y:auto;padding:16px;z-index:20;font-size:17px;font-weight:500}
+.modal{position:fixed;inset:0;background:var(--bg);color:var(--ink);display:none;overflow-y:auto;overflow-x:hidden;padding:16px;padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom));z-index:20;font-size:17px;font-weight:500}
 .modal h2{margin-top:0;font-size:24px}
 .modal label{display:block;margin:12px 0 4px;font-weight:700}
 .modal input[type=text],.modal input[type=range],.modal select{width:100%;font:inherit;padding:10px;border:2px solid var(--border);border-radius:10px;background:var(--card-bg);color:var(--ink)}
@@ -101,15 +113,18 @@ main{position:absolute;inset:0;overflow-y:auto;padding:10px}
 <!-- Модальное окно Настроек -->
 <div id="sett" class="modal">
   <h2>⚙️ Настройки / Налаштування</h2>
-  
+
   <label>Уровень сложности / Рівень складності:</label>
   <select id="setSeg">
-    <option value="L1">Тяжелый (Простые слова / Базові потреби)</option>
-    <option value="L2">Средний (Категории / Категорії)</option>
-    <option value="L3">Легкий (Фразовый конструктор / Фрази)</option>
+    <option value="L1">Тяжёлый — простые слова / Важкий — прості слова</option>
+    <option value="L2">Средний — категории / Середній — категорії</option>
+    <option value="L3">Лёгкий 1 — начало + окончание / Легкий 1 — початок + закінчення</option>
+    <option value="L4">Лёгкий 2 — фраза из 3 частей / Легкий 2 — фраза з 3 частин</option>
+    <option value="L5">Лёгкий 3 — сложные фразы / Легкий 3 — складні фрази</option>
   </select>
+  <div class="note" id="lvNote"></div>
 
-  <label>Тема оформления / Тема оформления:</label>
+  <label>Тема оформления / Тема оформлення:</label>
   <select id="setTheme">
     <option value="dark">Тёмная / Темна 🌙</option>
     <option value="light">Светлая / Світла ☀️</option>
@@ -131,21 +146,28 @@ main{position:absolute;inset:0;overflow-y:auto;padding:10px}
   <div class="row" style="margin-top:24px">
     <button id="closeSettBtn" style="width:100%">Закрыть / Закрити</button>
   </div>
+  <div class="note" id="ver" style="text-align:center"></div>
 </div>
 
 <script>
+const APP_VERSION = 4;   // держите в соответствии с V = 'govorim-v4' в sw.js
+
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
 
-/* ---------- Интерноционализация ---------- */
+/* ---------- Интернационализация ---------- */
 const U={
-ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет',back:'Назад',rep:'Повтор',help:'Помощь',pain:'Больно',sure:'Точно?',done:'Готово',cancel:'Отмена',mods:['сейчас','потом','ещё','хватит'],helpSay:'Помогите! Мне нужна помощь!',helpTxt:'МНЕ НУЖНА ПОМОЩЬ'},
-uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні',back:'Назад',rep:'Повтор',help:'Допомога',pain:'Болить',sure:'Точно?',done:'Готово',cancel:'Скасувати',mods:['зараз','потім','ще','досить'],helpSay:'Допоможіть! Мені потрібна допомога!',helpTxt:'МЕНІ ПОТРІБНА ДОПОМОГА'}};
+ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет',back:'Назад',rep:'Повтор',help:'Помощь',pain:'Больно',sure:'Точно?',done:'Готово',cancel:'Отмена',mods:['сейчас','потом','ещё','хватит'],helpSay:'Помогите! Мне нужна помощь!',helpTxt:'МНЕ НУЖНА ПОМОЩЬ',
+  built:'Ваша фраза',sayso:'Сказать так',cont:'Продолжите фразу — выберите слово:',pick:'Выберите тему:',ver:'Версия приложения',
+  lv:{L1:'Крупные плитки с самыми нужными словами.',L2:'Выбор категории, затем уточнение.',L3:'Тема → начало фразы («Я хочу…») → окончание. Если слово не вспомнилось — можно сказать начало.',L4:'Тема → начало → действие → предмет. Фраза собирается по частям, можно остановиться на любом шаге.',L5:'Длинные фразы до 5 частей: действие, предмет, уточнение (когда, где, зачем, почему).'}},
+uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні',back:'Назад',rep:'Повтор',help:'Допомога',pain:'Болить',sure:'Точно?',done:'Готово',cancel:'Скасувати',mods:['зараз','потім','ще','досить'],helpSay:'Допоможіть! Мені потрібна допомога!',helpTxt:'МЕНІ ПОТРІБНА ДОПОМОГА',
+  built:'Ваша фраза',sayso:'Сказати так',cont:'Продовжте фразу — оберіть слово:',pick:'Оберіть тему:',ver:'Версія застосунку',
+  lv:{L1:'Великі плитки з найпотрібнішими словами.',L2:'Вибір категорії, потім уточнення.',L3:'Тема → початок фрази («Я хочу…») → закінчення. Якщо слово не згадалось — можна сказати початок.',L4:'Тема → початок → дія → предмет. Фраза збирається по частинах, можна зупинитися на будь-якому кроці.',L5:'Довгі фрази до 5 частин: дія, предмет, уточнення (коли, де, навіщо, чому).'}}};
 let lang=localStorage.getItem('aac.lang')||'ru';
 const u=k=>U[lang][k];
 const t=s=>{const p=String(s||'').split('|');return lang==='uk'&&p[1]?p[1]:p[0]};
 
-/* ---------- Настройки (с поддержкой темы по умолчанию) ---------- */
+/* ---------- Настройки ---------- */
 const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
 let settings = ld('aac.settings', {
   theme: 'dark',
@@ -154,6 +176,7 @@ let settings = ld('aac.settings', {
   pitch: 1.0,
   voiceURI: ''
 });
+if(!['L1','L2','L3','L4','L5'].includes(settings.level)) settings.level = 'L2';
 
 function applyTheme(){
   document.documentElement.setAttribute('data-theme', settings.theme);
@@ -165,19 +188,19 @@ applyTheme();
 /* ---------- Словари под разные уровни нарушения речи ---------- */
 const L=(l,s,e)=>({id:'d'+Math.random().toString(36).slice(2,8),l,s,e});
 
-// L1: Тяжелая степень - пиктограммы прямого действия
+// L1: Тяжёлая степень — пиктограммы прямого действия
 const DEF_L1 = () => [
   {id:'drink_1',col:'#2B6CB0',l:'Вода|Вода',s:'Я хочу пить|Я хочу пити',e:'💧'},
   {id:'eat_1',col:'#C27C0E',l:'Еда|Їжа',s:'Я хочу есть|Я хочу їсти',e:'🍽️'},
   {id:'wc_1',col:'#0F8B8D',l:'Туалет|Туалет',s:'Мне нужно в туалет|Мені потрібно в туалет',e:'🚽'},
   {id:'pain_1',col:'#B3261E',l:'Больно|Болить',s:'Мне больно|Мені боляче',e:'🤕'},
-  {id:'bed_1',col:'#8A6D00',l:'Лячь|Лягти',s:'Я хочу лечь|Я хочу лягти',e:'🛏️'},
+  {id:'bed_1',col:'#8A6D00',l:'Лечь|Лягти',s:'Я хочу лечь|Я хочу лягти',e:'🛏️'},
   {id:'cold_1',col:'#B83280',l:'Холодно|Холодно',s:'Мне холодно|Мені холодно',e:'🥶'},
   {id:'hot_1',col:'#C27C0E',l:'Жарко|Жарко',s:'Мне жарко|Мені гаряче',e:'🥵'},
   {id:'bad_1',col:'#6B46C1',l:'Плохо|Погано',s:'Мне плохо|Мені погано',e:'🤢'}
 ];
 
-// L2: Средняя степень - категориальная структура
+// L2: Средняя степень — категориальная структура
 const DEF_L2 = () => [
 {id:'drink',col:'#2B6CB0',l:'Пить|Пити',s:'Я хочу пить|Я хочу пити',e:'🥤',c:[
  L('Вода|Вода','Я хочу воды|Я хочу води','💧'),L('Чай|Чай','Я хочу чай|Я хочу чай','🍵'),L('Кофе|Кава','Я хочу кофе|Я хочу каву','☕'),
@@ -196,36 +219,378 @@ const DEF_L2 = () => [
  L('Тишина|Тиша','Я хочу побыть в тишине|Я хочу побути в тиші','🤫')]}
 ];
 
-// L3: Легкая степень - последовательный конструктор сообщений
-const DEF_L3 = () => [
-{id:'subj',col:'#2B6CB0',l:'Кто? | Хто?',s:'Я|Я',e:'👤',c:[
- L('Я|Я','Я|Я','🙋'),L('Мне|Мені','Мне|Мені','👈'),L('Нам|Нам','Нам|Нам','👥')]},
-{id:'action',col:'#C27C0E',l:'Действие | Дія',s:'хочу|хочу',e:'⚡',c:[
- L('Хочу|Хочу','хочу|хочу','💭'),L('Нужно|Потрібно','нужно|потрібно','❗'),L('Чувствую|Почуваю','чувствую|почуваю','❤️')]},
-{id:'obj',col:'#0F8B8D',l:'Что? | Що?',s:'помощь|допомогу',e:'📦',c:[
- L('Отдохнуть|Відпочити','отдохнуть|відпочити','🛌'),L('Позвонить врачу|Зателефонувати лікарю','позвонить врачу|зателефонувати лікарю','📞'),
- L('Гулять|Гуляти','пойти на прогулку|піти на прогулянку','🚶'),L('Новости|Новини','узнать новости|дізнатися новини','📰')]}
-];
+/* ---------- Лёгкий режим: конструктор фраз (L3 / L4 / L5) ----------
+   Формат строки:  эмодзи  части по-русски = части по-украински
+   Части разделены «/». Первая часть — начало фразы, остальные — продолжение.
+   Фразы с общим началом объединяются в дерево автоматически.
+   Строка «## id|Тема|Тема uk|эмодзи|цвет|1» начинает новую тему (1 = двойное подтверждение).
+   Уровни:  L3 — 2 шага (начало + окончание, фразы до 3 частей),
+            L4 — 3 шага (фразы до 4 частей),
+            L5 — до 5 шагов (самые длинные фразы с уточнениями).            */
+const BL={L3:{n:2,max:3},L4:{n:3,max:4},L5:{n:5,max:5}};
+const isB=()=>!!BL[settings.level];
+
+const CORPUS=`
+## food|Еда и питьё|Їжа та напої|🍽️|#C27C0E
+🥤 Я хочу/пить/воду = Я хочу/пити/воду
+🍵 Я хочу/пить/чай = Я хочу/пити/чай
+🍋 Я хочу/пить/чай/с лимоном = Я хочу/пити/чай/з лимоном
+☕ Я хочу/пить/кофе = Я хочу/пити/каву
+☕ Я хочу/пить/кофе/с молоком = Я хочу/пити/каву/з молоком
+☕ Я хочу/пить/кофе/без сахара = Я хочу/пити/каву/без цукру
+☕ Я хочу/пить/кофе/с молоком/после обеда = Я хочу/пити/каву/з молоком/після обіду
+🧃 Я хочу/пить/сок = Я хочу/пити/сік
+🥛 Я хочу/пить/молоко = Я хочу/пити/молоко
+🍲 Я хочу/есть/суп = Я хочу/їсти/суп
+🥣 Я хочу/есть/кашу = Я хочу/їсти/кашу
+🍞 Я хочу/есть/хлеб = Я хочу/їсти/хліб
+🍞 Я хочу/есть/хлеб/с маслом = Я хочу/їсти/хліб/з маслом
+🍗 Я хочу/есть/мясо = Я хочу/їсти/м'ясо
+🍗 Я хочу/есть/мясо/с картошкой = Я хочу/їсти/м'ясо/з картоплею
+🐟 Я хочу/есть/рыбу = Я хочу/їсти/рибу
+🥚 Я хочу/есть/яйца = Я хочу/їсти/яйця
+🍎 Я хочу/есть/фрукты = Я хочу/їсти/фрукти
+🍰 Я хочу/есть/что-нибудь/сладкое = Я хочу/їсти/щось/солодке
+🍲 Я хочу/есть/суп/на обед/попозже = Я хочу/їсти/суп/на обід/пізніше
+➕ Я хочу/ещё = Я хочу/ще
+🙅 Я не хочу/есть = Я не хочу/їсти
+🙅 Я не хочу/пить = Я не хочу/пити
+✋ Мне/хватит, спасибо = Мені/досить, дякую
+😋 Это/очень вкусно = Це/дуже смачно
+🥄 Дай мне/ложку = Дай мені/ложку
+🍴 Дай мне/вилку = Дай мені/виделку
+🧻 Дай мне/салфетку = Дай мені/серветку
+🥤 Дай мне/стакан/воды = Дай мені/склянку/води
+
+## pain|Здоровье|Здоров'я|🩺|#B3261E|1
+🤕 У меня/болит/голова = У мене/болить/голова
+🤕 У меня/болит/голова/сильно = У мене/болить/голова/сильно
+🤕 У меня/болит/голова/с утра = У мене/болить/голова/з ранку
+❤️ У меня/болит/сердце = У мене/болить/серце
+❤️ У меня/болит/сердце/сильно = У мене/болить/серце/сильно
+🤢 У меня/болит/живот = У мене/болить/живіт
+🧍 У меня/болит/спина = У мене/болить/спина
+🧍 У меня/болит/спина/когда/двигаюсь = У мене/болить/спина/коли/рухаюсь
+🦵 У меня/болит/нога = У мене/болить/нога
+💪 У меня/болит/рука = У мене/болить/рука
+🗣️ У меня/болит/горло = У мене/болить/горло
+🦷 У меня/болит/зуб = У мене/болить/зуб
+😵 У меня/кружится/голова = У мене/паморочиться/голова
+🖐️ У меня/онемела/рука = У мене/заніміла/рука
+🦶 У меня/онемела/нога = У мене/заніміла/нога
+😶 У меня/онемело/лицо = У мене/заніміло/обличчя
+😮 Мне/трудно/дышать = Мені/важко/дихати
+🤮 Меня/тошнит = Мене/нудить
+🤒 Мне/плохо = Мені/погано
+💊 Мне нужно/принять/лекарство = Мені потрібно/прийняти/ліки
+💊 Мне нужно/принять/таблетку/от давления = Мені потрібно/прийняти/таблетку/від тиску
+💊 Мне нужно/принять/таблетку/от боли = Мені потрібно/прийняти/таблетку/від болю
+🩸 Мне нужно/измерить/давление = Мені потрібно/виміряти/тиск
+🌡️ Мне нужно/измерить/температуру = Мені потрібно/виміряти/температуру
+🩺 Мне нужен/врач = Мені потрібен/лікар
+🚑 Вызовите/скорую/помощь = Викличте/швидку/допомогу
+📞 Позвоните/врачу/как можно/скорее = Зателефонуйте/лікарю/якомога/швидше
+
+## feel|Самочувствие|Самопочуття|🌡️|#6B46C1
+🥶 Мне/холодно = Мені/холодно
+🥵 Мне/жарко = Мені/жарко
+😮 Мне/душно = Мені/душно
+😴 Мне/хочется/спать = Мені/хочеться/спати
+😪 Мне/очень/хочется/спать = Мені/дуже/хочеться/спати
+💤 Мне/плохо/спалось/ночью = Мені/погано/спалося/вночі
+🙂 Мне/лучше = Мені/краще
+😟 Мне/хуже = Мені/гірше
+😊 Мне/хорошо = Мені/добре
+😫 Мне/очень/тяжело = Мені/дуже/важко
+🛌 Мне нужно/отдохнуть = Мені потрібно/відпочити
+🛌 Мне нужно/полежать/немного = Мені потрібно/полежати/трохи
+🍃 Мне нужен/свежий воздух = Мені потрібне/свіже повітря
+
+## home|Дом и быт|Дім і побут|🏠|#2F855A
+💡 Включи/свет = Увімкни/світло
+💡 Выключи/свет = Вимкни/світло
+💡 Включи/свет/в комнате = Увімкни/світло/в кімнаті
+💡 Включи/свет/в комнате/потому что/темно = Увімкни/світло/в кімнаті/бо/темно
+💡 Свет/слишком/яркий = Світло/занадто/яскраве
+📺 Включи/телевизор = Увімкни/телевізор
+📺 Выключи/телевизор = Вимкни/телевізор
+🔊 Сделай/звук/погромче = Зроби/звук/гучніше
+🔉 Сделай/звук/потише = Зроби/звук/тихіше
+🪟 Открой/окно = Відчини/вікно
+🪟 Закрой/окно = Зачини/вікно
+🚪 Закрой/дверь = Зачини/двері
+🔥 Сделай/потеплее = Зроби/тепліше
+❄️ Сделай/попрохладнее = Зроби/прохолодніше
+🛏️ Я хочу/лечь/в кровать = Я хочу/лягти/в ліжко
+🛏️ Я хочу/лечь/в кровать/немного/поспать = Я хочу/лягти/в ліжко/трохи/поспати
+🛋️ Я хочу/сесть/в кресло = Я хочу/сісти/в крісло
+🛋️ Я хочу/сесть/на диван = Я хочу/сісти/на диван
+🧹 Нужно/убрать/в комнате = Потрібно/прибрати/в кімнаті
+🧺 Нужно/постирать/бельё = Потрібно/попрати/білизну
+🍳 Давай/приготовим/обед/вместе = Давай/приготуємо/обід/разом
+🔌 Зарядите/мне/телефон = Зарядіть/мені/телефон
+
+## care|Гигиена и одежда|Гігієна та одяг|🚿|#0F8B8D
+🚽 Мне нужно/в туалет = Мені потрібно/в туалет
+🚽 Мне нужно/в туалет/срочно = Мені потрібно/в туалет/терміново
+🚿 Я хочу/принять/душ = Я хочу/прийняти/душ
+🛁 Я хочу/принять/ванну = Я хочу/прийняти/ванну
+🧼 Я хочу/умыться = Я хочу/вмитися
+🪥 Я хочу/почистить/зубы = Я хочу/почистити/зуби
+💇 Я хочу/причесаться = Я хочу/причесатися
+🪒 Мне нужно/побриться = Мені потрібно/поголитися
+🧼 Мне нужно/помыть/руки = Мені потрібно/помити/руки
+👕 Я хочу/переодеться = Я хочу/переодягтися
+👕 Я хочу/надеть/футболку = Я хочу/одягнути/футболку
+🧶 Я хочу/надеть/тёплую/кофту = Я хочу/одягнути/теплу/кофту
+🧦 Я хочу/надеть/носки = Я хочу/одягнути/шкарпетки
+👟 Я хочу/надеть/ботинки = Я хочу/взути/черевики
+🧴 Мне нужна/помощь/в ванной = Мені потрібна/допомога/у ванній
+
+## req|Просьбы|Прохання|🙏|#2B6CB0
+🤝 Помоги мне/встать = Допоможи мені/встати
+🤝 Помоги мне/встать/потому что/мне/тяжело = Допоможи мені/встати/бо/мені/важко
+🤝 Помоги мне/сесть = Допоможи мені/сісти
+🤝 Помоги мне/одеться = Допоможи мені/одягтися
+🤝 Помоги мне/умыться = Допоможи мені/вмитися
+🤝 Помоги мне/дойти/до туалета = Допоможи мені/дійти/до туалету
+🤝 Помоги мне/найти/очки = Допоможи мені/знайти/окуляри
+🤝 Помоги мне/позвонить = Допоможи мені/зателефонувати
+👓 Принеси мне/очки = Принеси мені/окуляри
+💊 Принеси мне/лекарство = Принеси мені/ліки
+📱 Принеси мне/телефон = Принеси мені/телефон
+🧣 Принеси мне/плед = Принеси мені/плед
+💧 Принеси мне/воды = Принеси мені/води
+💧 Принеси мне/воды/пожалуйста = Принеси мені/води/будь ласка
+📖 Принеси мне/книгу = Принеси мені/книжку
+✋ Подожди/минутку = Зачекай/хвилинку
+🔁 Повтори/пожалуйста = Повтори/будь ласка
+🐢 Говори/помедленнее = Говори/повільніше
+🤫 Не/торопи/меня = Не/підганяй/мене
+
+## family|Семья и близкие|Родина та рідні|👪|#B83280
+📱 Я хочу/позвонить/дочери = Я хочу/зателефонувати/доньці
+📱 Я хочу/позвонить/сыну = Я хочу/зателефонувати/синові
+📱 Я хочу/позвонить/внукам = Я хочу/зателефонувати/онукам
+📱 Я хочу/позвонить/брату = Я хочу/зателефонувати/братові
+📱 Я хочу/позвонить/сестре = Я хочу/зателефонувати/сестрі
+📱 Я хочу/позвонить/другу = Я хочу/зателефонувати/другові
+📱 Я хочу/позвонить/дочери/вечером = Я хочу/зателефонувати/доньці/ввечері
+👪 Я хочу/увидеть/внуков = Я хочу/побачити/онуків
+👪 Я хочу/увидеть/детей = Я хочу/побачити/дітей
+🏠 Я хочу/чтобы/вы/приехали = Я хочу/щоб/ви/приїхали
+🎂 Я хочу/поздравить/внука/с днём рождения = Я хочу/привітати/онука/з днем народження
+🎁 Я хочу/сделать/подарок/внучке = Я хочу/зробити/подарунок/онучці
+👋 Пусть/приедут/в гости/в субботу = Нехай/приїдуть/в гості/в суботу
+📸 Покажи/мне/фотографии/внуков = Покажи/мені/фотографії/онуків
+💬 Передай/привет/всем = Передай/привіт/всім
+🍲 Давай/пообедаем/все/вместе = Давай/пообідаємо/всі/разом
+
+## phone|Телефон и связь|Телефон і зв'язок|📱|#1E3A8A
+📞 Набери/номер = Набери/номер
+📞 Набери/мне/номер/дочери = Набери/мені/номер/доньки
+📞 Набери/мне/номер/сына = Набери/мені/номер/сина
+📱 Дай мне/телефон = Дай мені/телефон
+🔊 Включи/громкую связь = Увімкни/гучний зв'язок
+💬 Напиши/сообщение/дочери = Напиши/повідомлення/доньці
+💬 Напиши/сообщение/сыну = Напиши/повідомлення/синові
+💬 Напиши/что/я позвоню/позже = Напиши/що/я зателефоную/пізніше
+📵 Я/не могу/говорить/по телефону = Я/не можу/говорити/по телефону
+📲 Позвони/мне/позже = Зателефонуй/мені/пізніше
+🔋 Телефон/нужно/зарядить = Телефон/потрібно/зарядити
+🔕 Сделай/звонок/потише = Зроби/дзвінок/тихіше
+
+## walk|Прогулка и поездки|Прогулянка та поїздки|🚶|#6B7A12
+🚶 Я хочу/пойти/на прогулку = Я хочу/піти/на прогулянку
+🌳 Я хочу/пойти/в парк = Я хочу/піти/в парк
+🌳 Я хочу/пойти/в парк/после обеда = Я хочу/піти/в парк/після обіду
+🏪 Я хочу/пойти/в магазин = Я хочу/піти/в магазин
+⛪ Я хочу/пойти/в церковь = Я хочу/піти/в церкву
+🏠 Я хочу/вернуться/домой = Я хочу/повернутися/додому
+🌤️ Я хочу/подышать/свежим воздухом = Я хочу/подихати/свіжим повітрям
+🏥 Мне нужно/поехать/в больницу = Мені потрібно/поїхати/в лікарню
+🧥 Мне нужно/надеть/куртку = Мені потрібно/одягнути/куртку
+🦯 Дай мне/трость = Дай мені/паличку
+🚶 Дай мне/ходунки = Дай мені/ходунки
+🪑 Давай/посидим/во дворе = Давай/посидимо/у дворі
+🛑 Давай/остановимся/отдохнуть/немного = Давай/зупинимося/відпочити/трохи
+🚗 Давай/поедем/на машине/к дочери = Давай/поїдемо/на машині/до доньки
+🌧️ На улице/дождь = На вулиці/дощ
+☀️ На улице/солнечно = На вулиці/сонячно
+❄️ На улице/холодно = На вулиці/холодно
+🌡️ На улице/тепло = На вулиці/тепло
+
+## shop|Магазин и покупки|Магазин і покупки|🛒|#8A6D00
+🍞 Мне нужно/купить/хлеб = Мені потрібно/купити/хліб
+🥛 Мне нужно/купить/молоко = Мені потрібно/купити/молоко
+💊 Мне нужно/купить/лекарство = Мені потрібно/купити/ліки
+💊 Мне нужно/купить/лекарство/в аптеке = Мені потрібно/купити/ліки/в аптеці
+🛒 Мне нужно/купить/продукты = Мені потрібно/купити/продукти
+🛒 Мне нужно/купить/продукты/на неделю = Мені потрібно/купити/продукти/на тиждень
+🥿 Мне нужны/новые/тапочки = Мені потрібні/нові/капці
+👓 Мне нужны/новые/очки = Мені потрібні/нові/окуляри
+🍞 Купи/мне/хлеб = Купи/мені/хліб
+💊 Купи/мне/лекарство/в аптеке = Купи/мені/ліки/в аптеці
+🍞 Купи/мне/хлеб/и молоко/по дороге = Купи/мені/хліб/і молоко/по дорозі
+💳 Я хочу/заплатить/картой = Я хочу/заплатити/карткою
+💵 Я хочу/заплатить/наличными = Я хочу/заплатити/готівкою
+🏪 Давай/пойдём/в магазин/вместе = Давай/підемо/в магазин/разом
+🧾 Это/слишком/дорого = Це/занадто/дорого
+📝 Запиши/в список/хлеб = Запиши/в список/хліб
+
+## fun|Досуг и интересы|Дозвілля та інтереси|📺|#7B3FA0
+📺 Я хочу/посмотреть/телевизор = Я хочу/подивитися/телевізор
+📰 Я хочу/посмотреть/новости = Я хочу/подивитися/новини
+🎬 Я хочу/посмотреть/фильм = Я хочу/подивитися/фільм
+🎬 Я хочу/посмотреть/фильм/вместе/с тобой = Я хочу/подивитися/фільм/разом/з тобою
+⚽ Я хочу/посмотреть/футбол = Я хочу/подивитися/футбол
+🎵 Я хочу/послушать/музыку = Я хочу/послухати/музику
+📻 Я хочу/послушать/радио = Я хочу/послухати/радіо
+📖 Я хочу/почитать/книгу = Я хочу/почитати/книжку
+📰 Я хочу/почитать/газету = Я хочу/почитати/газету
+🎨 Я хочу/порисовать = Я хочу/помалювати
+🌱 Я хочу/поработать/в саду = Я хочу/попрацювати/в саду
+🎣 Я хочу/поехать/на рыбалку = Я хочу/поїхати/на риболовлю
+🏡 Я хочу/поехать/на дачу = Я хочу/поїхати/на дачу
+🧩 Давай/поиграем/в шашки = Давай/пограємо/в шашки
+🃏 Давай/поиграем/в карты = Давай/пограємо/в карти
+🧩 Давай/разгадаем/кроссворд = Давай/розгадаємо/кросворд
+📷 Давай/посмотрим/фотографии = Давай/подивимось/фотографії
+🎶 Давай/споём/песню = Давай/заспіваємо/пісню
+🎵 Включи/мою/любимую/песню = Увімкни/мою/улюблену/пісню
+
+## mood|Общение и чувства|Спілкування та почуття|💬|#97266D
+🙏 Большое/спасибо = Велике/дякую
+❤️ Я/тебя/люблю = Я/тебе/люблю
+🤗 Мне/приятно/тебя/видеть = Мені/приємно/тебе/бачити
+😊 Хорошо/что/вы/приехали = Добре/що/ви/приїхали
+🎉 Поздравляю/тебя/с праздником = Вітаю/тебе/зі святом
+🙇 Прости/меня = Пробач/мені
+😢 Мне/грустно = Мені/сумно
+😨 Мне/страшно = Мені/страшно
+😟 Я/волнуюсь = Я/хвилююся
+🤫 Мне нужен/покой = Мені потрібен/спокій
+🤫 Я хочу/побыть/в тишине = Я хочу/побути/в тиші
+🧠 Мне/трудно/вспомнить/слово = Мені/важко/згадати/слово
+🧠 Я/не могу/найти/нужное слово = Я/не можу/знайти/потрібне слово
+🧠 Мне/нужно/время/подумать = Мені/потрібно/час/подумати
+🐢 Говорите/помедленнее/пожалуйста = Говоріть/повільніше/будь ласка
+👂 Я/понимаю/вас = Я/розумію/вас
+❓ Я/не/понимаю = Я/не/розумію
+✅ Да/именно/это = Так/саме/це
+❌ Нет/это/не то/слово = Ні/це/не те/слово
+🔁 Повторите/пожалуйста = Повторіть/будь ласка
+
+## plan|Планы и время|Плани та час|🕒|#744210
+🕒 Я хочу/сделать/это/сейчас = Я хочу/зробити/це/зараз
+🕒 Давай/сделаем/это/позже = Давай/зробимо/це/пізніше
+🕒 Давай/сделаем/это/завтра = Давай/зробимо/це/завтра
+⏳ Мне/нужно/подождать = Мені/потрібно/зачекати
+📅 Завтра/придёт/врач = Завтра/прийде/лікар
+📅 Завтра/мне нужно/к врачу = Завтра/мені потрібно/до лікаря
+📅 В воскресенье/приедут/дети = У неділю/приїдуть/діти
+⏰ Разбуди/меня/утром = Розбуди/мене/вранці
+⏰ Напомни/мне/принять/лекарство = Нагадай/мені/прийняти/ліки
+⏰ Напомни/мне/позвонить/дочери = Нагадай/мені/зателефонувати/доньці
+🛌 Я хочу/поспать/после обеда = Я хочу/поспати/після обіду
+🕰️ Это/было/вчера = Це/було/вчора
+🕰️ Это/было/давно = Це/було/давно
+🕰️ Это/было/на прошлой неделе = Це/було/минулого тижня
+🗓️ Это/будет/завтра = Це/буде/завтра
+
+## ask|Вопросы|Запитання|❓|#2C7A7B
+👓 Где/мои/очки = Де/мої/окуляри
+📱 Где/мой/телефон = Де/мій/телефон
+💊 Где/мои/лекарства = Де/мої/ліки
+👩 Где/дочь = Де/донька
+🕒 Который/сейчас/час = Котра/зараз/година
+📅 Какой/сегодня/день = Який/сьогодні/день
+📅 Какое/сегодня/число = Яке/сьогодні/число
+🩺 Когда/придёт/врач = Коли/прийде/лікар
+👪 Когда/приедут/дети = Коли/приїдуть/діти
+🍲 Когда/будет/обед = Коли/буде/обід
+🚪 Кто/приходил/сегодня = Хто/приходив/сьогодні
+📞 Кто/звонил/мне = Хто/дзвонив/мені
+🩺 Что/сказал/врач = Що/сказав/лікар
+👉 Что/это/такое = Що/це/таке
+🍲 Что/будет/на ужин = Що/буде/на вечерю
+🗓️ Что/мы/будем/делать/сегодня = Що/ми/будемо/робити/сьогодні
+🚗 Куда/мы/едем = Куди/ми/їдемо
+🏷️ Сколько/это/стоит = Скільки/це/коштує
+⏳ Почему/так/долго = Чому/так/довго
+🤔 Как/ты/себя/чувствуешь = Як/ти/себе/почуваєш
+👪 Как/дела/у/детей = Як/справи/в/дітей
+
+## money|Деньги и документы|Гроші та документи|💳|#4A5568
+💳 Где/моя/карта = Де/моя/картка
+📄 Где/мои/документы = Де/мої/документи
+💳 Мне нужно/заплатить/за квартиру = Мені потрібно/заплатити/за квартиру
+💡 Мне нужно/заплатить/за свет/и газ = Мені потрібно/заплатити/за світло/і газ
+💰 Мне нужно/получить/пенсию = Мені потрібно/отримати/пенсію
+🏦 Мне нужно/сходить/в банк = Мені потрібно/сходити/в банк
+✉️ Мне нужно/отправить/письмо = Мені потрібно/відправити/листа
+📄 Мне нужна/справка/от врача = Мені потрібна/довідка/від лікаря
+🛂 Мне нужен/паспорт = Мені потрібен/паспорт
+🧾 Покажи/мне/квитанцию = Покажи/мені/квитанцію
+💰 У меня/не хватает/денег = У мене/не вистачає/грошей
+`;
+
+// Эмодзи для самых частых начал фраз
+const SE={'Я хочу':'🙋','Я не хочу':'🙅','Мне нужно':'❗','Мне нужен':'❗','Мне нужна':'❗','Мне нужны':'❗','Дай мне':'🤲','Принеси мне':'🎁','Помоги мне':'🤝','У меня':'👤','Мне':'💭','Меня':'💭','Где':'📍','Когда':'🕒','Кто':'🧑','Что':'❔','Как':'🤔','Какой':'📅','Какое':'📅','Который':'🕒','Куда':'🧭','Сколько':'🔢','Почему':'🤷','Давай':'👐','Включи':'🔛','Выключи':'📴','Сделай':'🛠️','Открой':'🪟','Закрой':'🚪','Позвоните':'📞','Вызовите':'🚑','Напиши':'💬','Набери':'📞','Купи':'🛒','Нужно':'❗','На улице':'🌦️','Я':'🙋','Напомни':'⏰','Покажи':'👀'};
+
+function buildPhraseTree(lv){
+  const {n,max}=BL[lv],topics=[],idx={};let cur=null;
+  CORPUS.split('\n').forEach(raw=>{
+    const line=raw.trim();if(!line)return;
+    if(line.startsWith('##')){
+      const [id,ru,uk,e,col,crit]=line.slice(2).split('|').map(x=>x.trim());
+      cur={id,col,l:ru+'|'+uk,s:ru+'|'+uk,e,c:[]};if(crit)cur.crit=1;topics.push(cur);return;
+    }
+    const sp=line.indexOf(' '),e=line.slice(0,sp),[ru,uk]=line.slice(sp+1).split(' = ');
+    let a=ru.split('/'),b=uk.split('/');
+    if(a.length>max)return;                       // слишком длинная фраза для этого уровня
+    if(a.length>n){                                // склеиваем «хвост» в одну плитку
+      a=[...a.slice(0,n-1),a.slice(n-1).join(' ')];
+      b=[...b.slice(0,n-1),b.slice(n-1).join(' ')];
+    }
+    let node=cur,id=cur.id;
+    a.forEach((p,k)=>{
+      id+='>'+p;let ch=idx[id];
+      if(!ch){ch={id,l:p+'|'+b[k],s:p+'|'+b[k],e:(k===0&&SE[p])||e,c:[]};idx[id]=ch;node.c.push(ch)}
+      if(k===a.length-1&&!(k===0&&SE[p]))ch.e=e;
+      node=ch;
+    });
+  });
+  const clean=l=>l.forEach(x=>{if(x.c.length)clean(x.c);else delete x.c});clean(topics);
+  return topics;
+}
 
 function getTreeForLevel(){
   if(settings.level === 'L1') return DEF_L1();
-  if(settings.level === 'L3') return DEF_L3();
+  if(isB()) return buildPhraseTree(settings.level);
   return DEF_L2();
 }
 
-let tree = ld('aac.tree_' + settings.level, null) || getTreeForLevel();
+// Ключ хранения. Для конструктора — новый ключ, чтобы не подхватить старые правки прежнего «Лёгкого» уровня
+const tk=()=>(isB()?'aac.tree2_':'aac.tree_')+settings.level;
+
+let tree = ld(tk(), null) || getTreeForLevel();
 let use = ld('aac.use', {});
 let path = [], last = '', cn = null, stage = 0, mod = '', tmr = null, sel = '';
 
 const save = () => {
   try {
-    localStorage.setItem('aac.tree_' + settings.level, JSON.stringify(tree));
+    localStorage.setItem(tk(), JSON.stringify(tree));
   } catch(e){ alert('Не хватает памяти'); }
 };
 
-const flat=()=>{const r=[];const w=(l,top)=>l.forEach(n=>{const tp=top||n;r.push({n,top:tp});if(n.c)w(n.c,tp)});w(tree);return r};
+const flat=()=>{const r=[];const w=(l,top,ch)=>l.forEach(n=>{const tp=top||n,c2=[...ch,n];r.push({n,top:tp,chain:c2});if(n.c)w(n.c,tp,c2)});w(tree,null,[]);return r};
 const score=id=>{const x=use[id];return x?x.n*Math.pow(.9,(Date.now()-x.t)/864e5):0};
 const bump=id=>{use[id]={n:score(id)+1,t:Date.now()};try{localStorage.setItem('aac.use',JSON.stringify(use))}catch(e){}};
+
+// Фраза, собранная по цепочке плиток (без плитки-темы): «ru|uk»
+const phr=ch=>{const a=ch.slice(1).map(n=>String(n.s||'').split('|'));return a.map(x=>x[0]).join(' ')+'|'+a.map(x=>x[1]||x[0]).join(' ')};
+const synth=ch=>{const n=ch[ch.length-1],p=phr(ch);return {id:n.id,l:p,s:p,e:n.e}};
 
 /* ---------- Синтез речи (SpeechSynthesis) ---------- */
 function getVoices(){
@@ -261,15 +626,35 @@ function tile(n,top,fn){
 }
 
 function render(){
+  const B=isB();
   const m=$('#main'),c=path.length?path[path.length-1]:null;m.innerHTML='';m.scrollTop=0;
-  $('#ttl').textContent=c?path.map(n=>t(n.l)).join(' › '):u('title');
-  if(c){m.append(h('button','say','🔊 '+t(c.s),()=>ask(c)))}
-  else if(settings.level !== 'L1'){
-    const fr=flat().filter(x=>!x.n.c&&score(x.n.id)>=1).sort((a,b)=>score(b.n.id)-score(a.n.id)).slice(0,4);
-    if(fr.length){m.append(h('div','sec',u('freq')));const g=h('div','grid');fr.forEach(x=>g.append(tile(x.n,x.top,()=>ask(x.n))));m.append(g,h('div','sec',' '))}
+  $('#ttl').textContent=!c?u('title'):(B?t(path[0].l):path.map(n=>t(n.l)).join(' › '));
+
+  if(c&&B){
+    if(path.length>1){
+      const more=c.c&&c.c.length;
+      const bx=h('div','build');
+      bx.append(h('div','bl',u('built')),h('div','bt',t(phr(path))+(more?' …':'')));
+      m.append(bx,h('button','say','🔊 '+u('sayso'),()=>ask(synth(path))));
+      if(more)m.append(h('div','sec',u('cont')));
+    }
+  }else if(c){
+    m.append(h('button','say','🔊 '+t(c.s),()=>ask(c)));
+  }else if(settings.level !== 'L1'){
+    const fr=flat().filter(x=>(B?x.chain.length>1:!x.n.c)&&score(x.n.id)>=1).sort((a,b)=>score(b.n.id)-score(a.n.id)).slice(0,4);
+    if(fr.length){
+      m.append(h('div','sec',u('freq')));const g=h('div','grid');
+      fr.forEach(x=>g.append(B?tile({l:phr(x.chain),e:x.n.e},x.top,()=>ask(synth(x.chain))):tile(x.n,x.top,()=>ask(x.n))));
+      m.append(g,h('div','sec',' '));
+    }
+    if(B)m.append(h('div','sec',u('pick')));
   }
+
   const g=h('div','grid');
-  (c?c.c:tree).forEach(n=>g.append(tile(n,path[0]||n,()=>{if(n.c&&n.c.length){path.push(n);render()}else ask(n)})));
+  (c?c.c:tree).forEach(n=>g.append(tile(n,path[0]||n,()=>{
+    if(n.c&&n.c.length){path.push(n);render()}
+    else ask(B&&path.length?synth([...path,n]):n);
+  })));
   m.append(g);
 }
 
@@ -342,6 +727,8 @@ $('#lang').onclick=()=>{
 
 /* ---------- Модальное окно НАСТРОЕК ---------- */
 const settModal = $('#sett');
+const showLvNote=()=>{$('#lvNote').textContent=(U[lang].lv||{})[$('#setSeg').value]||''};
+$('#setSeg').onchange=showLvNote;
 $('#settingsBtn').onclick = () => {
   settModal.style.display = 'block';
   $('#setTheme').value = settings.theme;
@@ -350,6 +737,8 @@ $('#settingsBtn').onclick = () => {
   $('#rateVal').textContent = settings.rate;
   $('#setPitch').value = settings.pitch;
   $('#pitchVal').textContent = settings.pitch;
+  $('#ver').textContent = u('ver') + ': ' + APP_VERSION;
+  showLvNote();
   populateVoices();
 };
 
@@ -386,8 +775,8 @@ $('#closeSettBtn').onclick = () => {
   applyTheme();
 
   if(oldLevel !== settings.level){
-    tree = ld('aac.tree_' + settings.level, null) || getTreeForLevel();
-    path = [];
+    tree = ld(tk(), null) || getTreeForLevel();
+    path = [];sel = '';
   }
 
   settModal.style.display = 'none';
@@ -401,7 +790,9 @@ const find=id=>{let r=null;const w=(l)=>l.forEach(n=>{if(n.id===id)r={n,l};if(n.
 function openEd(){ed.style.display='block';drawEd()}
 function drawEd(){
   ed.innerHTML='';
-  ed.append(h('h2',null,'✏️ Редактор'),h('p','note','Управление плитками словаря текущего уровня.'));
+  ed.append(h('h2',null,'✏️ Редактор'),h('p','note',isB()
+    ?'Лёгкие уровни: плитка — это часть фразы. Фраза собирается по цепочке от темы, поэтому пишите в поле «Фраза» только свою часть (например, «пить» или «воду»).'
+    :'Управление плитками словаря текущего уровня.'));
   const s=h('select');s.append(new Option('— Главный экран —',''));
   const w=(l,d)=>l.forEach(n=>{s.append(new Option('· '.repeat(d)+t(n.l)+' '+(n.e||''),n.id));if(n.c)w(n.c,d+1)});w(tree,0);
   s.value=sel;s.onchange=()=>{sel=s.value;drawEd()};ed.append(h('label',null,'Плитка'),s);
@@ -419,11 +810,16 @@ function drawEd(){
     r.append(h('button','d','Удалить',()=>{if(confirm('Удалить плитку?')){f.l.splice(f.l.indexOf(f.n),1);sel='';save();drawEd()}}));
   }
   r.append(h('button',null,'+ Добавить плитку',()=>{
-    const n={id:'n'+Date.now(),l:'Новая|Нова',s:'Я хочу|Я хочу',e:'💬'};
+    const n={id:'n'+Date.now(),l:'Новая|Нова',s:(isB()?'слово|слово':'Я хочу|Я хочу'),e:'💬'};
     if(f){(f.n.c=f.n.c||[]).push(n)}else{n.col='#1E3A8A';tree.push(n)}
     sel=n.id;save();drawEd()}));
   ed.append(r);
-  ed.append(h('button',null,'Закрыть редактор',()=>{ed.style.display='none';path=[];closeOv();render()}));
+  ed.append(h('div','row',null),h('button','d','Сбросить уровень к стандартному',()=>{
+    if(confirm('Вернуть стандартный набор плиток для этого уровня? Ваши правки будут удалены.')){
+      try{localStorage.removeItem(tk())}catch(e){}
+      tree=getTreeForLevel();sel='';drawEd();
+    }}));
+  ed.append(h('div','row',null),h('button',null,'Закрыть редактор',()=>{ed.style.display='none';path=[];closeOv();render()}));
 }
 
 /* ---------- Запуск приложения ---------- */
@@ -436,8 +832,22 @@ if('speechSynthesis' in window){
   speechSynthesis.onvoiceschanged = () => populateVoices();
 }
 
+/* ---------- Офлайн-режим и автообновление ---------- */
 if('serviceWorker' in navigator){
-  addEventListener('load',()=>navigator.serviceWorker.register('/Govorim/sw.js',{scope:'/Govorim/'}).catch(()=>{}));
+  const hadController = !!navigator.serviceWorker.controller;
+  let reloaded = false;
+  // Когда новая версия взяла управление — один раз перезагружаем страницу, чтобы показать её
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(!hadController||reloaded)return;
+    reloaded=true;location.reload();
+  });
+  addEventListener('load',()=>{
+    navigator.serviceWorker.register('/Govorim/sw.js',{scope:'/Govorim/',updateViaCache:'none'})
+      .then(reg=>{
+        reg.update().catch(()=>{});
+        document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{})});
+      }).catch(()=>{});
+  });
 }
 </script>
 </body>
