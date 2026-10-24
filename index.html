@@ -209,7 +209,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 9;   // держите в соответствии с V = 'govorim-v9' в sw.js
+const APP_VERSION = 10;   // держите в соответствии с V = 'govorim-v10' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -222,7 +222,7 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
   aHelp:'Справка',v_auto:'Автоматически (голос по умолчанию)',v_none:'Для этого языка в телефоне нет голосов. Как их установить — см. «Справка» → «Голос и озвучка».',
   abc:'Азбука',abcHint:'Нажмите первую букву слова',abcNext:'Следующая буква:',abcNone:'Слов на эти буквы нет',slow:'Медленно',
   g_main:'Основное',g_voice:'Озвучка',g_touch:'Управление и нажатия',g_ease:'Меньше усталости',g_data:'Данные',
-  s_uilang:'Язык меню и справки (фразы и озвучка переключаются кнопкой RU/UK вверху)',ui_auto:'Как у фраз и озвучки',
+  s_uilang:'Язык меню и справки (фразы и озвучка переключаются кнопкой RU/UK/EN вверху)',ui_auto:'Как у фраз и озвучки',
   s_size:'Размер плиток',sz_m:'Обычный',sz_l:'Крупный',sz_xl:'Очень крупный (по одной в ряд)',
   s_guard:'Защита от случайных нажатий (повторное касание быстрее этого времени игнорируется)',gd_0:'Выключена',gd_400:'0,4 с',gd_800:'0,8 с',gd_1500:'1,5 с',
   s_hand:'Нижняя панель кнопок',hd_right:'Для правой руки (как сейчас)',hd_left:'Для левой руки (зеркально)',
@@ -239,7 +239,7 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
   helpDoc:{title:'❓ Справка',s:[
    ['Для чего приложение','Приложение помогает общаться с человеком, у которого после инсульта нарушена речь (афазия). Вместо того чтобы подбирать слова, достаточно нажимать на крупные плитки — телефон произнесёт фразу вслух. Всё работает без интернета.'],
    ['Быстрый старт',['Выберите тему на главном экране (например, «Еда и питьё»).','Нажимайте плитки: фраза выбирается по шагам.','Приложение спросит, например, «Я хочу чай?». Нажмите «Да» — фраза прозвучит, «Нет» — отмена.','После озвучивания можно нажать «Повтор» или «Готово».']],
-   ['Кнопки вверху',['🏠 — на главный экран.','RU / UK — язык интерфейса и озвучки. Подписи и фразы переключаются целиком.','⚙️ — настройки.','❓ — эта справка.','✏️ — редактор плиток.']],
+   ['Кнопки вверху',['🏠 — на главный экран.','RU / UK / EN — язык фраз и озвучки. Подписи и фразы переключаются целиком, английские фразы строятся по правилам английского языка.','⚙️ — настройки.','❓ — эта справка.','✏️ — редактор плиток.']],
    ['Нижняя панель',['✔ Да / ✖ Нет — быстрые ответы. Если открыт вопрос с фразой, отвечают на него; иначе просто произносят «Да» или «Нет».','↩ Назад — шаг назад или закрыть окно.','🔊 Повтор — повторить последнюю фразу.','🆘 Помощь — красный экран и громкий призыв «Помогите!», повторяется каждые 6 секунд. «Отмена» останавливает.','🤕 Больно — сразу открывает тему «Здоровье».']],
    ['Степень нарушения речи (⚙️)',['Названия уровней относятся к человеку с афазией, а не к сложности работы с приложением: чем тяжелее нарушение речи, тем проще интерфейс. Подберите уровень по тому, как человек говорит сейчас, и меняйте его по мере восстановления.','Тяжёлое — человеку очень трудно говорить. Несколько крупных плиток с самыми нужными словами: вода, еда, туалет, больно.','Среднее — человек произносит отдельные слова. Категории и уточнение внутри них.','Лёгкое 1 — человек начинает фразу, но не вспоминает окончание: тема → начало («Я хочу») → окончание («пить воду»).','Лёгкое 2 — фраза из трёх частей: «Я хочу» → «пить» → «чай».','Лёгкое 3 — речь почти сохранена: длинные фразы до пяти частей с уточнением (когда, где, зачем, почему), в том числе в прошедшем времени: «Я уже выпила утренние таблетки после еды».']],
    ['Как собирать фразу в лёгком режиме','Выберите тему и нажимайте плитки по очереди: вверху растёт собранная фраза со знаком «…». Если человек не может вспомнить последнее слово, нажмите «Сказать так»: прозвучит то, что уже собрано, и собеседник сможет подсказать продолжение. Когда у плитки нет продолжения, появится вопрос для подтверждения.'],
@@ -269,14 +269,15 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
   e_noteB:'Редактор открывается в том разделе, где вы сейчас находитесь. Лёгкие уровни: плитка — часть фразы, фраза собирается по цепочке от темы. В поле «Фраза» пишите только свою часть. Формы по полу записываются так: вып{ил~ила} (слева мужской, справа женский вариант).',
   e_tile:'Плитка',e_sec:'Раздел (сюда добавляются плитки)',e_tiles:'Плитка в этом разделе',e_pick:'— выберите плитку для изменения —',e_phr:'Фраза до этого места',e_main:'— Главный экран —',e_nl:'Название (русский)',e_nu:'Название (украинский)',e_pl:'Фраза (русский)',e_pu:'Фраза (украинский)',e_em:'Значок (эмодзи)',
   e_save:'Сохранить',e_del:'Удалить',e_add:'+ Добавить плитку в этот раздел',e_cdel:'Удалить плитку?',e_reset:'Сбросить уровень к стандартному',
-  e_creset:'Вернуть стандартный набор плиток для этого уровня? Ваши правки будут удалены.',e_close:'Закрыть редактор'},
+  e_creset:'Вернуть стандартный набор плиток для этого уровня? Ваши правки будут удалены.',e_close:'Закрыть редактор',
+  e_name:'Название',e_phrase:'Фраза',ln_ru:'русский',ln_uk:'украинский',ln_en:'английский'},
 uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні',back:'Назад',rep:'Повтор',help:'Допомога',pain:'Болить',sure:'Точно?',done:'Готово',cancel:'Скасувати',mods:['зараз','потім','ще','досить'],helpSay:'Допоможіть! Мені потрібна допомога!',helpTxt:'МЕНІ ПОТРІБНА ДОПОМОГА',
   built:'Ваша фраза',sayso:'Сказати так',cont:'Продовжте фразу — оберіть слово:',pick:'Оберіть тему:',ver:'Версія застосунку',
   aHome:'Додому',aLang:'Мова',aSet:'Налаштування',aEd:'Редактор',nomem:'Не вистачає пам’яті',testSay:'Це перевірка голосу',
   aHelp:'Довідка',v_auto:'Автоматично (голос за замовчуванням)',v_none:'Для цієї мови в телефоні немає голосів. Як їх встановити — див. «Довідка» → «Голос і озвучення».',
   abc:'Абетка',abcHint:'Натисніть першу літеру слова',abcNext:'Наступна літера:',abcNone:'Слів на ці літери немає',slow:'Повільно',
   g_main:'Основне',g_voice:'Озвучення',g_touch:'Керування й натискання',g_ease:'Менше втоми',g_data:'Дані',
-  s_uilang:'Мова меню та довідки (фрази й озвучення перемикаються кнопкою RU/UK вгорі)',ui_auto:'Як у фраз та озвучення',
+  s_uilang:'Мова меню та довідки (фрази й озвучення перемикаються кнопкою RU/UK/EN вгорі)',ui_auto:'Як у фраз та озвучення',
   s_size:'Розмір плиток',sz_m:'Звичайний',sz_l:'Великий',sz_xl:'Дуже великий (по одній у ряд)',
   s_guard:'Захист від випадкових натискань (повторне торкання швидше за цей час ігнорується)',gd_0:'Вимкнено',gd_400:'0,4 с',gd_800:'0,8 с',gd_1500:'1,5 с',
   s_hand:'Нижня панель кнопок',hd_right:'Для правої руки (як зараз)',hd_left:'Для лівої руки (дзеркально)',
@@ -293,7 +294,7 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
   helpDoc:{title:'❓ Довідка',s:[
    ['Для чого застосунок','Застосунок допомагає спілкуватися з людиною, у якої після інсульту порушене мовлення (афазія). Замість того щоб добирати слова, достатньо натискати великі плитки — телефон вимовить фразу вголос. Усе працює без інтернету.'],
    ['Швидкий старт',['Оберіть тему на головному екрані (наприклад, «Їжа та напої»).','Натискайте плитки: фраза обирається по кроках.','Застосунок запитає, наприклад, «Я хочу чай?». Натисніть «Так» — фраза пролунає, «Ні» — скасування.','Після озвучення можна натиснути «Повтор» або «Готово».']],
-   ['Кнопки вгорі',['🏠 — на головний екран.','RU / UK — мова інтерфейсу й озвучення. Підписи та фрази перемикаються повністю.','⚙️ — налаштування.','❓ — ця довідка.','✏️ — редактор плиток.']],
+   ['Кнопки вгорі',['🏠 — на головний екран.','RU / UK / EN — мова фраз та озвучення. Підписи й фрази перемикаються повністю, англійські фрази будуються за правилами англійської мови.','⚙️ — налаштування.','❓ — ця довідка.','✏️ — редактор плиток.']],
    ['Нижня панель',['✔ Так / ✖ Ні — швидкі відповіді. Якщо відкрите запитання з фразою, відповідають на нього; інакше просто вимовляють «Так» або «Ні».','↩ Назад — крок назад або закрити вікно.','🔊 Повтор — повторити останню фразу.','🆘 Допомога — червоний екран і гучне «Допоможіть!», повторюється кожні 6 секунд. «Скасувати» зупиняє.','🤕 Болить — одразу відкриває тему «Здоров’я».']],
    ['Ступінь порушення мовлення (⚙️)',['Назви рівнів стосуються людини з афазією, а не складності роботи із застосунком: що важче порушення мовлення, то простіший інтерфейс. Підберіть рівень за тим, як людина говорить зараз, і змінюйте його в міру відновлення.','Важке — людині дуже важко говорити. Кілька великих плиток із найпотрібнішими словами: вода, їжа, туалет, болить.','Середнє — людина вимовляє окремі слова. Категорії та уточнення всередині них.','Легке 1 — людина починає фразу, але не згадує закінчення: тема → початок («Я хочу») → закінчення («пити воду»).','Легке 2 — фраза з трьох частин: «Я хочу» → «пити» → «чай».','Легке 3 — мовлення майже збережене: довгі фрази до п’яти частин з уточненням (коли, де, навіщо, чому), зокрема в минулому часі: «Я вже випила ранкові таблетки після їжі».']],
    ['Як збирати фразу в легкому режимі','Оберіть тему й натискайте плитки по черзі: угорі росте зібрана фраза зі знаком «…». Якщо людина не може згадати останнє слово, натисніть «Сказати так»: пролунає те, що вже зібрано, і співрозмовник зможе підказати продовження. Коли в плитки немає продовження, з’явиться запитання для підтвердження.'],
@@ -323,14 +324,72 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
   e_noteB:'Редактор відкривається в тому розділі, де ви зараз перебуваєте. Легкі рівні: плитка — частина фрази, фраза збирається ланцюжком від теми. У полі «Фраза» пишіть лише свою частину. Форми за статтю записуються так: вип{ив~ила} (ліворуч чоловіча, праворуч жіноча форма).',
   e_tile:'Плитка',e_sec:'Розділ (сюди додаються плитки)',e_tiles:'Плитка в цьому розділі',e_pick:'— оберіть плитку для зміни —',e_phr:'Фраза до цього місця',e_main:'— Головний екран —',e_nl:'Назва (російською)',e_nu:'Назва (українською)',e_pl:'Фраза (російською)',e_pu:'Фраза (українською)',e_em:'Значок (емодзі)',
   e_save:'Зберегти',e_del:'Видалити',e_add:'+ Додати плитку в цей розділ',e_cdel:'Видалити плитку?',e_reset:'Скинути рівень до стандартного',
-  e_creset:'Повернути стандартний набір плиток для цього рівня? Ваші правки буде видалено.',e_close:'Закрити редактор'}};
-let lang=localStorage.getItem('aac.lang')||'ru';
+  e_creset:'Повернути стандартний набір плиток для цього рівня? Ваші правки буде видалено.',e_close:'Закрити редактор',
+  e_name:'Назва',e_phrase:'Фраза',ln_ru:'російською',ln_uk:'українською',ln_en:'англійською'},
+en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep:'Repeat',help:'Help',pain:'Pain',sure:'Sure?',done:'Done',cancel:'Cancel',mods:['now','later','more','enough'],helpSay:'Help! I need help!',helpTxt:'I NEED HELP',
+  built:'Your phrase',sayso:'Say it',cont:'Continue the phrase — choose a word:',pick:'Choose a topic:',ver:'App version',
+  aHome:'Home',aLang:'Language',aSet:'Settings',aEd:'Editor',nomem:'Not enough storage',testSay:'This is a voice test',
+  aHelp:'Help',v_auto:'Automatic (default voice)',v_none:'This phone has no voices for this language. See Help → “Voice and speech” to install them.',
+  abc:'ABC',abcHint:'Tap the first letter of the word',abcNext:'Next letter:',abcNone:'No words for these letters',slow:'Slowly',
+  g_main:'General',g_voice:'Speech',g_touch:'Controls and taps',g_ease:'Less fatigue',g_data:'Data',
+  s_uilang:'Menu and help language (phrases and speech are switched with the RU / UK / EN button at the top)',ui_auto:'Same as phrases and speech',
+  s_size:'Tile size',sz_m:'Normal',sz_l:'Large',sz_xl:'Extra large (one per row)',
+  s_guard:'Accidental-tap protection (repeat taps faster than this are ignored)',gd_0:'Off',gd_400:'0.4 s',gd_800:'0.8 s',gd_1500:'1.5 s',
+  s_hand:'Bottom button bar',hd_right:'For the right hand (as is)',hd_left:'For the left hand (mirrored)',
+  s_hear:'Hear first, then choose: the first tap on a tile says the word, the second tap selects it',
+  s_syll:'Long press on a tile shows the word in syllables and says it slowly (on a speech therapist’s advice)',
+  s_vib:'Vibrate on tap',s_awake:'Keep the screen on while the app is open',
+  s_quick:'Speak immediately, without the “…?” question (the question stays in Health and Medicines)',
+  s_freq:'Show the “Often” block on the home screen (if off, tiles always stay in the same place)',
+  s_log:'Keep a communication diary (stored only on this phone)',
+  b_diary:'📒 Communication diary',b_save:'💾 Save a data backup',b_load:'📂 Load a data backup',
+  b_confirm:'Replace the current settings, edits and diary with the data from the file? This cannot be undone.',b_bad:'This file does not look like a backup of this app.',
+  d_title:'📒 Communication diary',d_total:'Total phrases',d_days:'Days with entries',d_week:'Last 7 days',d_top:'Most frequent phrases',d_recent:'Recent phrases',d_empty:'No entries yet.',d_off:'The diary is turned off in Settings.',
+  d_export:'⬇️ Save as text',d_clear:'🗑️ Clear the diary',d_cclear:'Delete the whole diary? This cannot be undone.',d_exp_title:'Let’s talk together — communication diary',
+  e_name:'Name',e_phrase:'Phrase',ln_ru:'Russian',ln_uk:'Ukrainian',ln_en:'English',
+  helpDoc:{title:'❓ Help',s:[
+   ['What this app is for','The app helps people communicate with someone whose speech has been affected by a stroke (aphasia). Instead of searching for words, they just tap large tiles and the phone says the phrase aloud. Everything works without the internet.'],
+   ['Quick start',['Choose a topic on the home screen (for example, “Food and drink”).','Tap tiles: the phrase is chosen step by step.','The app asks, for example, “I want tea?”. Tap “Yes” and the phrase is spoken; “No” cancels.','After it is spoken you can tap “Repeat” or “Done”.']],
+   ['Buttons at the top',['🏠 — go to the home screen.','RU / UK / EN — language of phrases and speech. Labels and phrases switch completely, and English phrases are built by English grammar.','⚙️ — settings.','❓ — this help.','✏️ — tile editor.']],
+   ['Bottom bar',['✔ Yes / ✖ No — quick answers. If a phrase question is open they answer it; otherwise they just say “Yes” or “No”.','↩ Back — one step back or close a window.','🔊 Repeat — repeat the last phrase.','🆘 Help — red screen and a loud “Help!” repeated every 6 seconds. “Cancel” stops it.','🤕 Pain — opens the Health topic at once.']],
+   ['Degree of speech impairment (⚙️)',['The level names describe the person with aphasia, not how hard the app is to use: the more severe the impairment, the simpler the screen. Pick the level by how the person speaks now and change it as they recover.','Severe — speaking is very hard. A few large tiles with the most needed words: water, food, toilet, pain.','Moderate — the person says single words. Categories with details inside.','Mild 1 — the person starts a phrase but cannot recall the ending: topic → start (“I want”) → ending (“to drink water”).','Mild 2 — a phrase in three parts: “I want” → “to drink” → “tea”.','Mild 3 — speech is nearly preserved: long phrases of up to five parts with details (when, where, why), including the past tense: “I have already taken my morning pills after eating”.']],
+   ['Building a phrase in the mild levels','Choose a topic and tap tiles one after another: the phrase grows at the top with “…”. If the person cannot recall the last word, tap “Say it”: what has been built so far is spoken and the other person can suggest the continuation. When a tile has no continuation, a confirmation question appears.'],
+   ['Add-ons “now / later / more / enough”','In the confirmation window these buttons add a word to the phrase, for example “I want tea now”. Tap again to remove it.'],
+   ['Speaker’s gender','Russian and Ukrainian past-tense verbs depend on gender (“выпила” or “выпил”). Choose it in Settings. It does not affect English phrases.'],
+   ['Often used','The home screen shows up to four of the most frequent phrases so they are quicker to find.'],
+   ['Health and medicines','The Health and Medicines topics ask for a second confirmation, “Sure?”, so that an accidental tap does not mislead anyone. The app does not replace a doctor. In danger, call your local emergency number (103 or 112 in Ukraine).'],
+   ['Voice and speech',['Speech comes from the phone’s speech synthesizer. Settings list only the voices of the language currently used for phrases.','If there are none: Android Settings → System → Languages and input → Text-to-speech → Google → install the voice data for the language.','A slightly slower speech rate (0.7–0.85) is easier to follow. The “Test voice” button plays a sample.']],
+   ['ABC (first-letter help)',['On the home screen the last tile is “ABC” (except in the severe level).','Tap the first letter of a word: words from the dictionary starting with it appear. Tap the next letter to narrow the list.','Tapping a word adds it to the phrase line. “Say it” speaks the whole line, ⌫ removes the last word.']],
+   ['Situations','In the Mild 1–3 levels the last tile of the home screen is “Situations”: doctor visit, pharmacy, store, guests, phone call. The phrases are chosen for each situation. If you edited tiles of a mild level earlier, tap “Reset level” in the editor to get the new topics.'],
+   ['Hear first, then choose (⚙️)','When on, the first tap on a tile only says the word and outlines the tile in yellow; a second tap on the same tile selects it. Tapping another tile only says that one.'],
+   ['Syllable view (⚙️)','When on, a long press on a tile shows the word in syllables: it is spoken slowly and tapping a syllable says it alone. The syllable split is approximate. Use on a speech therapist’s advice.'],
+   ['Controls and tap protection (⚙️)','Tile size (normal, large, one per row); accidental-tap protection (repeat taps faster than the chosen time are ignored); bottom bar for the right or left hand; vibration; “keep screen on”.'],
+   ['Less fatigue (⚙️)','“Speak immediately” removes the “…?” question: the phrase is spoken right after the tap (in Health and Medicines the question stays). The “Often” block can be turned off so tiles always stay in place.'],
+   ['Communication diary','Opens from Settings. The phone stores the spoken phrases with date and time (the last 1000). You can see activity over 7 days and the most frequent phrases, and save a text file for a speech therapist. The diary can be turned off and cleared.'],
+   ['Backup','In Settings, “Save a data backup” creates a file with all settings, tile edits and the diary; “Load a data backup” restores them (for example, on a new phone). Make a backup before clearing browser data or changing phones.'],
+   ['Menu language','Settings let you choose the menu and help language separately from the language of phrases and speech: for example, phrases and voice in Ukrainian and the menu in English. The labels meant for the person (“Yes”, “No”, etc.) follow the phrase language.'],
+   ['Tile editor','Open the section you need (for example, “Feelings” → “I feel” → “cold”) and tap ✏️: the editor opens in that very section. You can add a tile (“+ Add a tile to this section”), change its name, phrase or icon, or delete one. Choose another section from the list. “Reset level” restores the standard set. Edits are kept on this device. English and Russian/Ukrainian phrases are stored separately in the mild levels, so edit them in the language you are using. In the mild levels a tile is a part of a phrase.'],
+   ['Install and updates',['In Chrome open the menu ⋮ → “Install app” (or “Add to Home screen”).','After the first launch the app works without the internet.','A new version loads by itself when the app is opened online. The version number is at the bottom of Settings.']],
+   ['Tips for communicating',['Give time: do not rush or finish the person’s sentences.','Ask questions that can be answered with “yes” or “no”.','Speak in short phrases, calmly and without interrupting.','Praise attempts: the effort to speak matters more than being error-free.']]
+  ]},
+  s_title:'⚙️ Settings',s_level:'Degree of the person’s speech impairment',s_gender:'Speaker’s gender (for Russian and Ukrainian past-tense verbs)',s_theme:'Theme',s_voice:'Speech voice',s_rate:'Speech rate',s_pitch:'Pitch',s_test:'🔊 Test voice',s_close:'Close',
+  g_f:'Female — Russian “выпила”',g_m:'Male — Russian “выпил”',th_dark:'Dark 🌙',th_light:'Light ☀️',
+  lvl:{L1:'Severe — simple words',L2:'Moderate — categories',L3:'Mild 1 — start + ending',L4:'Mild 2 — 3-part phrase',L5:'Mild 3 — complex phrases'},
+  lv:{L1:'For when speaking is very hard. Large tiles with the most needed words.',L2:'For when the person says single words. Choose a category, then a detail.',L3:'For when the person starts a phrase but cannot recall the ending. Topic → start of the phrase (“I want…”) → ending. The start alone can be spoken too.',L4:'For when somewhat more detailed phrases are needed. Topic → start → action → object; you can stop at any step.',L5:'For when speech is nearly preserved but words are missing. Phrases of up to 5 parts with details (when, where, why), including the past tense: “I have already taken my morning pills”.'},
+  e_title:'✏️ Editor',e_note:'The editor opens in the section you are in now: new tiles are added right there. You can choose another section in the list below.',
+  e_noteB:'The editor opens in the section you are in now. In the mild levels a tile is part of a phrase and the phrase is built along the chain from the topic. In the “Phrase” field write only your own part. Russian/Ukrainian and English tiles are stored separately.',
+  e_tile:'Tile',e_sec:'Section (new tiles are added here)',e_tiles:'Tile in this section',e_pick:'— choose a tile to edit —',e_phr:'Phrase so far',e_main:'— Home screen —',e_em:'Icon (emoji)',
+  e_save:'Save',e_del:'Delete',e_add:'+ Add a tile to this section',e_cdel:'Delete this tile?',e_reset:'Reset level to default',
+  e_creset:'Restore the default tiles for this level? Your edits will be deleted.',e_close:'Close editor'}};
+let lang=localStorage.getItem('aac.lang');
+if(!['ru','uk','en'].includes(lang)) lang='ru';
+const LI_IDX={ru:0,uk:1,en:2};
 const u=k=>U[lang][k];                                   // подписи для человека (язык фраз)
-const uiL=()=>settings.uiLang==='ru'||settings.uiLang==='uk'?settings.uiLang:lang;
+const uiL=()=>['ru','uk','en'].includes(settings.uiLang)?settings.uiLang:lang;
 const uh=k=>U[uiL()][k];                                  // подписи меню, настроек и справки (для помощника)
 // Формы по полу: вып{ил~ила} — слева мужской, справа женский вариант
 const G=s=>s.replace(/\{([^~}]*)~([^}]*)\}/g,(m,a,b)=>settings.gender==='m'?a:b);
-const t=s=>{const p=String(s||'').split('|');return G(lang==='uk'&&p[1]?p[1]:p[0])};
+const t=s=>{const p=String(s||'').split('|');return G(p[LI_IDX[lang]]||p[0])};
 
 /* ---------- Настройки ---------- */
 const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
@@ -346,7 +405,7 @@ let settings = Object.assign({}, DEFAULTS, ld('aac.settings', {}));
 if(settings.gender!=='m') settings.gender = 'f';
 if(!settings.voices || typeof settings.voices !== 'object') settings.voices = {};
 if(!['L1','L2','L3','L4','L5'].includes(settings.level)) settings.level = 'L2';
-if(!['auto','ru','uk'].includes(settings.uiLang)) settings.uiLang = 'auto';
+if(!['auto','ru','uk','en'].includes(settings.uiLang)) settings.uiLang = 'auto';
 if(!['m','l','xl'].includes(settings.size)) settings.size = 'm';
 if(![0,400,800,1500].includes(+settings.guard)) settings.guard = 0;
 settings.guard = +settings.guard;
@@ -362,36 +421,37 @@ applyTheme();
 /* ---------- Словари под разные уровни нарушения речи ---------- */
 const L=(l,s,e)=>({id:'d'+Math.random().toString(36).slice(2,8),l,s,e});
 
-// L1: Тяжёлая степень — пиктограммы прямого действия
+// L1: Тяжёлая степень — пиктограммы прямого действия (ru|uk|en)
 const DEF_L1 = () => [
-  {id:'drink_1',col:'#2B6CB0',l:'Вода|Вода',s:'Я хочу пить|Я хочу пити',e:'💧'},
-  {id:'eat_1',col:'#C27C0E',l:'Еда|Їжа',s:'Я хочу есть|Я хочу їсти',e:'🍽️'},
-  {id:'wc_1',col:'#0F8B8D',l:'Туалет|Туалет',s:'Мне нужно в туалет|Мені потрібно в туалет',e:'🚽'},
-  {id:'pain_1',col:'#B3261E',l:'Больно|Болить',s:'Мне больно|Мені боляче',e:'🤕'},
-  {id:'bed_1',col:'#8A6D00',l:'Лечь|Лягти',s:'Я хочу лечь|Я хочу лягти',e:'🛏️'},
-  {id:'cold_1',col:'#B83280',l:'Холодно|Холодно',s:'Мне холодно|Мені холодно',e:'🥶'},
-  {id:'hot_1',col:'#C27C0E',l:'Жарко|Жарко',s:'Мне жарко|Мені гаряче',e:'🥵'},
-  {id:'bad_1',col:'#6B46C1',l:'Плохо|Погано',s:'Мне плохо|Мені погано',e:'🤢'}
+  {id:'drink_1',col:'#2B6CB0',l:'Вода|Вода|Water',s:'Я хочу пить|Я хочу пити|I want to drink',e:'💧'},
+  {id:'eat_1',col:'#C27C0E',l:'Еда|Їжа|Food',s:'Я хочу есть|Я хочу їсти|I want to eat',e:'🍽️'},
+  {id:'wc_1',col:'#0F8B8D',l:'Туалет|Туалет|Toilet',s:'Мне нужно в туалет|Мені потрібно в туалет|I need the toilet',e:'🚽'},
+  {id:'pain_1',col:'#B3261E',l:'Больно|Болить|Pain',s:'Мне больно|Мені боляче|I am in pain',e:'🤕'},
+  {id:'bed_1',col:'#8A6D00',l:'Лечь|Лягти|Lie down',s:'Я хочу лечь|Я хочу лягти|I want to lie down',e:'🛏️'},
+  {id:'cold_1',col:'#B83280',l:'Холодно|Холодно|Cold',s:'Мне холодно|Мені холодно|I am cold',e:'🥶'},
+  {id:'hot_1',col:'#C27C0E',l:'Жарко|Жарко|Hot',s:'Мне жарко|Мені гаряче|I am hot',e:'🥵'},
+  {id:'bad_1',col:'#6B46C1',l:'Плохо|Погано|Unwell',s:'Мне плохо|Мені погано|I feel unwell',e:'🤢'}
 ];
 
-// L2: Средняя степень — категориальная структура
+// L2: Средняя степень — категориальная структура (ru|uk|en)
 const DEF_L2 = () => [
-{id:'drink',col:'#2B6CB0',l:'Пить|Пити',s:'Я хочу пить|Я хочу пити',e:'🥤',c:[
- L('Вода|Вода','Я хочу воды|Я хочу води','💧'),L('Чай|Чай','Я хочу чай|Я хочу чай','🍵'),L('Кофе|Кава','Я хочу кофе|Я хочу каву','☕'),
- L('Сок|Сік','Я хочу сок|Я хочу сік','🧃'),L('Молоко|Молоко','Я хочу молоко|Я хочу молоко','🥛')]},
-{id:'eat',col:'#C27C0E',l:'Есть|Їсти',s:'Я хочу есть|Я хочу їсти',e:'🍽️',c:[
- L('Суп|Суп','Я хочу суп|Я хочу суп','🍲'),L('Каша|Каша','Я хочу кашу|Я хочу кашу','🥣'),L('Хлеб|Хліб','Я хочу хлеб|Я хочу хліб','🍞'),
- L('Мясо|М\'ясо','Я хочу мясо|Я хочу м\'ясо','🍗'),L('Фрукты|Фрукти','Я хочу фрукты|Я хочу фрукти','🍎')]},
-{id:'wc',col:'#0F8B8D',l:'Туалет|Туалет',s:'Мне нужно в туалет|Мені потрібно в туалет',e:'🚻',c:[
- L('Туалет|Туалет','Мне нужно в туалет|Мені потрібно в туалет','🚽'),L('Умыться|Вмитися','Я хочу умыться|Я хочу вмитися','🚿'),
- L('Душ|Душ','Я хочу в душ|Я хочу в душ','🛁')]},
-{id:'pain',col:'#B3261E',crit:1,l:'Болит|Болить',s:'У меня что-то болит|У мене щось болить',e:'🤕',c:[
- L('Голова|Голова','У меня болит голова|У мене болить голова','🧠'),L('Сердце|Серце','У меня болит сердце|У мене болить серце','❤️'),
- L('Живот|Живіт','У меня болит живот|У мене болить живіт','🤢'),L('Спина|Спина','У меня болит спина|У мене болить спина','🧍')]},
-{id:'ppl',col:'#2F855A',l:'Люди|Люди',s:'Я хочу поговорить|Я хочу поговорити',e:'👥',c:[
- L('Позвонить|Подзвонити','Я хочу позвонить|Я хочу подзвонити','📱'),L('Врач|Лікар','Мне нужен врач|Мені потрібен лікар','👩‍⚕️'),
- L('Тишина|Тиша','Я хочу побыть в тишине|Я хочу побути в тиші','🤫')]}
+{id:'drink',col:'#2B6CB0',l:'Пить|Пити|Drink',s:'Я хочу пить|Я хочу пити|I want to drink',e:'🥤',c:[
+ L('Вода|Вода|Water','Я хочу воды|Я хочу води|I want water','💧'),L('Чай|Чай|Tea','Я хочу чай|Я хочу чай|I want tea','🍵'),L('Кофе|Кава|Coffee','Я хочу кофе|Я хочу каву|I want coffee','☕'),
+ L('Сок|Сік|Juice','Я хочу сок|Я хочу сік|I want juice','🧃'),L('Молоко|Молоко|Milk','Я хочу молоко|Я хочу молоко|I want milk','🥛')]},
+{id:'eat',col:'#C27C0E',l:'Есть|Їсти|Eat',s:'Я хочу есть|Я хочу їсти|I want to eat',e:'🍽️',c:[
+ L('Суп|Суп|Soup','Я хочу суп|Я хочу суп|I want soup','🍲'),L('Каша|Каша|Porridge','Я хочу кашу|Я хочу кашу|I want porridge','🥣'),L('Хлеб|Хліб|Bread','Я хочу хлеб|Я хочу хліб|I want bread','🍞'),
+ L('Мясо|М\'ясо|Meat','Я хочу мясо|Я хочу м\'ясо|I want meat','🍗'),L('Фрукты|Фрукти|Fruit','Я хочу фрукты|Я хочу фрукти|I want fruit','🍎')]},
+{id:'wc',col:'#0F8B8D',l:'Туалет|Туалет|Toilet',s:'Мне нужно в туалет|Мені потрібно в туалет|I need the toilet',e:'🚻',c:[
+ L('Туалет|Туалет|Toilet','Мне нужно в туалет|Мені потрібно в туалет|I need the toilet','🚽'),L('Умыться|Вмитися|Wash up','Я хочу умыться|Я хочу вмитися|I want to wash my face','🚿'),
+ L('Душ|Душ|Shower','Я хочу в душ|Я хочу в душ|I want to take a shower','🛁')]},
+{id:'pain',col:'#B3261E',crit:1,l:'Болит|Болить|Hurts',s:'У меня что-то болит|У мене щось болить|Something hurts',e:'🤕',c:[
+ L('Голова|Голова|Head','У меня болит голова|У мене болить голова|My head hurts','🧠'),L('Сердце|Серце|Heart','У меня болит сердце|У мене болить серце|My heart hurts','❤️'),
+ L('Живот|Живіт|Stomach','У меня болит живот|У мене болить живіт|My stomach hurts','🤢'),L('Спина|Спина|Back','У меня болит спина|У мене болить спина|My back hurts','🧍')]},
+{id:'ppl',col:'#2F855A',l:'Люди|Люди|People',s:'Я хочу поговорить|Я хочу поговорити|I want to talk',e:'👥',c:[
+ L('Позвонить|Подзвонити|Call','Я хочу позвонить|Я хочу подзвонити|I want to make a call','📱'),L('Врач|Лікар|Doctor','Мне нужен врач|Мені потрібен лікар|I need a doctor','👩‍⚕️'),
+ L('Тишина|Тиша|Quiet','Я хочу побыть в тишине|Я хочу побути в тиші|I want some quiet','🤫')]}
 ];
+
 
 /* ---------- Лёгкий режим: конструктор фраз (L3 / L4 / L5) ----------
    Формат строки:  эмодзи  части по-русски = части по-украински
@@ -847,32 +907,479 @@ const CORPUS=`
 // Эмодзи для самых частых начал фраз
 const SE={'Я хочу':'🙋','Я не хочу':'🙅','Мне нужно':'❗','Мне нужен':'❗','Мне нужна':'❗','Мне нужны':'❗','Дай мне':'🤲','Принеси мне':'🎁','Помоги мне':'🤝','У меня':'👤','Мне':'💭','Меня':'💭','Где':'📍','Когда':'🕒','Кто':'🧑','Что':'❔','Как':'🤔','Какой':'📅','Какое':'📅','Который':'🕒','Куда':'🧭','Сколько':'🔢','Почему':'🤷','Давай':'👐','Включи':'🔛','Выключи':'📴','Сделай':'🛠️','Открой':'🪟','Закрой':'🚪','Позвоните':'📞','Вызовите':'🚑','Напиши':'💬','Набери':'📞','Купи':'🛒','Нужно':'❗','На улице':'🌦️','Я':'🙋','Напомни':'⏰','Покажи':'👀','Я уже':'✅','Я ещё не':'⏳','Таблетки':'💊','Говорите':'🗣️','Подождите':'✋','Повторите':'🔁','Спасибо':'🙏','Проходите':'👋','Садитесь':'🪑','Хотите':'❓','Дайте':'🤲','Вот':'👉','Помогите':'🙏','Объясните':'💡','Напишите':'📝','Алло':'📞'};
 
+const CORPUS_EN=`
+## food|Food and drink|🍽️|#C27C0E
+🥤 I want/to drink/water
+🍵 I want/to drink/tea
+🍋 I want/to drink/tea/with lemon
+☕ I want/to drink/coffee
+☕ I want/to drink/coffee/with milk
+☕ I want/to drink/coffee/without sugar
+☕ I want/to drink/coffee/with milk/after lunch
+🧃 I want/to drink/juice
+🥛 I want/to drink/milk
+🍲 I want/to eat/soup
+🥣 I want/to eat/porridge
+🍞 I want/to eat/bread
+🍞 I want/to eat/bread/with butter
+🍗 I want/to eat/meat
+🍗 I want/to eat/meat/with potatoes
+🐟 I want/to eat/fish
+🥚 I want/to eat/eggs
+🍎 I want/to eat/fruit
+🍰 I want/to eat/something/sweet
+🍲 I want/to eat/soup/for lunch/later
+➕ I want/more
+🙅 I don't want/to eat
+🙅 I don't want/to drink
+✋ That's/enough, thanks
+😋 This is/very tasty
+😋 I am/very/hungry
+🥄 Give me/a spoon
+🍴 Give me/a fork
+🧻 Give me/a napkin
+🥤 Give me/a glass/of water
+🍳 I have already/had/breakfast
+🍲 I have already/had/lunch
+🍽️ I have already/had/dinner
+🍽️ I have already/eaten
+🍲 I have already/eaten/soup
+🍵 I have already/had/tea
+🍳 I haven't/had/breakfast yet
+🍲 I haven't/had/lunch yet
+
+## pain|Health|🩺|#B3261E|1
+🤕 My/head/hurts
+🤕 My/head/hurts/badly
+🤕 My/head/hurts/since morning
+❤️ My/heart/hurts
+❤️ My/heart/hurts/badly
+🤢 My/stomach/hurts
+🧍 My/back/hurts
+🧍 My/back/hurts/when/I move
+🦵 My/leg/hurts
+💪 My/arm/hurts
+🗣️ My/throat/hurts
+🦷 My/tooth/hurts
+😵 My/head/is spinning
+🖐️ My/arm/is numb
+🦶 My/leg/is numb
+😶 My/face/is numb
+😮 I have/trouble/breathing
+🤮 I feel/sick
+🤒 I feel/unwell
+💊 I need/to take/medicine
+💊 I need/to take/a pill/for blood pressure
+💊 I need/to take/a pill/for pain
+🩸 I need/to check/my blood pressure
+🌡️ I need/to check/my temperature
+🩺 I need/a doctor
+🚑 Please/call/an ambulance
+📞 Please/call/the doctor/as soon as possible
+
+## meds|Medicines|💊|#B7791F|1
+💊 I have already/taken/my medicine
+💊 I have already/taken/my pills
+💊 I have already/taken/my morning pills
+💊 I have already/taken/my afternoon pills
+💊 I have already/taken/my evening pills
+💊 I have already/taken/my morning pills/after eating
+💊 I have already/taken/my morning pills/before eating
+💊 I have already/taken/my evening pills/after eating
+💊 I have already/taken/a pill/for blood pressure
+💊 I have already/taken/a pill/for pain
+💊 I have already/taken/my heart pills
+💊 I have already/taken/my vitamins
+⏳ I haven't/taken/my medicine/yet
+⏳ I haven't/taken/my morning pills/yet
+⏳ I haven't/taken/my evening pills/yet
+⏳ I haven't/taken/a pill/for blood pressure/yet
+🤔 I forgot/to take/my medicine
+🤔 I forgot/to take/a pill/for blood pressure
+⏰ I need/to take/my morning pills
+⏰ I need/to take/my evening pills
+⏰ I need/to take/a pill/before eating
+⏰ I need/to take/a pill/at night
+🤲 Give me/my pills
+🤲 Give me/my morning pills
+🤲 Give me/my evening pills
+💧 Give me/water/to take/my pill
+🩸 I have already/measured/my blood pressure
+🌡️ I have already/measured/my temperature
+❗ My pills/have run out
+🛒 We need/to buy/pills/for blood pressure
+❓ Which/pills/should I/take/now
+❓ How many/pills/should I/take
+❓ When/should I/take/my pills
+
+## feel|Feelings|🌡️|#6B46C1
+🥶 I feel/cold
+🥵 I feel/hot
+😮 It's/stuffy/in here
+😴 I feel like/sleeping
+😪 I feel/very/sleepy
+😫 I am/very/tired
+💤 I slept/badly/last night
+💤 I slept/well/last night
+🙂 I feel/better
+😟 I feel/worse
+😊 I feel/good
+🛌 I need/to rest
+🛌 I need/to lie down/for a while
+🍃 I need/fresh air
+
+## home|Home|🏠|#2F855A
+💡 Turn on/the light
+💡 Turn off/the light
+💡 Turn on/the light/in the room
+💡 Turn on/the light/in the room/because/it is dark
+💡 The light/is/too bright
+📺 Turn on/the TV
+📺 Turn off/the TV
+🔊 Turn/the volume/up
+🔉 Turn/the volume/down
+🪟 Open/the window
+🪟 Close/the window
+🚪 Close/the door
+🔥 Make it/warmer
+❄️ Make it/cooler
+🛏️ I want/to lie down/in bed
+🛏️ I want/to lie down/in bed/to sleep/a little
+🛋️ I want/to sit/in the armchair
+🛋️ I want/to sit/on the sofa
+🧹 We need/to clean/the room
+🧺 We need/to do/the laundry
+🍳 Let's/cook/lunch/together
+🔌 Please/charge/my phone
+
+## care|Hygiene and clothes|🚿|#0F8B8D
+🚽 I need/to go/to the toilet
+🚽 I need/to go/to the toilet/urgently
+🚿 I want/to take/a shower
+🛁 I want/to take/a bath
+🧼 I want/to wash/my face
+🪥 I want/to brush/my teeth
+💇 I want/to comb/my hair
+🪒 I need/to shave
+🧼 I need/to wash/my hands
+👕 I want/to change/my clothes
+👕 I want/to put on/a T-shirt
+🧶 I want/to put on/a warm/sweater
+🧦 I want/to put on/socks
+👟 I want/to put on/shoes
+🧴 I need/help/in the bathroom
+🪥 I have already/brushed/my teeth
+🚿 I have already/taken/a shower
+🧼 I have already/washed/my face
+👕 I have already/changed/my clothes
+🚽 I have already/been/to the toilet
+
+## req|Requests|🙏|#2B6CB0
+🤝 Help me/to stand up
+🤝 Help me/to stand up/because/I am/weak
+🤝 Help me/to sit down
+🤝 Help me/to get dressed
+🤝 Help me/to wash
+🤝 Help me/to walk/to the toilet
+🤝 Help me/to find/my glasses
+🤝 Help me/to make/a call
+👓 Bring me/my glasses
+💊 Bring me/my medicine
+📱 Bring me/my phone
+🧣 Bring me/a blanket
+💧 Bring me/water
+💧 Bring me/water/please
+📖 Bring me/a book
+✋ Wait/a minute
+🔁 Please/repeat
+🐢 Speak/more slowly
+🤫 Don't/rush/me
+
+## family|Family and loved ones|👪|#B83280
+📱 I want/to call/my daughter
+📱 I want/to call/my son
+📱 I want/to call/my grandchildren
+📱 I want/to call/my brother
+📱 I want/to call/my sister
+📱 I want/to call/my friend
+📱 I want/to call/my daughter/in the evening
+👪 I want/to see/my grandchildren
+👪 I want/to see/my children
+🏠 I want/you/to come/over
+🎂 I want/to congratulate/my grandson/on his birthday
+🎁 I want/to give/a present/to my granddaughter
+👋 Let them/come/to visit/on Saturday
+📸 Show me/photos/of the grandchildren
+💬 Give/my love/to everyone
+🍲 Let's/have/lunch/all together
+📞 I have already/called/my daughter
+📞 I have already/called/my son
+📞 I have already/called/the doctor
+👪 My daughter/has already/called/me
+👪 The children/have already/visited/us
+
+## phone|Phone and contact|📱|#1E3A8A
+📞 Dial/the number
+📞 Dial/my daughter's/number
+📞 Dial/my son's/number
+📱 Give me/the phone
+🔊 Turn on/speakerphone
+💬 Send/a message/to my daughter
+💬 Send/a message/to my son
+💬 Send/a message/that I will/call later
+📵 I/can't/talk/on the phone
+📲 Call/me/later
+🔋 The phone/needs/charging
+🔕 Make/the ringtone/quieter
+
+## walk|Walks and trips|🚶|#6B7A12
+🚶 I want/to go/for a walk
+🌳 I want/to go/to the park
+🌳 I want/to go/to the park/after lunch
+🏪 I want/to go/to the store
+⛪ I want/to go/to church
+🏠 I want/to go/home
+🌤️ I want/to get/some fresh air
+🏥 I need/to go/to the hospital
+🧥 I need/to put on/a jacket
+🦯 Give me/my cane
+🚶 Give me/my walker
+🪑 Let's/sit/in the yard
+🛑 Let's/stop/and rest/for a while
+🚗 Let's/go/by car/to my daughter's
+🌧️ It's/raining/outside
+☀️ It's/sunny/outside
+❄️ It's/cold/outside
+🌡️ It's/warm/outside
+🚶 I have already/been/for a walk/today
+
+## shop|Shopping|🛒|#8A6D00
+🍞 I need/to buy/bread
+🥛 I need/to buy/milk
+💊 I need/to buy/medicine
+💊 I need/to buy/medicine/at the pharmacy
+🛒 I need/to buy/groceries
+🛒 I need/to buy/groceries/for the week
+🥿 I need/new/slippers
+👓 I need/new/glasses
+🍞 Buy me/bread
+💊 Buy me/medicine/at the pharmacy
+🍞 Buy me/bread/and milk/on the way
+💳 I want/to pay/by card
+💵 I want/to pay/in cash
+🏪 Let's/go/to the store/together
+🧾 This is/too/expensive
+📝 Add/to the list/bread
+
+## fun|Leisure and interests|📺|#7B3FA0
+📺 I want/to watch/TV
+📰 I want/to watch/the news
+🎬 I want/to watch/a movie
+🎬 I want/to watch/a movie/together/with you
+⚽ I want/to watch/football
+🎵 I want/to listen/to music
+📻 I want/to listen/to the radio
+📖 I want/to read/a book
+📰 I want/to read/the newspaper
+🎨 I want/to draw
+🌱 I want/to work/in the garden
+🎣 I want/to go/fishing
+🏡 I want/to go/to the country house
+🧩 Let's/play/checkers
+🃏 Let's/play/cards
+🧩 Let's/solve/a crossword
+📷 Let's/look at/photos
+🎶 Let's/sing/a song
+🎵 Play/my/favorite/song
+
+## mood|Talking and feelings|💬|#97266D
+🙏 Thank you/very much
+❤️ I/love/you
+🤗 I am/glad/to see/you
+😊 It's good/that/you/came
+🎉 Happy/holiday/to you
+🙇 I'm/sorry
+😢 I feel/sad
+😨 I feel/scared
+😟 I am/worried
+🤫 I need/some/peace
+🤫 I want/to be/in silence
+🧠 It is/hard/for me/to remember/the word
+🧠 I/can't/find/the right word
+🧠 I need/time/to think
+🐢 Please/speak/more slowly
+👂 I/understand/you
+❓ I/don't/understand
+✅ Yes/exactly/that
+❌ No/it is/not/that word
+🔁 Please/repeat
+
+## plan|Plans and time|🕒|#744210
+🕒 I want/to do/this/now
+🕒 Let's/do/this/later
+🕒 Let's/do/this/tomorrow
+⏳ I/need/to wait
+📅 Tomorrow/the doctor/is coming
+📅 Tomorrow/I need/to see the doctor
+📅 On Sunday/the children/are coming
+⏰ Wake me/up/in the morning
+⏰ Remind me/to take/my medicine
+⏰ Remind me/to call/my daughter
+🛌 I want/to sleep/after lunch
+🕰️ It was/yesterday
+🕰️ It was/a long time ago
+🕰️ It was/last week
+🗓️ It will be/tomorrow
+
+## ask|Questions|❓|#2C7A7B
+👓 Where/are/my glasses
+📱 Where/is/my phone
+💊 Where/are/my pills
+👩 Where/is/my daughter
+🕒 What/time/is it
+📅 What/day/is it today
+📅 What/is/the date/today
+🩺 When/is/the doctor/coming
+👪 When/are/the children/coming
+🍲 When/is/lunch
+🚪 Who/came/today
+📞 Who/called/me
+🩺 What/did/the doctor/say
+👉 What/is/this
+🍲 What/is/for dinner
+🗓️ What/are/we/doing/today
+🚗 Where/are/we/going
+🏷️ How much/does/this/cost
+⏳ Why/is it/taking/so long
+🤔 How/are/you/feeling
+👪 How/are/the/children
+
+## money|Money and documents|💳|#4A5568
+💳 Where/is/my card
+📄 Where/are/my documents
+💳 I need/to pay/the rent
+💡 I need/to pay/for electricity/and gas
+💰 I need/to collect/my pension
+🏦 I need/to go/to the bank
+✉️ I need/to send/a letter
+📄 I need/a certificate/from the doctor
+🛂 I need/my passport
+🧾 Show me/the receipt
+💰 I/don't have/enough money
+
+## sc_doc|Doctor visit|🏥|#3182CE||scenes
+🏥 I am/here for/my appointment
+🗣️ It is/hard/for me/to speak/after the stroke
+🐢 Please/speak/slowly
+⏳ Wait/I am/thinking
+🤕 My head/has been/hurting/for several days
+❤️ My heart/has been/hurting/for several days
+🧍 My back/has been/hurting/for a week
+🤢 My stomach/has been/hurting/for a week
+💊 I am/taking/these/medicines
+💊 Please explain/how to take/this medicine
+📝 Please/write/it down/for me
+🔁 Please/repeat
+❓ What/should/I do
+❓ When/should/I come/again
+📄 I need/a prescription
+📄 I need/a referral/to a specialist
+
+## sc_pharm|Pharmacy|💊|#B7791F||scenes
+💊 I need/pills/for blood pressure
+💊 I need/pills/for headaches
+💊 I need/pills/for the heart
+💊 I need/vitamins
+📄 I have/a prescription
+📄 Here is/my/prescription
+❓ How much/does/this/cost
+❓ How/do I/take/this
+❓ Is there/something/cheaper
+❓ Can I/take/this/with/my other medicines
+💳 I will/pay/by card
+💵 I will/pay/in cash
+🧾 Please/give me/a receipt
+🛍️ I need/a bag
+
+## sc_shop|At the store|🛒|#8A6D00||scenes
+📍 Where/is/the bread
+📍 Where/is/the milk
+📍 Where/is/the checkout
+🙏 I need/help
+🔎 Help me/find/bread
+🔎 Help me/find/milk
+❓ How much/does/this/cost
+🧾 This is/too/expensive
+🛍️ Give me/a bag
+💳 I will/pay/by card
+🪑 I need/to sit down
+👛 Wait/I am/looking for/my wallet
+🙏 Thank you/goodbye
+
+## sc_guest|Guests|👋|#B83280||scenes
+👋 Please/come in
+🪑 Please/sit down
+☕ Would you/like/tea/or coffee
+🍪 Would you/like/something/to eat
+😊 I am/glad/to see/you
+💬 How/are/you
+💬 Tell me/how your/children are
+🙏 Thank you/for/coming
+👋 Come/again/soon
+😪 I am/a little/tired
+🐢 Please/speak/more slowly
+💬 Say hello/to your/family
+
+## sc_call|Phone call|📞|#1E3A8A||scenes
+📞 Hello/it's/me
+🗣️ It is/hard/for me/to talk/on the phone
+🐢 Please/speak/more slowly
+✋ Wait/a minute
+👂 I/can't/hear you/well
+🔁 Please/repeat
+📲 Call me/later/please
+📲 I will/call back/later
+💬 Say hello/to everyone
+💬 How/are/you
+🙏 Thank you/for/calling
+👋 All/the best
+`;
+const SEE={'I want':'🙋',"I don't want":'🙅','I need':'❗','Give me':'🤲','Bring me':'🎁','Help me':'🤝','My':'👤','I feel':'💭','Where':'📍','When':'🕒','Who':'🧑','What':'❔','How':'🤔','How much':'🔢','Why':'🤷','Let\'s':'👐','Turn on':'🔛','Turn off':'📴','Please':'🙏','Wait':'✋','Show me':'👀','I have already':'✅',"I haven't":'⏳','Thank you':'🙏','I am':'🙋','Would you':'☕','Buy me':'🛒','Remind me':'⏰','It was':'🕰️','It\'s':'🌦️','Dial':'📞','Send':'💬','Hello':'📞','Open':'🪟','Close':'🚪','I forgot':'🤔','Tomorrow':'📅','Call':'📲'};
+
 function buildPhraseTree(lv){
+  const EN=lang==='en';
   const {n,max}=BL[lv],topics=[],idx={},groups={};let cur=null;
-  CORPUS.split('\n').forEach(raw=>{
+  (EN?CORPUS_EN:CORPUS).split('\n').forEach(raw=>{
     const line=raw.trim();if(!line)return;
     if(line.startsWith('##')){
-      const [id,ru,uk,e,col,crit,grp]=line.slice(2).split('|').map(x=>x.trim());
-      cur={id,col,l:ru+'|'+uk,s:ru+'|'+uk,e,c:[],tp:1};if(crit)cur.crit=1;
+      const f=line.slice(2).split('|').map(x=>x.trim());
+      let id,name,e,col,crit,grp;
+      if(EN){[id,name,e,col,crit,grp]=f}else{let ru,uk;[id,ru,uk,e,col,crit,grp]=f;name=ru+'|'+uk}
+      cur={id,col,l:name,s:name,e,c:[],tp:1};if(crit)cur.crit=1;
       if(grp){                                   // тема внутри группы (например, «Ситуации»)
         let g=groups[grp];
-        if(!g){g=groups[grp]={id:grp,col:'#5A5A8A',l:'Ситуации|Ситуації',s:'Ситуации|Ситуації',e:'🎭',c:[],tp:1};topics.push(g)}
+        const gn=EN?'Situations':'Ситуации|Ситуації';
+        if(!g){g=groups[grp]={id:grp,col:'#5A5A8A',l:gn,s:gn,e:'🎭',c:[],tp:1};topics.push(g)}
         g.c.push(cur);
       }else topics.push(cur);
       return;
     }
-    const sp=line.indexOf(' '),e=line.slice(0,sp),[ru,uk]=line.slice(sp+1).split(' = ');
-    let a=ru.split('/'),b=uk.split('/');
+    const sp=line.indexOf(' '),e=line.slice(0,sp);
+    let a,b;
+    if(EN){a=line.slice(sp+1).split('/');b=a.slice()}
+    else{const [ru,uk]=line.slice(sp+1).split(' = ');a=ru.split('/');b=uk.split('/')}
     if(a.length>max)return;                       // слишком длинная фраза для этого уровня
     if(a.length>n){                                // склеиваем «хвост» в одну плитку
       a=[...a.slice(0,n-1),a.slice(n-1).join(' ')];
       b=[...b.slice(0,n-1),b.slice(n-1).join(' ')];
     }
+    const SEM=EN?SEE:SE;
     let node=cur,id=cur.id;
     a.forEach((p,k)=>{
       id+='>'+p;let ch=idx[id];
-      if(!ch){ch={id,l:p+'|'+b[k],s:p+'|'+b[k],e:(k===0&&SE[p])||e,c:[]};idx[id]=ch;node.c.push(ch)}
-      if(k===a.length-1&&!(k===0&&SE[p]))ch.e=e;
+      const lab=EN?p:p+'|'+b[k];
+      if(!ch){ch={id,l:lab,s:lab,e:(k===0&&SEM[p])||e,c:[]};idx[id]=ch;node.c.push(ch)}
+      if(k===a.length-1&&!(k===0&&SEM[p]))ch.e=e;
       node=ch;
     });
   });
@@ -887,7 +1394,7 @@ function getTreeForLevel(){
 }
 
 // Ключ хранения. Для конструктора — новый ключ, чтобы не подхватить старые правки прежнего «Лёгкого» уровня
-const tk=()=>(isB()?'aac.tree2_':'aac.tree_')+settings.level;
+const tk=()=>(isB()?'aac.tree2_':'aac.tree_')+settings.level+(isB()&&lang==='en'?'_en':'');
 
 let tree = ld(tk(), null) || getTreeForLevel();
 let use = ld('aac.use', {});
@@ -906,12 +1413,12 @@ const bump=id=>{use[id]={n:score(id)+1,t:Date.now()};try{localStorage.setItem('a
 // Фраза, собранная по цепочке плиток (без плиток-тем): «ru|uk»
 const tpIdx=ch=>{let k=-1;ch.forEach((n,i)=>{if(n.tp)k=i});return k};
 const parts=ch=>ch.slice(Math.max(tpIdx(ch),0)+1);
-const phr=ch=>{const a=parts(ch).map(n=>String(n.s||'').split('|'));return a.map(x=>x[0]).join(' ')+'|'+a.map(x=>x[1]||x[0]).join(' ')};
+const phr=ch=>{const a=parts(ch).map(n=>String(n.s||'').split('|'));return [0,1,2].map(i=>a.map(x=>x[i]||x[0]).join(' ')).join('|')};
 const synth=ch=>{const n=ch[ch.length-1],p=phr(ch);return {id:n.id,l:p,s:p,e:n.e}};
 
 /* ---------- Синтез речи (SpeechSynthesis) ---------- */
 // Голос подходит, если его язык совпадает с текущим языком интерфейса (ru-RU, uk-UA, ru_RU ...)
-const voiceOk=v=>v.lang.toLowerCase().replace('_','-').startsWith(lang==='uk'?'uk':'ru');
+const voiceOk=v=>v.lang.toLowerCase().replace('_','-').startsWith(lang);
 function getVoices(){
   if(!('speechSynthesis' in window)) return [];
   return speechSynthesis.getVoices();
@@ -921,7 +1428,7 @@ function speak(txt,f){
   if(!('speechSynthesis' in window))return;
   speechSynthesis.cancel();
   const m = new SpeechSynthesisUtterance(txt);
-  m.lang = lang === 'uk' ? 'uk-UA' : 'ru-RU';
+  m.lang = {ru:'ru-RU',uk:'uk-UA',en:'en-US'}[lang];
   m.rate = Math.max(0.1, (parseFloat(settings.rate) || 0.85) * (f || 1));
   m.pitch = parseFloat(settings.pitch) || 1.0;
 
@@ -995,22 +1502,22 @@ function render(){
     if(n.c&&n.c.length){path.push(n);render()}
     else{const ch=[...path,n];ask(B&&parts(ch).length?synth(ch):n)}
   })));
-  if(!c&&settings.level!=='L1')g.append(tile({l:'Азбука|Абетка',e:'🔤'},{col:'#4A5568'},abcOpen));
+  if(!c&&settings.level!=='L1')g.append(tile({l:'Азбука|Абетка|ABC',e:'🔤'},{col:'#4A5568'},abcOpen));
   m.append(g);
 }
 
 /* ---------- Азбука: подсказка по первой букве ---------- */
-const ALPHA={ru:'абвгдежзийклмнопрстуфхцчшщэюя',uk:'абвгґдеєжзиіїйклмнопрстуфхцчшщюя'};
+const ALPHA={ru:'абвгдежзийклмнопрстуфхцчшщэюя',uk:'абвгґдеєжзиіїйклмнопрстуфхцчшщюя',en:'abcdefghijklmnopqrstuvwxyz'};
 function buildDict(){
   const cnt={};
   const add=txt=>String(txt).toLowerCase().split(/[\s,.!?…:;«»"()—–]+/).forEach(w=>{
     w=w.replace(/^[-'’ʼ]+|[-]+$/g,'');
     if(w.length>=2&&/^[\p{L}'’ʼ-]+$/u.test(w))cnt[w]=(cnt[w]||0)+1;
   });
-  CORPUS.split('\n').forEach(raw=>{
+  (lang==='en'?CORPUS_EN:CORPUS).split('\n').forEach(raw=>{
     const line=raw.trim();if(!line||line.startsWith('##'))return;
     const p=line.slice(line.indexOf(' ')+1).split(' = ');
-    add(G(lang==='uk'?p[1]:p[0]).replace(/\//g,' '));
+    add(G(p[lang==='uk'?1:0]).replace(/\//g,' '));
   });
   flat().forEach(x=>{add(t(x.n.l));add(t(x.n.s))});
   return Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]||a.localeCompare(b,lang));
@@ -1052,8 +1559,28 @@ function renderAbc(){
 }
 
 /* ---------- Слоги (примерное деление) ---------- */
-const VOW={ru:'аеёиоуыэюя',uk:'аеєиіїоуюя'};
+const VOW={ru:'аеёиоуыэюя',uk:'аеєиіїоуюя',en:'aeiouy'};
+// Английский: группы гласных считаются одним слогом, конечное «e» после согласной не читается
+function enSyllables(word){
+  const lw=word.toLowerCase(),isV=i=>VOW.en.includes(lw[i]),nuc=[];
+  for(let i=0;i<lw.length;){
+    if(isV(i)){let j=i;while(j<lw.length&&isV(j))j++;nuc.push([i,j]);i=j}else i++;
+  }
+  const last=nuc[nuc.length-1];
+  if(nuc.length>1&&last[1]===lw.length&&lw[last[0]]==='e'&&last[1]-last[0]===1&&last[0]>0&&!isV(last[0]-1)&&lw.length>3)nuc.pop();
+  if(nuc.length<2)return [word];
+  const cuts=[];
+  for(let k=0;k<nuc.length-1;k++){
+    const a=nuc[k][1],b=nuc[k+1][0],n=b-a;
+    cuts.push(n<=1?b-n:a+1);
+  }
+  const out=[];let from=0;
+  cuts.forEach(c=>{out.push(word.slice(from,c));from=c});
+  out.push(word.slice(from));
+  return out.filter(Boolean);
+}
 function syllables(word){
+  if(lang==='en')return enSyllables(word);
   const lw=word.toLowerCase(),V=VOW[lang],idx=[];
   for(let i=0;i<lw.length;i++)if(V.includes(lw[i]))idx.push(i);
   if(idx.length<2)return [word];
@@ -1191,11 +1718,16 @@ function applyUI(){
 }
 
 $('#home').onclick=()=>{closeOv();abc=null;path=[];render()};
+const NEXT_LANG={ru:'uk',uk:'en',en:'ru'};
 $('#lang').onclick=()=>{
-  lang=lang==='ru'?'uk':'ru';
+  const wasEn=lang==='en';
+  lang=NEXT_LANG[lang];
   localStorage.setItem('aac.lang',lang);
   $('#lang').textContent=lang.toUpperCase();
   document.documentElement.lang=lang;
+  // английские фразы лёгких уровней строятся по английской грамматике и лежат в отдельном дереве
+  if(isB()&&wasEn!==(lang==='en')){tree=ld(tk(),null)||getTreeForLevel();path=[];sel='';edCtx=''}
+  if(abc){abc={prefix:'',line:[],dict:buildDict()}}
   labels();applyI18n();closeOv();populateVoices();render();
 };
 
@@ -1267,7 +1799,7 @@ $('#closeSettBtn').onclick = () => {
 
 /* ---------- Дневник общения: экран ---------- */
 const diaryEl=$('#diary');
-const locale=()=>uiL()==='uk'?'uk-UA':'ru-RU';
+const locale=()=>({ru:'ru-RU',uk:'uk-UA',en:'en-GB'}[uiL()]);
 const fmtDT=ts=>new Date(ts).toLocaleString(locale(),{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
 const dayKey=ts=>{const d=new Date(ts);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 function diaryStats(){
@@ -1342,6 +1874,8 @@ let edCtx='';                                   // раздел, в которо
 $('#gear').onclick = () => openEd();
 const find=id=>{let r=null;const w=(l)=>l.forEach(n=>{if(n.id===id)r={n,l};if(n.c)w(n.c)});w(tree);return r};
 // Редактор открывается в разделе, который сейчас открыт на экране
+// Языки, в которых хранятся тексты плиток текущего дерева
+const edLangs=()=>isB()?(lang==='en'?['en']:['ru','uk']):['ru','uk','en'];
 function openEd(){
   edCtx=(!abc&&path.length)?path[path.length-1].id:'';
   sel='';ed.style.display='block';ed.scrollTop=0;drawEd();
@@ -1372,21 +1906,26 @@ function drawEd(){
 
   const f=sel&&find(sel);
   const fld=(lb,val)=>{const i=h('input');i.type='text';i.value=val;ed.append(h('label',null,lb),i);return i};
-  let ir,iu,sr,su,ie;
+  const LS=edLangs(), one=LS.length===1;
+  const pick=(str,c)=>{const p=String(str||'').split('|');return p[one?0:LI_IDX[c]]||''};
+  const join=vals=>one?vals[0]:LS.map((c,i)=>vals[i]).join('|');
+  let fl=[],fp=[],ie;
   if(f){
-    const n=f.n,[lr,lu]=(n.l||'').split('|'),[a,b]=(n.s||'').split('|');
-    ir=fld(uh('e_nl'),lr||'');iu=fld(uh('e_nu'),lu||'');
-    sr=fld(uh('e_pl'),a||'');su=fld(uh('e_pu'),b||'');ie=fld(uh('e_em'),n.e||'');
+    const n=f.n;
+    fl=LS.map(c=>fld(uh('e_name')+' ('+uh('ln_'+c)+')',pick(n.l,c)));
+    fp=LS.map(c=>fld(uh('e_phrase')+' ('+uh('ln_'+c)+')',pick(n.s,c)));
+    ie=fld(uh('e_em'),n.e||'');
   }
   const r=h('div','row');
   if(f){
-    r.append(h('button',null,uh('e_save'),()=>{const n=f.n;n.l=ir.value+'|'+iu.value;n.s=sr.value+'|'+su.value;n.e=ie.value;save();drawEd()}));
+    r.append(h('button',null,uh('e_save'),()=>{const n=f.n;n.l=join(fl.map(i=>i.value));n.s=join(fp.map(i=>i.value));n.e=ie.value;save();drawEd()}));
     r.append(h('button','d',uh('e_del'),()=>{if(confirm(uh('e_cdel'))){f.l.splice(f.l.indexOf(f.n),1);sel='';save();drawEd()}}));
   }
   ed.append(r);
   const ra=h('div','row');
   ra.append(h('button',null,uh('e_add'),()=>{
-    const n={id:'n'+Date.now(),l:'Новая|Нова',s:(isB()?'слово|слово':'Я хочу|Я хочу'),e:'💬'};
+    const mk=(ru,uk,en)=>{const v={ru,uk,en};return edLangs().map(c=>v[c]).join('|')};
+    const n={id:'n'+Date.now(),l:mk('Новая','Нова','New'),s:isB()?mk('слово','слово','word'):mk('Я хочу','Я хочу','I want'),e:'💬'};
     if(kids.some(k=>k.tp))n.tp=1;               // тема верхнего уровня или тема внутри группы
     if(cf){(cf.n.c=cf.n.c||[]).push(n)}else{n.col='#1E3A8A';tree.push(n)}
     sel=n.id;save();drawEd();
@@ -1435,7 +1974,7 @@ function applyI18n(){
   document.title=u('title');
   fill('#setSeg',Object.entries(uh('lvl')),settings.level);
   fill('#setGender',[['f',uh('g_f')],['m',uh('g_m')]],settings.gender);
-  fill('#setUiLang',[['auto',uh('ui_auto')],['ru','Русский'],['uk','Українська']],settings.uiLang);
+  fill('#setUiLang',[['auto',uh('ui_auto')],['ru','Русский'],['uk','Українська'],['en','English']],settings.uiLang);
   fill('#setTheme',[['dark',uh('th_dark')],['light',uh('th_light')]],settings.theme);
   fill('#setSize',[['m',uh('sz_m')],['l',uh('sz_l')],['xl',uh('sz_xl')]],settings.size);
   fill('#setGuard',[['0',uh('gd_0')],['400',uh('gd_400')],['800',uh('gd_800')],['1500',uh('gd_1500')]],String(settings.guard));
