@@ -99,7 +99,12 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 .modal input[type=checkbox]{width:26px;height:26px;flex:none;margin-top:1px}
 .modal button.wide{width:100%;margin:6px 0}
 .ans.sm{min-height:64px;font-size:clamp(18px,5.4vw,22px)}
+.tile{position:relative}
 .tile.armed{outline:5px solid #F2B705;outline-offset:2px}
+.tile.del{border-style:dashed}
+.tile.del::after{content:'✖';position:absolute;top:6px;right:10px;font-size:24px;color:#B3261E}
+.sec.fh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.mini{min-height:44px;min-width:44px;padding:0 12px;border-radius:12px;background:var(--card-bg);border:2px solid var(--border);color:var(--ink);font-size:18px;font-weight:700}
 [data-size="l"] .grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr))}
 [data-size="l"] .tile{min-height:170px;font-size:clamp(18px,5.6vw,26px)}
 [data-size="xl"] .grid{grid-template-columns:1fr}
@@ -209,7 +214,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 10;   // держите в соответствии с V = 'govorim-v10' в sw.js
+const APP_VERSION = 11;   // держите в соответствии с V = 'govorim-v11' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -245,7 +250,7 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
    ['Как собирать фразу в лёгком режиме','Выберите тему и нажимайте плитки по очереди: вверху растёт собранная фраза со знаком «…». Если человек не может вспомнить последнее слово, нажмите «Сказать так»: прозвучит то, что уже собрано, и собеседник сможет подсказать продолжение. Когда у плитки нет продолжения, появится вопрос для подтверждения.'],
    ['Уточнения «сейчас / потом / ещё / хватит»','В окне подтверждения эти кнопки добавляют слово к фразе, например «Я хочу чай сейчас». Повторное нажатие убирает уточнение.'],
    ['Пол говорящего','Чтобы фразы в прошедшем времени звучали правильно («выпила» или «выпил»), выберите пол в настройках.'],
-   ['Часто используемое','На главном экране показываются до четырёх самых частых фраз — так нужное находится быстрее.'],
+   ['Часто используемое','На главном экране показываются до четырёх самых частых фраз — так нужное находится быстрее. Чтобы убрать ненужную фразу, нажмите ✏️ рядом с заголовком «Часто» и коснитесь фразы; «Убрать все» очищает блок. Счётчик фразы обнуляется и начнёт набираться заново, только если её снова произнести.'],
    ['Здоровье и лекарства','Темы «Здоровье» и «Лекарства» просят второе подтверждение «Точно?», чтобы случайное нажатие не ввело в заблуждение. Приложение не заменяет врача. В опасной ситуации звоните 103 (скорая помощь) или 112.'],
    ['Голос и озвучка',['Озвучку делает синтезатор речи телефона. В настройках показываются только голоса выбранного языка интерфейса.','Если голосов нет: Настройки Android → Система → Язык и ввод → Синтез речи → Google → установите голосовые данные русского или украинского языка.','Лучше немного снизить скорость речи (0,7–0,85) — так проще разобрать слова. Кнопка «Проверить голос» позволяет послушать результат.']],
    ['Азбука (подсказка по первой букве)',['На главном экране последняя плитка — «Азбука» (кроме тяжёлого уровня).','Нажмите первую букву слова: появятся слова из словаря, которые с неё начинаются. Можно нажать следующую букву, чтобы сузить список.','Нажатие на слово добавляет его в строку фразы. «Сказать так» произносит всю строку, ⌫ убирает последнее слово.']],
@@ -270,7 +275,7 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
   e_tile:'Плитка',e_sec:'Раздел (сюда добавляются плитки)',e_tiles:'Плитка в этом разделе',e_pick:'— выберите плитку для изменения —',e_phr:'Фраза до этого места',e_main:'— Главный экран —',e_nl:'Название (русский)',e_nu:'Название (украинский)',e_pl:'Фраза (русский)',e_pu:'Фраза (украинский)',e_em:'Значок (эмодзи)',
   e_save:'Сохранить',e_del:'Удалить',e_add:'+ Добавить плитку в этот раздел',e_cdel:'Удалить плитку?',e_reset:'Сбросить уровень к стандартному',
   e_creset:'Вернуть стандартный набор плиток для этого уровня? Ваши правки будут удалены.',e_close:'Закрыть редактор',
-  e_name:'Название',e_phrase:'Фраза',ln_ru:'русский',ln_uk:'украинский',ln_en:'английский'},
+  f_edit:'Изменить список «Часто»',f_clear:'🗑️ Убрать все',f_done:'Готово',f_cclear:'Убрать все фразы из блока «Часто»?',f_hint:'Нажмите на фразу, чтобы убрать её из блока.',e_name:'Название',e_phrase:'Фраза',ln_ru:'русский',ln_uk:'украинский',ln_en:'английский'},
 uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні',back:'Назад',rep:'Повтор',help:'Допомога',pain:'Болить',sure:'Точно?',done:'Готово',cancel:'Скасувати',mods:['зараз','потім','ще','досить'],helpSay:'Допоможіть! Мені потрібна допомога!',helpTxt:'МЕНІ ПОТРІБНА ДОПОМОГА',
   built:'Ваша фраза',sayso:'Сказати так',cont:'Продовжте фразу — оберіть слово:',pick:'Оберіть тему:',ver:'Версія застосунку',
   aHome:'Додому',aLang:'Мова',aSet:'Налаштування',aEd:'Редактор',nomem:'Не вистачає пам’яті',testSay:'Це перевірка голосу',
@@ -300,7 +305,7 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
    ['Як збирати фразу в легкому режимі','Оберіть тему й натискайте плитки по черзі: угорі росте зібрана фраза зі знаком «…». Якщо людина не може згадати останнє слово, натисніть «Сказати так»: пролунає те, що вже зібрано, і співрозмовник зможе підказати продовження. Коли в плитки немає продовження, з’явиться запитання для підтвердження.'],
    ['Уточнення «зараз / потім / ще / досить»','У вікні підтвердження ці кнопки додають слово до фрази, наприклад «Я хочу чай зараз». Повторне натискання прибирає уточнення.'],
    ['Стать мовця','Щоб фрази в минулому часі звучали правильно («випила» чи «випив»), оберіть стать у налаштуваннях.'],
-   ['Часто вживане','На головному екрані показуються до чотирьох найчастіших фраз — так потрібне знаходиться швидше.'],
+   ['Часто вживане','На головному екрані показуються до чотирьох найчастіших фраз — так потрібне знаходиться швидше. Щоб прибрати непотрібну фразу, натисніть ✏️ поруч із заголовком «Часто» і торкніться фрази; «Прибрати всі» очищає блок. Лічильник фрази обнуляється й почне набиратися знову, лише якщо її знову вимовити.'],
    ['Здоров’я та ліки','Теми «Здоров’я» та «Ліки» просять друге підтвердження «Точно?», щоб випадкове натискання не ввело в оману. Застосунок не замінює лікаря. У небезпечній ситуації телефонуйте 103 (швидка допомога) або 112.'],
    ['Голос і озвучення',['Озвучення виконує синтезатор мовлення телефона. У налаштуваннях показуються лише голоси обраної мови інтерфейсу.','Якщо голосів немає: Налаштування Android → Система → Мова та введення → Синтез мовлення → Google → встановіть голосові дані російської або української мови.','Краще трохи знизити швидкість мовлення (0,7–0,85) — так легше розібрати слова. Кнопка «Перевірити голос» дає змогу послухати результат.']],
    ['Абетка (підказка за першою літерою)',['На головному екрані остання плитка — «Абетка» (крім важкого рівня).','Натисніть першу літеру слова: з’являться слова зі словника, що з неї починаються. Можна натиснути наступну літеру, щоб звузити список.','Натискання на слово додає його до рядка фрази. «Сказати так» вимовляє весь рядок, ⌫ прибирає останнє слово.']],
@@ -325,7 +330,7 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
   e_tile:'Плитка',e_sec:'Розділ (сюди додаються плитки)',e_tiles:'Плитка в цьому розділі',e_pick:'— оберіть плитку для зміни —',e_phr:'Фраза до цього місця',e_main:'— Головний екран —',e_nl:'Назва (російською)',e_nu:'Назва (українською)',e_pl:'Фраза (російською)',e_pu:'Фраза (українською)',e_em:'Значок (емодзі)',
   e_save:'Зберегти',e_del:'Видалити',e_add:'+ Додати плитку в цей розділ',e_cdel:'Видалити плитку?',e_reset:'Скинути рівень до стандартного',
   e_creset:'Повернути стандартний набір плиток для цього рівня? Ваші правки буде видалено.',e_close:'Закрити редактор',
-  e_name:'Назва',e_phrase:'Фраза',ln_ru:'російською',ln_uk:'українською',ln_en:'англійською'},
+  f_edit:'Змінити список «Часто»',f_clear:'🗑️ Прибрати всі',f_done:'Готово',f_cclear:'Прибрати всі фрази з блоку «Часто»?',f_hint:'Натисніть на фразу, щоб прибрати її з блоку.',e_name:'Назва',e_phrase:'Фраза',ln_ru:'російською',ln_uk:'українською',ln_en:'англійською'},
 en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep:'Repeat',help:'Help',pain:'Pain',sure:'Sure?',done:'Done',cancel:'Cancel',mods:['now','later','more','enough'],helpSay:'Help! I need help!',helpTxt:'I NEED HELP',
   built:'Your phrase',sayso:'Say it',cont:'Continue the phrase — choose a word:',pick:'Choose a topic:',ver:'App version',
   aHome:'Home',aLang:'Language',aSet:'Settings',aEd:'Editor',nomem:'Not enough storage',testSay:'This is a voice test',
@@ -346,7 +351,7 @@ en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep
   b_confirm:'Replace the current settings, edits and diary with the data from the file? This cannot be undone.',b_bad:'This file does not look like a backup of this app.',
   d_title:'📒 Communication diary',d_total:'Total phrases',d_days:'Days with entries',d_week:'Last 7 days',d_top:'Most frequent phrases',d_recent:'Recent phrases',d_empty:'No entries yet.',d_off:'The diary is turned off in Settings.',
   d_export:'⬇️ Save as text',d_clear:'🗑️ Clear the diary',d_cclear:'Delete the whole diary? This cannot be undone.',d_exp_title:'Let’s talk together — communication diary',
-  e_name:'Name',e_phrase:'Phrase',ln_ru:'Russian',ln_uk:'Ukrainian',ln_en:'English',
+  f_edit:'Edit the “Often” list',f_clear:'🗑️ Remove all',f_done:'Done',f_cclear:'Remove all phrases from the “Often” block?',f_hint:'Tap a phrase to remove it from the block.',e_name:'Name',e_phrase:'Phrase',ln_ru:'Russian',ln_uk:'Ukrainian',ln_en:'English',
   helpDoc:{title:'❓ Help',s:[
    ['What this app is for','The app helps people communicate with someone whose speech has been affected by a stroke (aphasia). Instead of searching for words, they just tap large tiles and the phone says the phrase aloud. Everything works without the internet.'],
    ['Quick start',['Choose a topic on the home screen (for example, “Food and drink”).','Tap tiles: the phrase is chosen step by step.','The app asks, for example, “I want tea?”. Tap “Yes” and the phrase is spoken; “No” cancels.','After it is spoken you can tap “Repeat” or “Done”.']],
@@ -356,7 +361,7 @@ en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep
    ['Building a phrase in the mild levels','Choose a topic and tap tiles one after another: the phrase grows at the top with “…”. If the person cannot recall the last word, tap “Say it”: what has been built so far is spoken and the other person can suggest the continuation. When a tile has no continuation, a confirmation question appears.'],
    ['Add-ons “now / later / more / enough”','In the confirmation window these buttons add a word to the phrase, for example “I want tea now”. Tap again to remove it.'],
    ['Speaker’s gender','Russian and Ukrainian past-tense verbs depend on gender (“выпила” or “выпил”). Choose it in Settings. It does not affect English phrases.'],
-   ['Often used','The home screen shows up to four of the most frequent phrases so they are quicker to find.'],
+   ['Often used','The home screen shows up to four of the most frequent phrases so they are quicker to find. To remove an unwanted phrase, tap ✏️ next to the “Often” heading and touch the phrase; “Remove all” clears the block. The phrase’s counter is reset and starts growing again only if the phrase is spoken again.'],
    ['Health and medicines','The Health and Medicines topics ask for a second confirmation, “Sure?”, so that an accidental tap does not mislead anyone. The app does not replace a doctor. In danger, call your local emergency number (103 or 112 in Ukraine).'],
    ['Voice and speech',['Speech comes from the phone’s speech synthesizer. Settings list only the voices of the language currently used for phrases.','If there are none: Android Settings → System → Languages and input → Text-to-speech → Google → install the voice data for the language.','A slightly slower speech rate (0.7–0.85) is easier to follow. The “Test voice” button plays a sample.']],
    ['ABC (first-letter help)',['On the home screen the last tile is “ABC” (except in the severe level).','Tap the first letter of a word: words from the dictionary starting with it appear. Tap the next letter to narrow the list.','Tapping a word adds it to the phrase line. “Say it” speaks the whole line, ⌫ removes the last word.']],
@@ -1440,7 +1445,8 @@ function speak(txt,f){
 }
 
 /* ---------- Отрисовка интерфейса ---------- */
-let armed=null, longUntil=0, abc=null;
+let armed=null, longUntil=0, abc=null, freqEdit=false;
+const saveUse=()=>{try{localStorage.setItem('aac.use',JSON.stringify(use))}catch(e){}};
 
 function tile(n,top,fn){
   const b=h('button','tile',null);b.style.setProperty('--c',top.col||'#1E3A8A');
@@ -1468,6 +1474,7 @@ function tile(n,top,fn){
 
 function render(){
   armed=null;
+  if(path.length||abc)freqEdit=false;
   if(abc){renderAbc();return}
   const B=isB();
   const m=$('#main'),c=path.length?path[path.length-1]:null;m.innerHTML='';m.scrollTop=0;
@@ -1488,9 +1495,27 @@ function render(){
   }else if(settings.level !== 'L1'){
     if(settings.freq){
       const fr=flat().filter(x=>(B?parts(x.chain).length>0:!x.n.c)&&score(x.n.id)>=1).sort((a,b)=>score(b.n.id)-score(a.n.id)).slice(0,4);
+      if(!fr.length)freqEdit=false;
       if(fr.length){
-        m.append(h('div','sec',u('freq')));const g=h('div','grid');
-        fr.forEach(x=>g.append(B?tile({l:phr(x.chain),e:x.n.e},x.top,()=>ask(synth(x.chain))):tile(x.n,x.top,()=>ask(x.n))));
+        const hd=h('div','sec fh');
+        hd.append(h('span',null,u('freq')));
+        const eb=h('button','mini',freqEdit?'✔':'✏️',()=>{freqEdit=!freqEdit;render()});
+        eb.setAttribute('aria-label',freqEdit?uh('f_done'):uh('f_edit'));
+        hd.append(eb);
+        m.append(hd);
+        if(freqEdit){
+          m.append(h('p','note',uh('f_hint')));
+          m.append(h('button','mini',uh('f_clear'),()=>{if(confirm(uh('f_cclear'))){fr.forEach(x=>delete use[x.n.id]);saveUse();freqEdit=false;render()}}));
+        }
+        const g=h('div','grid');
+        fr.forEach(x=>{
+          let tl=B?tile({l:phr(x.chain),e:x.n.e},x.top,()=>ask(synth(x.chain))):tile(x.n,x.top,()=>ask(x.n));
+          if(freqEdit){                       // режим удаления: плитка без озвучки, касание убирает её из блока
+            tl=tl.cloneNode(true);tl.classList.add('del');
+            tl.onclick=()=>{delete use[x.n.id];saveUse();render()};
+          }
+          g.append(tl);
+        });
         m.append(g,h('div','sec',' '));
       }
     }
