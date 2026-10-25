@@ -44,11 +44,32 @@
 - Нарушенную речь распознаватели понимают плохо, поэтому это подсказка, а не точный перевод. Приложение сравнивает слова с фразами всех тем текущего языка: учитываются окончания, небольшие искажения и уже добавленные вами плитки.
 - Распознавание работает на языке фраз, выбранном кнопкой RU / UK / EN.
 
+### Онлайн-поиск фраз, которых нет в словаре (необязательно)
+
+Если в словаре не нашлось подходящей фразы, на экране 🎤 можно нажать «Поискать в интернете»: распознанные слова (**звук не отправляется**) уйдут выбранному сервису с языковой моделью, и тот предложит до пяти коротких фраз. Фраза из интернета не проверена, поэтому после выбора приложение сначала спрашивает «…?».
+
+Настройка: ⚙️ → «Онлайн-поиск фраз»: сервис, адрес API (можно оставить пустым), модель, API-ключ и отметка согласия. Кнопка «Проверить соединение» делает пробный запрос.
+
+| Сервис | Примечание |
+|---|---|
+| Anthropic Claude | Запросы из браузера разрешены при заголовке `anthropic-dangerous-direct-browser-access: true`, приложение добавляет его само. Модель по умолчанию `claude-haiku-5-5` (можно заменить). |
+| OpenAI-совместимый | Подходят OpenRouter (`https://openrouter.ai/api/v1`), Groq (`https://api.groq.com/openai/v1`) и собственный сервер. Прямой `api.openai.com` из браузера, по имеющимся данным, часто блокируется политикой CORS. Модель нужно указать вручную. |
+
+Что учесть:
+
+- Это **необязательная функция, по умолчанию выключена**. Без неё приложение полностью работает офлайн; онлайн-поиск и распознавание речи требуют интернета.
+- Ключ хранится в `localStorage` только на этом телефоне, в **резервную копию не попадает**. Для ключа задайте лимит расходов; не включайте функцию на чужих устройствах.
+- Слова человека, включая медицинские, уходят стороннему сервису. Включайте, только если с этим согласны сам человек и его близкие.
+- Адрес должен начинаться с `https://` (или `http://localhost` для своего сервера); по обычному `http` ключ не отправляется.
+- Я проверял логику на подставных ответах сервера (заголовки, разбор ответа, ошибки 401/429/500, нет сети), но не на реальных сервисах и без реальных ключей.
+- Рассмотрены, но не подключены: сервисы исправления орфографии (например, LanguageTool) и словарные API (Datamuse только для английского): они исправляют слова, но не предлагают целые фразы по смыслу.
+
 ### Дневник общения и резервная копия
 
 - **Дневник** (⚙️ → «Дневник общения») хранит на телефоне до 1000 последних произнесённых фраз с датой и временем. Показывает активность за 7 дней и самые частые фразы, экспортируется в текстовый файл для логопеда. Можно выключить и очистить.
 - **Резервная копия** (⚙️ → «Сохранить копию данных») сохраняет в один JSON-файл настройки, правки плиток, статистику и дневник; «Загрузить копию данных» восстанавливает их, например на новом телефоне.
 - Приложение просит браузер не удалять данные при нехватке места (`navigator.storage.persist()`), но копию всё равно стоит делать перед очисткой браузера или сменой телефона.
+- API-ключ онлайн-поиска (`aac.secret.*`) в копию не включается и при загрузке копии не удаляется.
 
 ## Уровни по степени нарушения речи
 
@@ -101,7 +122,7 @@
 
 Установленное приложение обновляется только при смене версии кэша. При любом изменении файлов:
 
-1. В `sw.js` увеличьте номер: `const V = 'govorim-v12'` → `'govorim-v13'`.
+1. В `sw.js` увеличьте номер: `const V = 'govorim-v13'` → `'govorim-v14'`.
 2. В `index.html` увеличьте `APP_VERSION` (он показывается внизу настроек).
 3. Загрузите файлы. Приложение подхватит новую версию при следующем открытии с интернетом и один раз перезагрузится.
 
@@ -142,6 +163,7 @@
 - Fully trilingual interface and speech: Russian, Ukrainian and English (never mixed on screen). English phrases are built by English grammar, not translated word for word.
 - Five levels matched to the degree of the person's speech impairment (the more severe, the simpler the interface), including a phrase builder (up to 5 steps) for people who cannot recall the last words of a sentence. It supports past tense with gender forms ("I have already taken my morning pills").
 - Emergency "Help" button, "Pain" shortcut, double confirmation for health and medication phrases.
+- Optional online phrase search (off by default): your own API key for Anthropic Claude or an OpenAI-compatible service (OpenRouter, Groq, own server) proposes phrases that are not in the vocabulary; only recognized text is sent, never audio.
 - "Suggestions from what was said" (🎤): the person speaks, the browser recognizes it (usually online in Chrome), and the app offers ready phrases containing the recognized words; typing the words manually works offline.
 - First-letter word finder, situation phrasebooks (doctor, pharmacy, shop, guests, phone), "hear first, then choose", syllable view, tap guard, left-hand layout, speak-immediately mode, separate menu language, communication diary and JSON backup/restore.
 - Voice list is filtered by the current interface language; in-app help and tile editor included.
