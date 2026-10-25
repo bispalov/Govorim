@@ -104,6 +104,10 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 .tile.del{border-style:dashed}
 .tile.del::after{content:'✖';position:absolute;top:6px;right:10px;font-size:24px;color:#B3261E}
 .sec.fh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.rec{background:#B3261E !important;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.6}}
+.sug{width:100%;display:flex;gap:12px;align-items:center;text-align:left;min-height:68px;border-radius:16px;border:3px solid var(--accent);background:var(--card-bg);color:var(--ink);font-size:clamp(19px,5.6vw,24px);font-weight:700;padding:8px 12px;margin:8px 0;overflow-wrap:anywhere}
+.sug .em{font-size:32px;flex:none}
 .mini{min-height:44px;min-width:44px;padding:0 12px;border-radius:12px;background:var(--card-bg);border:2px solid var(--border);color:var(--ink);font-size:18px;font-weight:700}
 [data-size="l"] .grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr))}
 [data-size="l"] .tile{min-height:170px;font-size:clamp(18px,5.6vw,26px)}
@@ -127,6 +131,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
   <button class="hb" id="home" aria-label="Домой">🏠</button>
   <h1 id="ttl"></h1>
   <button class="hb" id="lang" aria-label="Язык">RU</button>
+  <button class="hb" id="micBtn" aria-label="Подсказка по сказанному">🎤</button>
   <button class="hb" id="settingsBtn" aria-label="Настройки">⚙️</button>
   <button class="hb" id="helpBtn" aria-label="Справка">❓</button>
   <button class="hb" id="gear" aria-label="Редактор">✏️</button>
@@ -138,6 +143,9 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 </div>
 
 <nav id="bar"></nav>
+
+<!-- Подсказка по сказанному -->
+<div id="hear" class="modal"></div>
 
 <!-- Справка -->
 <div id="help" class="modal"></div>
@@ -214,7 +222,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 11;   // держите в соответствии с V = 'govorim-v11' в sw.js
+const APP_VERSION = 12;   // держите в соответствии с V = 'govorim-v12' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -254,6 +262,7 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
    ['Здоровье и лекарства','Темы «Здоровье» и «Лекарства» просят второе подтверждение «Точно?», чтобы случайное нажатие не ввело в заблуждение. Приложение не заменяет врача. В опасной ситуации звоните 103 (скорая помощь) или 112.'],
    ['Голос и озвучка',['Озвучку делает синтезатор речи телефона. В настройках показываются только голоса выбранного языка интерфейса.','Если голосов нет: Настройки Android → Система → Язык и ввод → Синтез речи → Google → установите голосовые данные русского или украинского языка.','Лучше немного снизить скорость речи (0,7–0,85) — так проще разобрать слова. Кнопка «Проверить голос» позволяет послушать результат.']],
    ['Азбука (подсказка по первой букве)',['На главном экране последняя плитка — «Азбука» (кроме тяжёлого уровня).','Нажмите первую букву слова: появятся слова из словаря, которые с неё начинаются. Можно нажать следующую букву, чтобы сузить список.','Нажатие на слово добавляет его в строку фразы. «Сказать так» произносит всю строку, ⌫ убирает последнее слово.']],
+   ['Подсказка по сказанному (🎤)',['Кнопка 🎤 вверху открывает экран подсказок: человек говорит фразу, а приложение находит в своём словаре слова и предлагает готовые фразы с ними.','Нажмите на подходящую фразу — она прозвучит. Для тем «Здоровье» и «Лекарства» сначала будет вопрос «Точно?».','Распознавание речи делает браузер Chrome и обычно требует интернета (запись голоса может обрабатываться на серверах Google). Без интернета впишите услышанные слова в поле вручную — подбор фраз работает и так.','Нарушенную речь распознаватель понимает плохо, поэтому подсказки приблизительные. Если фразы не нашлись, попробуйте короче или впишите слова.']],
    ['Ситуации','На уровнях «Лёгкое 1–3» в конце главного экрана есть плитка «Ситуации»: визит к врачу, аптека, магазин, гости, телефонный разговор. Фразы в них подобраны под конкретную ситуацию. Если вы раньше правили плитки лёгкого уровня, нажмите в редакторе «Сбросить уровень», чтобы получить новые темы.'],
    ['Услышать, потом выбрать (⚙️)','Если включено, первое нажатие на плитку только произносит слово и обводит плитку жёлтой рамкой, а второе нажатие на ту же плитку выбирает её. Нажатие на другую плитку снова только озвучивает её.'],
    ['Разбор по слогам (⚙️)','Если включено, долгое нажатие на плитку открывает слово по слогам: оно произносится медленно, а нажатие на слог произносит его отдельно. Деление на слоги примерное. Используйте по рекомендации логопеда.'],
@@ -275,7 +284,7 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
   e_tile:'Плитка',e_sec:'Раздел (сюда добавляются плитки)',e_tiles:'Плитка в этом разделе',e_pick:'— выберите плитку для изменения —',e_phr:'Фраза до этого места',e_main:'— Главный экран —',e_nl:'Название (русский)',e_nu:'Название (украинский)',e_pl:'Фраза (русский)',e_pu:'Фраза (украинский)',e_em:'Значок (эмодзи)',
   e_save:'Сохранить',e_del:'Удалить',e_add:'+ Добавить плитку в этот раздел',e_cdel:'Удалить плитку?',e_reset:'Сбросить уровень к стандартному',
   e_creset:'Вернуть стандартный набор плиток для этого уровня? Ваши правки будут удалены.',e_close:'Закрыть редактор',
-  f_edit:'Изменить список «Часто»',f_clear:'🗑️ Убрать все',f_done:'Готово',f_cclear:'Убрать все фразы из блока «Часто»?',f_hint:'Нажмите на фразу, чтобы убрать её из блока.',e_name:'Название',e_phrase:'Фраза',ln_ru:'русский',ln_uk:'украинский',ln_en:'английский'},
+  aMic:'Подсказка по сказанному',m_title:'🎤 Подсказка по сказанному',m_say:'Говорить',m_stop:'Остановить',m_listen:'Слушаю… говорите',m_heard:'Что услышано (можно исправить или вписать слова):',m_sugg:'Возможно, вы хотели сказать — нажмите, и фраза прозвучит:',m_none:'Подходящих фраз не найдено. Попробуйте сказать иначе или впишите слова.',m_nomic:'Нет доступа к микрофону. Разрешите его в настройках браузера.',m_nosr:'Распознавание речи в этом браузере недоступно. Впишите слова вручную.',m_net:'Для распознавания нужен интернет. Впишите слова вручную.',m_nosp:'Ничего не услышано. Попробуйте ещё раз.',m_err:'Не удалось распознать. Попробуйте ещё раз или впишите слова.',m_note:'Распознавание речи выполняет браузер Chrome: обычно нужен интернет, и запись голоса может обрабатываться на серверах Google. Подбор фраз по найденным словам работает без интернета. Нарушенную речь распознать трудно, поэтому слова можно вписать вручную (в том числе голосовым вводом клавиатуры).',f_edit:'Изменить список «Часто»',f_clear:'🗑️ Убрать все',f_done:'Готово',f_cclear:'Убрать все фразы из блока «Часто»?',f_hint:'Нажмите на фразу, чтобы убрать её из блока.',e_name:'Название',e_phrase:'Фраза',ln_ru:'русский',ln_uk:'украинский',ln_en:'английский'},
 uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні',back:'Назад',rep:'Повтор',help:'Допомога',pain:'Болить',sure:'Точно?',done:'Готово',cancel:'Скасувати',mods:['зараз','потім','ще','досить'],helpSay:'Допоможіть! Мені потрібна допомога!',helpTxt:'МЕНІ ПОТРІБНА ДОПОМОГА',
   built:'Ваша фраза',sayso:'Сказати так',cont:'Продовжте фразу — оберіть слово:',pick:'Оберіть тему:',ver:'Версія застосунку',
   aHome:'Додому',aLang:'Мова',aSet:'Налаштування',aEd:'Редактор',nomem:'Не вистачає пам’яті',testSay:'Це перевірка голосу',
@@ -309,6 +318,7 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
    ['Здоров’я та ліки','Теми «Здоров’я» та «Ліки» просять друге підтвердження «Точно?», щоб випадкове натискання не ввело в оману. Застосунок не замінює лікаря. У небезпечній ситуації телефонуйте 103 (швидка допомога) або 112.'],
    ['Голос і озвучення',['Озвучення виконує синтезатор мовлення телефона. У налаштуваннях показуються лише голоси обраної мови інтерфейсу.','Якщо голосів немає: Налаштування Android → Система → Мова та введення → Синтез мовлення → Google → встановіть голосові дані російської або української мови.','Краще трохи знизити швидкість мовлення (0,7–0,85) — так легше розібрати слова. Кнопка «Перевірити голос» дає змогу послухати результат.']],
    ['Абетка (підказка за першою літерою)',['На головному екрані остання плитка — «Абетка» (крім важкого рівня).','Натисніть першу літеру слова: з’являться слова зі словника, що з неї починаються. Можна натиснути наступну літеру, щоб звузити список.','Натискання на слово додає його до рядка фрази. «Сказати так» вимовляє весь рядок, ⌫ прибирає останнє слово.']],
+   ['Підказка за сказаним (🎤)',['Кнопка 🎤 угорі відкриває екран підказок: людина говорить фразу, а застосунок знаходить у своєму словнику слова й пропонує готові фрази з ними.','Натисніть на відповідну фразу — вона пролунає. Для тем «Здоров’я» та «Ліки» спочатку буде запитання «Точно?».','Розпізнавання мовлення робить браузер Chrome і зазвичай потребує інтернету (запис голосу може оброблятися на серверах Google). Без інтернету впишіть почуті слова в поле вручну — добір фраз працює й так.','Порушене мовлення розпізнавач розуміє погано, тому підказки приблизні. Якщо фрази не знайшлися, спробуйте коротше або впишіть слова.']],
    ['Ситуації','На рівнях «Легке 1–3» наприкінці головного екрана є плитка «Ситуації»: візит до лікаря, аптека, магазин, гості, телефонна розмова. Фрази в них підібрано під конкретну ситуацію. Якщо ви раніше правили плитки легкого рівня, натисніть у редакторі «Скинути рівень», щоб отримати нові теми.'],
    ['Почути, потім обрати (⚙️)','Якщо увімкнено, перше натискання на плитку лише вимовляє слово й обводить плитку жовтою рамкою, а друге натискання на ту саму плитку обирає її. Натискання на іншу плитку знову лише озвучує її.'],
    ['Розбір по складах (⚙️)','Якщо увімкнено, довге натискання на плитку відкриває слово по складах: воно вимовляється повільно, а натискання на склад вимовляє його окремо. Поділ на склади приблизний. Використовуйте за рекомендацією логопеда.'],
@@ -330,7 +340,7 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
   e_tile:'Плитка',e_sec:'Розділ (сюди додаються плитки)',e_tiles:'Плитка в цьому розділі',e_pick:'— оберіть плитку для зміни —',e_phr:'Фраза до цього місця',e_main:'— Головний екран —',e_nl:'Назва (російською)',e_nu:'Назва (українською)',e_pl:'Фраза (російською)',e_pu:'Фраза (українською)',e_em:'Значок (емодзі)',
   e_save:'Зберегти',e_del:'Видалити',e_add:'+ Додати плитку в цей розділ',e_cdel:'Видалити плитку?',e_reset:'Скинути рівень до стандартного',
   e_creset:'Повернути стандартний набір плиток для цього рівня? Ваші правки буде видалено.',e_close:'Закрити редактор',
-  f_edit:'Змінити список «Часто»',f_clear:'🗑️ Прибрати всі',f_done:'Готово',f_cclear:'Прибрати всі фрази з блоку «Часто»?',f_hint:'Натисніть на фразу, щоб прибрати її з блоку.',e_name:'Назва',e_phrase:'Фраза',ln_ru:'російською',ln_uk:'українською',ln_en:'англійською'},
+  aMic:'Підказка за сказаним',m_title:'🎤 Підказка за сказаним',m_say:'Говорити',m_stop:'Зупинити',m_listen:'Слухаю… говоріть',m_heard:'Що почуто (можна виправити або вписати слова):',m_sugg:'Можливо, ви хотіли сказати — натисніть, і фраза пролунає:',m_none:'Відповідних фраз не знайдено. Спробуйте сказати інакше або впишіть слова.',m_nomic:'Немає доступу до мікрофона. Дозвольте його в налаштуваннях браузера.',m_nosr:'Розпізнавання мовлення в цьому браузері недоступне. Впишіть слова вручну.',m_net:'Для розпізнавання потрібен інтернет. Впишіть слова вручну.',m_nosp:'Нічого не почуто. Спробуйте ще раз.',m_err:'Не вдалося розпізнати. Спробуйте ще раз або впишіть слова.',m_note:'Розпізнавання мовлення виконує браузер Chrome: зазвичай потрібен інтернет, а запис голосу може оброблятися на серверах Google. Добір фраз за знайденими словами працює без інтернету. Порушене мовлення розпізнати важко, тому слова можна вписати вручну (зокрема голосовим уведенням клавіатури).',f_edit:'Змінити список «Часто»',f_clear:'🗑️ Прибрати всі',f_done:'Готово',f_cclear:'Прибрати всі фрази з блоку «Часто»?',f_hint:'Натисніть на фразу, щоб прибрати її з блоку.',e_name:'Назва',e_phrase:'Фраза',ln_ru:'російською',ln_uk:'українською',ln_en:'англійською'},
 en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep:'Repeat',help:'Help',pain:'Pain',sure:'Sure?',done:'Done',cancel:'Cancel',mods:['now','later','more','enough'],helpSay:'Help! I need help!',helpTxt:'I NEED HELP',
   built:'Your phrase',sayso:'Say it',cont:'Continue the phrase — choose a word:',pick:'Choose a topic:',ver:'App version',
   aHome:'Home',aLang:'Language',aSet:'Settings',aEd:'Editor',nomem:'Not enough storage',testSay:'This is a voice test',
@@ -351,7 +361,7 @@ en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep
   b_confirm:'Replace the current settings, edits and diary with the data from the file? This cannot be undone.',b_bad:'This file does not look like a backup of this app.',
   d_title:'📒 Communication diary',d_total:'Total phrases',d_days:'Days with entries',d_week:'Last 7 days',d_top:'Most frequent phrases',d_recent:'Recent phrases',d_empty:'No entries yet.',d_off:'The diary is turned off in Settings.',
   d_export:'⬇️ Save as text',d_clear:'🗑️ Clear the diary',d_cclear:'Delete the whole diary? This cannot be undone.',d_exp_title:'Let’s talk together — communication diary',
-  f_edit:'Edit the “Often” list',f_clear:'🗑️ Remove all',f_done:'Done',f_cclear:'Remove all phrases from the “Often” block?',f_hint:'Tap a phrase to remove it from the block.',e_name:'Name',e_phrase:'Phrase',ln_ru:'Russian',ln_uk:'Ukrainian',ln_en:'English',
+  aMic:'Suggestions from what was said',m_title:'🎤 Suggestions from what was said',m_say:'Speak',m_stop:'Stop',m_listen:'Listening… please speak',m_heard:'What was heard (you can correct it or type words):',m_sugg:'Maybe you meant — tap and the phrase is spoken:',m_none:'No matching phrases found. Try saying it differently or type the words.',m_nomic:'No access to the microphone. Allow it in the browser settings.',m_nosr:'Speech recognition is not available in this browser. Type the words instead.',m_net:'Recognition needs the internet. Type the words instead.',m_nosp:'Nothing was heard. Please try again.',m_err:'Could not recognize that. Try again or type the words.',m_note:'Speech recognition is done by the Chrome browser: it usually needs the internet, and the voice recording may be processed on Google servers. Matching phrases to the recognized words works offline. Impaired speech is hard to recognize, so words can also be typed in (including with the keyboard’s voice input).',f_edit:'Edit the “Often” list',f_clear:'🗑️ Remove all',f_done:'Done',f_cclear:'Remove all phrases from the “Often” block?',f_hint:'Tap a phrase to remove it from the block.',e_name:'Name',e_phrase:'Phrase',ln_ru:'Russian',ln_uk:'Ukrainian',ln_en:'English',
   helpDoc:{title:'❓ Help',s:[
    ['What this app is for','The app helps people communicate with someone whose speech has been affected by a stroke (aphasia). Instead of searching for words, they just tap large tiles and the phone says the phrase aloud. Everything works without the internet.'],
    ['Quick start',['Choose a topic on the home screen (for example, “Food and drink”).','Tap tiles: the phrase is chosen step by step.','The app asks, for example, “I want tea?”. Tap “Yes” and the phrase is spoken; “No” cancels.','After it is spoken you can tap “Repeat” or “Done”.']],
@@ -365,6 +375,7 @@ en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep
    ['Health and medicines','The Health and Medicines topics ask for a second confirmation, “Sure?”, so that an accidental tap does not mislead anyone. The app does not replace a doctor. In danger, call your local emergency number (103 or 112 in Ukraine).'],
    ['Voice and speech',['Speech comes from the phone’s speech synthesizer. Settings list only the voices of the language currently used for phrases.','If there are none: Android Settings → System → Languages and input → Text-to-speech → Google → install the voice data for the language.','A slightly slower speech rate (0.7–0.85) is easier to follow. The “Test voice” button plays a sample.']],
    ['ABC (first-letter help)',['On the home screen the last tile is “ABC” (except in the severe level).','Tap the first letter of a word: words from the dictionary starting with it appear. Tap the next letter to narrow the list.','Tapping a word adds it to the phrase line. “Say it” speaks the whole line, ⌫ removes the last word.']],
+   ['Suggestions from what was said (🎤)',['The 🎤 button at the top opens a screen of suggestions: the person says a phrase and the app finds words from its vocabulary and offers ready-made phrases containing them.','Tap a matching phrase and it is spoken. For the Health and Medicines topics a “Sure?” question comes first.','Speech recognition is done by the Chrome browser and usually needs the internet (the voice recording may be processed on Google servers). Without the internet, type the words you heard into the field: the phrase matching works anyway.','Impaired speech is hard for a recognizer, so the suggestions are approximate. If nothing is found, try something shorter or type the words.']],
    ['Situations','In the Mild 1–3 levels the last tile of the home screen is “Situations”: doctor visit, pharmacy, store, guests, phone call. The phrases are chosen for each situation. If you edited tiles of a mild level earlier, tap “Reset level” in the editor to get the new topics.'],
    ['Hear first, then choose (⚙️)','When on, the first tap on a tile only says the word and outlines the tile in yellow; a second tap on the same tile selects it. Tapping another tile only says that one.'],
    ['Syllable view (⚙️)','When on, a long press on a tile shows the word in syllables: it is spoken slowly and tapping a syllable says it alone. The syllable split is approximate. Use on a speech therapist’s advice.'],
@@ -1644,7 +1655,7 @@ function pic(n){const d=h('div','big');if(n.img){const i=h('img');i.src=n.img;i.
 function ask(n){
   const top=flat().find(x=>x.n.id===n.id);
   // «Говорить сразу»: без вопроса, кроме тем с двойным подтверждением
-  if(settings.quick&&!(top&&top.top.crit)){cn=n;mod='';bump(n.id);say(t(n.s));return}
+  if(settings.quick&&!n.crit&&!(top&&top.top.crit)){cn=n;mod='';bump(n.id);say(t(n.s));return}
   cn=n;stage=0;mod='';showAsk();
 }
 function showAsk(){
@@ -1657,7 +1668,7 @@ function showAsk(){
   const a=h('div','row');
   a.append(h('button','ans yes','✔ '+u('yes'),()=>answer(true)),h('button','ans no','✖ '+u('no'),()=>answer(false)));
   ov.append(r,a);
-  ov._crit=top&&top.top.crit;
+  ov._crit=cn.crit||(top&&top.top.crit);
 }
 function answer(yes){
   if(!cn)return;
@@ -1821,6 +1832,143 @@ $('#closeSettBtn').onclick = () => {
   settModal.style.display = 'none';
   render();
 };
+
+/* ---------- Подсказка по сказанному (распознавание речи + подбор фраз) ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const hearEl=$('#hear');
+let rec=null, hearTxt='', hearAlt='', IDX=[];
+const STOPW={ru:'я и в на не мне мой моя с по у это что а но да',uk:'я і в на не мені мій моя з по у це що а але',en:'i the a an to my me is it of in on and am are'};
+const norm=x=>String(x).toLowerCase().replace(/ё/g,'е').replace(/[’ʼ`]/g,"'").replace(/[^\p{L}\p{N}'\s-]/gu,' ');
+const toks=x=>norm(x).split(/[\s-]+/).map(w=>w.replace(/^'+|'+$/g,'')).filter(Boolean);
+function lev(a,b){
+  const d=Array.from({length:a.length+1},(_,i)=>[i]);
+  for(let j=1;j<=b.length;j++)d[0][j]=j;
+  for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)
+    d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  return d[a.length][b.length];
+}
+// Похожесть двух слов: 1 — совпадают, ~0.8 — общее начало (падежи, формы), ~0.7 — одна ошибка
+function wordSim(a,b){
+  if(a===b)return 1;
+  const m=Math.min(a.length,b.length);
+  if(m<3)return 0;
+  let p=0;while(p<m&&a[p]===b[p])p++;
+  if(p>=3&&p/m>=0.6)return 0.8;
+  const dist=lev(a,b);
+  if(Math.max(a.length,b.length)>=4&&dist<=1)return 0.7;
+  if(Math.max(a.length,b.length)>=7&&dist<=2)return 0.55;
+  return 0;
+}
+// Все известные приложению фразы текущего языка: словарь целиком + плитки текущего дерева (включая добавленные вручную)
+function phraseIndex(){
+  const out=[],seen=new Set();
+  const add=(text,e,crit)=>{
+    const k=norm(text).replace(/\s+/g,' ').trim();
+    if(!k||seen.has(k))return;
+    seen.add(k);out.push({text,e,crit:!!crit,w:toks(text)});
+  };
+  let crit=false;
+  (lang==='en'?CORPUS_EN:CORPUS).split('\n').forEach(raw=>{
+    const line=raw.trim();if(!line)return;
+    if(line.startsWith('##')){const f=line.slice(2).split('|').map(x=>x.trim());crit=!!(lang==='en'?f[4]:f[5]);return}
+    const sp=line.indexOf(' '),pp=line.slice(sp+1).split(' = ');
+    add(G(pp[lang==='uk'?1:0]).replace(/\//g,' '),line.slice(0,sp),crit);
+  });
+  const B=isB();
+  flat().forEach(x=>{
+    if(x.n.c&&x.n.c.length)return;               // начала фраз и темы — не готовые фразы
+    const text=B?(parts(x.chain).length?t(phr(x.chain)):''):t(x.n.s);
+    if(text)add(text,x.n.e,x.top.crit);
+  });
+  return out;
+}
+function suggest(text){
+  const all=toks(text),stop=new Set((STOPW[lang]||'').split(' '));
+  let tk=[...new Set(all.filter(w=>!stop.has(w)&&w.length>1))];
+  if(!tk.length)tk=[...new Set(all.filter(w=>w.length>1))];
+  if(!tk.length)return [];
+  const res=[];
+  for(const c of IDX){
+    let m=0;const used=new Set();
+    for(const w of tk){
+      let best=0,bi=-1;
+      c.w.forEach((v,i)=>{if(used.has(i))return;const sm=wordSim(w,v);if(sm>best){best=sm;bi=i}});
+      if(bi>=0&&best>=0.5){used.add(bi);m+=best}
+    }
+    if(m<0.7)continue;
+    res.push({c,score:2*m/(tk.length+c.w.length)+0.05*m});
+  }
+  res.sort((a,b)=>b.score-a.score||a.c.text.length-b.c.text.length);
+  return res.slice(0,6).map(x=>x.c);
+}
+function stopRec(){if(rec){try{rec.abort()}catch(e){}rec=null}}
+function closeHear(){stopRec();hearEl.style.display='none'}
+function hearStatus(msg){const e=$('#hearSt');if(e)e.textContent=msg||''}
+function refreshHear(){
+  const box=$('#hearSug');if(!box)return;
+  box.innerHTML='';
+  const text=(hearTxt+' '+hearAlt).trim();
+  if(!text)return;
+  const list=suggest(text);
+  if(!list.length){box.append(h('p',null,u('m_none')));return}
+  box.append(h('h3',null,u('m_sugg')));
+  list.forEach(c=>{
+    const b=h('button','sug',null,()=>pickSug(c));
+    b.append(h('span','em',c.e||'💬'),h('span',null,c.text));
+    box.append(b);
+  });
+}
+// Выбор подсказки: сразу произносим; в темах с двойным подтверждением сначала спрашиваем «Точно?»
+function pickSug(c){
+  closeHear();
+  if(c.crit)ask({id:'m:'+c.text,s:c.text,l:c.text,e:c.e,crit:1});
+  else say(c.text);
+}
+function toggleListen(){
+  const mic=$('#micGo');
+  if(rec){try{rec.stop()}catch(e){}return}
+  if(!SR){hearStatus(u('m_nosr'));$('#hearIn').focus();return}
+  const r=new SR();
+  r.lang={ru:'ru-RU',uk:'uk-UA',en:'en-US'}[lang];
+  r.interimResults=true;r.maxAlternatives=5;r.continuous=false;
+  if(!navigator.onLine&&'processLocally' in r){try{r.processLocally=true}catch(e){}}   // распознавание на устройстве, если поддерживается
+  let err='';
+  r.onstart=()=>{mic.textContent='⏹ '+u('m_stop');mic.classList.add('rec');hearStatus(u('m_listen'))};
+  r.onresult=e=>{
+    const rs=Array.from(e.results);
+    hearTxt=rs.map(x=>x[0].transcript).join(' ').trim();
+    hearAlt=rs.map(x=>Array.from(x).slice(1).map(a=>a.transcript).join(' ')).join(' ');
+    $('#hearIn').value=hearTxt;refreshHear();
+  };
+  r.onerror=e=>{
+    err=e.error;
+    hearStatus(err==='not-allowed'||err==='service-not-allowed'?u('m_nomic'):err==='network'||err==='language-not-supported'?u('m_net'):err==='no-speech'?u('m_nosp'):u('m_err'));
+  };
+  r.onend=()=>{
+    rec=null;mic.textContent='🎤 '+u('m_say');mic.classList.remove('rec');
+    if(!err){hearStatus(hearTxt?'':u('m_nosp'))}
+  };
+  rec=r;
+  try{r.start()}catch(e){rec=null;hearStatus(u('m_err'))}
+}
+function openHear(){
+  IDX=phraseIndex();hearTxt='';hearAlt='';
+  hearEl.innerHTML='';
+  const head=h('div','helphead');
+  head.append(h('h2',null,u('m_title')),h('button',null,u('done'),closeHear));
+  hearEl.append(head,h('p','note',uh('m_note')));
+  const mic=h('button','ans neu sm','🎤 '+u('m_say'),toggleListen);mic.id='micGo';
+  mic.style.width='100%';
+  hearEl.append(mic);
+  const st=h('p','note','');st.id='hearSt';hearEl.append(st);
+  hearEl.append(h('label',null,u('m_heard')));
+  const inp=h('input');inp.type='text';inp.id='hearIn';inp.autocomplete='off';
+  inp.oninput=()=>{hearTxt=inp.value;hearAlt='';refreshHear()};
+  hearEl.append(inp);
+  const sug=h('div');sug.id='hearSug';hearEl.append(sug);
+  hearEl.style.display='block';hearEl.scrollTop=0;
+}
+$('#micBtn').onclick=openHear;
 
 /* ---------- Дневник общения: экран ---------- */
 const diaryEl=$('#diary');
@@ -1995,7 +2143,7 @@ $('#helpBtn').onclick=()=>{drawHelp();helpEl.style.display='block';helpEl.scroll
 function fill(sel,opts,val){const el=$(sel);el.innerHTML='';opts.forEach(([v,txt])=>el.append(new Option(txt,v)));el.value=val}
 function applyI18n(){
   document.querySelectorAll('[data-i]').forEach(e=>e.textContent=uh(e.dataset.i));
-  [['#home','aHome'],['#lang','aLang'],['#settingsBtn','aSet'],['#helpBtn','aHelp'],['#gear','aEd']].forEach(([q,k])=>$(q).setAttribute('aria-label',uh(k)));
+  [['#home','aHome'],['#micBtn','aMic'],['#lang','aLang'],['#settingsBtn','aSet'],['#helpBtn','aHelp'],['#gear','aEd']].forEach(([q,k])=>$(q).setAttribute('aria-label',uh(k)));
   document.title=u('title');
   fill('#setSeg',Object.entries(uh('lvl')),settings.level);
   fill('#setGender',[['f',uh('g_f')],['m',uh('g_m')]],settings.gender);

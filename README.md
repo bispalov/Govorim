@@ -17,6 +17,7 @@
 - Темы «Здоровье» и «Лекарства» требуют второго подтверждения «Точно?».
 - Блок «Часто» на главном экране: четыре самые используемые фразы (можно отключить, чтобы плитки не меняли места).
 - **Азбука**: подсказка по первой букве. Человек нажимает букву, приложение предлагает слова из словаря, выбранные слова собираются в строку и произносятся.
+- **Подсказка по сказанному** (кнопка 🎤 вверху): человек говорит фразу, приложение находит в ней знакомые слова (учитывает формы слов и небольшие искажения) и предлагает готовые фразы; выбранная фраза сразу произносится, в темах «Здоровье» и «Лекарства» сначала спрашивается «Точно?». Слова можно и вписать вручную. Подробности и ограничения см. ниже.
 - **Ситуации** (уровни «Лёгкое 1–3»): визит к врачу, аптека, магазин, гости, телефонный разговор.
 - Встроенная справка (кнопка ❓) и редактор плиток (кнопка ✏️).
 - Дневник общения и резервная копия данных (см. ниже).
@@ -35,6 +36,13 @@
 | Говорить сразу | Фраза звучит без вопроса «…?». В темах «Здоровье» и «Лекарства» вопрос сохраняется. |
 | Вибрация, не гасить экран | Отклик на нажатие и удержание экрана включённым (Wake Lock). |
 | Язык меню и справки | Задаётся отдельно от языка фраз и озвучки (русский, украинский или английский), например фразы на украинском, а меню на английском. |
+
+### Подсказка по сказанному (🎤): как это работает и что учесть
+
+- Распознавание речи выполняет сам браузер через Web Speech API (`SpeechRecognition`). В Chrome на Android оно обычно **требует интернета**, а запись голоса может обрабатываться на серверах Google. Поддержка полностью офлайн-распознавания зависит от версии браузера и установленных языковых пакетов; приложение пробует её использовать, когда устройство не в сети.
+- **Подбор фраз по найденным словам работает без интернета.** Если распознавание недоступно или человек говорит слишком неразборчиво, слова вписываются в поле вручную (удобно голосовым вводом клавиатуры телефона или пальцем).
+- Нарушенную речь распознаватели понимают плохо, поэтому это подсказка, а не точный перевод. Приложение сравнивает слова с фразами всех тем текущего языка: учитываются окончания, небольшие искажения и уже добавленные вами плитки.
+- Распознавание работает на языке фраз, выбранном кнопкой RU / UK / EN.
 
 ### Дневник общения и резервная копия
 
@@ -93,7 +101,7 @@
 
 Установленное приложение обновляется только при смене версии кэша. При любом изменении файлов:
 
-1. В `sw.js` увеличьте номер: `const V = 'govorim-v11'` → `'govorim-v12'`.
+1. В `sw.js` увеличьте номер: `const V = 'govorim-v12'` → `'govorim-v13'`.
 2. В `index.html` увеличьте `APP_VERSION` (он показывается внизу настроек).
 3. Загрузите файлы. Приложение подхватит новую версию при следующем открытии с интернетом и один раз перезагрузится.
 
@@ -134,6 +142,7 @@
 - Fully trilingual interface and speech: Russian, Ukrainian and English (never mixed on screen). English phrases are built by English grammar, not translated word for word.
 - Five levels matched to the degree of the person's speech impairment (the more severe, the simpler the interface), including a phrase builder (up to 5 steps) for people who cannot recall the last words of a sentence. It supports past tense with gender forms ("I have already taken my morning pills").
 - Emergency "Help" button, "Pain" shortcut, double confirmation for health and medication phrases.
+- "Suggestions from what was said" (🎤): the person speaks, the browser recognizes it (usually online in Chrome), and the app offers ready phrases containing the recognized words; typing the words manually works offline.
 - First-letter word finder, situation phrasebooks (doctor, pharmacy, shop, guests, phone), "hear first, then choose", syllable view, tap guard, left-hand layout, speak-immediately mode, separate menu language, communication diary and JSON backup/restore.
 - Voice list is filtered by the current interface language; in-app help and tile editor included.
 - Static files only; deploy to GitHub Pages under `/Govorim/`. Bump the cache version in `sw.js` and `APP_VERSION` in `index.html` on every update.
