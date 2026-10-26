@@ -1,6 +1,6 @@
 // Версия кэша. При каждом изменении файлов приложения увеличивайте число —
 // тогда установленное приложение скачает новые файлы и обновится само.
-const V = 'govorim-v13',
+const V = 'govorim-v14',
       F = [
         '/Govorim/',
         '/Govorim/index.html',
@@ -28,6 +28,17 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  // Списки слов из репозитория (/Govorim/lex/…): сначала сеть, при успехе кладём в кэш, офлайн берём из кэша
+  if (new URL(e.request.url).pathname.startsWith('/Govorim/lex/')) {
+    e.respondWith(
+      caches.open(V).then(c =>
+        fetch(e.request)
+          .then(r => { if (r.ok) c.put(e.request, r.clone()); return r; })
+          .catch(() => c.match(e.request).then(r => r || Response.error()))
+      )
+    );
+    return;
+  }
   e.respondWith(
     caches.match(e.request, { ignoreSearch: true })
       .then(r => r || fetch(e.request).catch(() => caches.match('/Govorim/index.html')))

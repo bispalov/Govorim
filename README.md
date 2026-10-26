@@ -44,6 +44,17 @@
 - Нарушенную речь распознаватели понимают плохо, поэтому это подсказка, а не точный перевод. Приложение сравнивает слова с фразами всех тем текущего языка: учитываются окончания, небольшие искажения и уже добавленные вами плитки.
 - Распознавание работает на языке фраз, выбранном кнопкой RU / UK / EN.
 
+### Словари слов для «Азбуки» и исправления слов
+
+Частотные списки слов помогают двумя способами: «Азбука» показывает на каждую букву сотни самых употребительных слов (наши слова идут первыми), а на экране 🎤 сильно искажённые слова исправляются по большому словарю, прежде чем подбираются фразы. Списки дают **слова, а не фразы**: новых фраз они не создают.
+
+- **Источник:** [FrequencyWords](https://github.com/hermitdave/FrequencyWords) (hermitdave) на основе субтитров OpenSubtitles. Код под MIT, **данные под CC BY-SA 4.0**: при публикации списков сохраняйте указание источника и лицензию.
+- **Объём:** 20 000 слов для русского и украинского и 10 000 для английского. Это мой практический выбор, а не измеренная норма: в русском и украинском слов-форм больше из-за падежей и спряжений, поэтому им нужно больше. Для повседневной речи при такой выборке покрывается обычный бытовой лексикон; редкие слова и имена нет. Нужен больший или меньший объём: измените `LEX_N` в `index.html` и `WANT` в `tools/build-lexicon.py`.
+- **Как получить (способ 1, без инструментов):** ⚙️ → «Данные» → «Загрузить словари слов». Нужен интернет один раз; приложение читает только начало файла (около 300 КБ на язык), чистит его и сохраняет на телефоне (`localStorage`, ключи `aac.lex.*`). Дальше всё работает офлайн. В резервную копию словари не входят, их можно скачать снова.
+- **Как получить (способ 2, вместе с приложением):** выполните в корне репозитория `python tools/build-lexicon.py`: появятся `lex/ru.txt`, `lex/uk.txt`, `lex/en.txt`. Если сохранённых на телефоне словарей нет, приложение подхватит эти файлы, а service worker закэширует их для офлайна. Файлы нужно залить в репозиторий вместе с `lex/LICENSE.txt`.
+- **Фильтрация:** остаются только слова нужного алфавита (длина 2–20 символов, без цифр и латиницы в русском и украинском), без дублей; грубые и нецензурные слова вырезаются простым фильтром. Он **не исчерпывающий**, потому что списки составлены из субтитров, поэтому в «Азбуке» всё же могут встретиться редкие шумные слова.
+- **Что не проверено:** загрузку с настоящего GitHub я не выполнял (в моей среде нет интернета); логика проверена на подставных ответах сервера. Если у украинского нет файла `uk_50k.txt`, приложение берёт `uk_full.txt` и читает из него только начало.
+
 ### Онлайн-поиск фраз, которых нет в словаре (необязательно)
 
 Если в словаре не нашлось подходящей фразы, на экране 🎤 можно нажать «Поискать в интернете»: распознанные слова (**звук не отправляется**) уйдут выбранному сервису с языковой моделью, и тот предложит до пяти коротких фраз. Фраза из интернета не проверена, поэтому после выбора приложение сначала спрашивает «…?».
@@ -116,13 +127,15 @@
 | `index.html` | Всё приложение: разметка, стили, скрипт, словарь фраз, тексты интерфейса и справки |
 | `sw.js` | Service worker: офлайн-кэш и автообновление |
 | `manifest.json` | Манифест PWA (название, иконки, цвета) |
+| `lex/` | Необязательные списки слов (создаются скриптом `tools/build-lexicon.py`) |
+| `tools/build-lexicon.py` | Скрипт, который скачивает и подготавливает списки слов |
 | `icon-192.png`, `icon-512.png` | Иконки приложения |
 
 ## Обновление версии
 
 Установленное приложение обновляется только при смене версии кэша. При любом изменении файлов:
 
-1. В `sw.js` увеличьте номер: `const V = 'govorim-v13'` → `'govorim-v14'`.
+1. В `sw.js` увеличьте номер: `const V = 'govorim-v14'` → `'govorim-v15'`.
 2. В `index.html` увеличьте `APP_VERSION` (он показывается внизу настроек).
 3. Загрузите файлы. Приложение подхватит новую версию при следующем открытии с интернетом и один раз перезагрузится.
 
@@ -163,6 +176,7 @@
 - Fully trilingual interface and speech: Russian, Ukrainian and English (never mixed on screen). English phrases are built by English grammar, not translated word for word.
 - Five levels matched to the degree of the person's speech impairment (the more severe, the simpler the interface), including a phrase builder (up to 5 steps) for people who cannot recall the last words of a sentence. It supports past tense with gender forms ("I have already taken my morning pills").
 - Emergency "Help" button, "Pain" shortcut, double confirmation for health and medication phrases.
+- Optional frequency word lists (FrequencyWords, CC BY-SA 4.0): one-time download inside the app (or bundled with `tools/build-lexicon.py`) extends ABC and corrects garbled words; they provide words, not new phrases.
 - Optional online phrase search (off by default): your own API key for Anthropic Claude or an OpenAI-compatible service (OpenRouter, Groq, own server) proposes phrases that are not in the vocabulary; only recognized text is sent, never audio.
 - "Suggestions from what was said" (🎤): the person speaks, the browser recognizes it (usually online in Chrome), and the app offers ready phrases containing the recognized words; typing the words manually works offline.
 - First-letter word finder, situation phrasebooks (doctor, pharmacy, shop, guests, phone), "hear first, then choose", syllable view, tap guard, left-hand layout, speak-immediately mode, separate menu language, communication diary and JSON backup/restore.

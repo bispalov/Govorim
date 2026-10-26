@@ -222,6 +222,12 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
   </div>
 
   <h3 data-i="g_data"></h3>
+  <label data-i="s_lex"></label>
+  <div class="note" id="lexInfo"></div>
+  <button class="wide" id="lexGetBtn" data-i="b_lex_get"></button>
+  <button class="wide" id="lexDelBtn" data-i="b_lex_del"></button>
+  <div class="note" id="lexNote"></div>
+  <div class="note" data-i="lex_src"></div>
   <label class="chk"><input type="checkbox" id="setLog"><span data-i="s_log"></span></label>
   <button class="wide" id="diaryBtn" data-i="b_diary"></button>
   <button class="wide" id="backupBtn" data-i="b_save"></button>
@@ -238,7 +244,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 13;   // держите в соответствии с V = 'govorim-v13' в sw.js
+const APP_VERSION = 14;   // держите в соответствии с V = 'govorim-v14' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -250,6 +256,7 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
   aHome:'Домой',aLang:'Язык',aSet:'Настройки',aEd:'Редактор',nomem:'Не хватает памяти',testSay:'Это проверка голоса',
   aHelp:'Справка',v_auto:'Автоматически (голос по умолчанию)',v_none:'Для этого языка в телефоне нет голосов. Как их установить — см. «Справка» → «Голос и озвучка».',
   abc:'Азбука',abcHint:'Нажмите первую букву слова',abcNext:'Следующая буква:',abcNone:'Слов на эти буквы нет',slow:'Медленно',
+  s_lex:'Словари слов для «Азбуки» и исправления искажённых слов (загружаются один раз, потом работают без интернета)',b_lex_get:'⬇️ Загрузить словари слов',b_lex_del:'🗑️ Удалить словари слов',lex_none:'не загружен',lex_words:'слов',lex_loading:'Загружаю: ',lex_done:'Готово. Словари сохранены на этом телефоне.',lex_err:'Не удалось загрузить: ',lex_confirm_del:'Удалить загруженные словари слов?',lex_src:'Источник списков: FrequencyWords (hermitdave) на основе субтитров OpenSubtitles, лицензия CC BY-SA 4.0. Нецензурные слова отфильтрованы не полностью.',
   g_main:'Основное',g_voice:'Озвучка',g_touch:'Управление и нажатия',g_ease:'Меньше усталости',g_data:'Данные',
   s_uilang:'Язык меню и справки (фразы и озвучка переключаются кнопкой RU/UK/EN вверху)',ui_auto:'Как у фраз и озвучки',
   s_size:'Размер плиток',sz_m:'Обычный',sz_l:'Крупный',sz_xl:'Очень крупный (по одной в ряд)',
@@ -278,6 +285,7 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
    ['Здоровье и лекарства','Темы «Здоровье» и «Лекарства» просят второе подтверждение «Точно?», чтобы случайное нажатие не ввело в заблуждение. Приложение не заменяет врача. В опасной ситуации звоните 103 (скорая помощь) или 112.'],
    ['Голос и озвучка',['Озвучку делает синтезатор речи телефона. В настройках показываются только голоса выбранного языка интерфейса.','Если голосов нет: Настройки Android → Система → Язык и ввод → Синтез речи → Google → установите голосовые данные русского или украинского языка.','Лучше немного снизить скорость речи (0,7–0,85) — так проще разобрать слова. Кнопка «Проверить голос» позволяет послушать результат.']],
    ['Азбука (подсказка по первой букве)',['На главном экране последняя плитка — «Азбука» (кроме тяжёлого уровня).','Нажмите первую букву слова: появятся слова из словаря, которые с неё начинаются. Можно нажать следующую букву, чтобы сузить список.','Нажатие на слово добавляет его в строку фразы. «Сказать так» произносит всю строку, ⌫ убирает последнее слово.']],
+   ['Словари слов (⚙️)',['В настройках можно один раз загрузить частотные списки слов (около 20 000 форм слов для русского и украинского и 10 000 для английского). После этого они хранятся на телефоне и работают без интернета.','Они расширяют «Азбуку»: на каждую букву появляются сотни самых употребительных слов, а наши слова идут первыми. Также они помогают исправлять сильно искажённые слова на экране 🎤.','Списки не создают новые фразы, а только слова. Источник: FrequencyWords (hermitdave), лицензия CC BY-SA 4.0. В списках из субтитров есть шум и редкие грубые слова, фильтрация неполная.']],
    ['Подсказка по сказанному (🎤)',['Кнопка 🎤 вверху открывает экран подсказок: человек говорит фразу, а приложение находит в своём словаре слова и предлагает готовые фразы с ними.','Нажмите на подходящую фразу — она прозвучит. Для тем «Здоровье» и «Лекарства» сначала будет вопрос «Точно?».','Распознавание речи делает браузер Chrome и обычно требует интернета (запись голоса может обрабатываться на серверах Google). Без интернета впишите услышанные слова в поле вручную — подбор фраз работает и так.','Нарушенную речь распознаватель понимает плохо, поэтому подсказки приблизительные. Если фразы не нашлись, попробуйте короче или впишите слова.']],
    ['Онлайн-поиск фраз (необязательно)',['Если в словаре нет подходящей фразы, на экране 🎤 появляется кнопка «Поискать в интернете». Она отправляет распознанные слова (звук не отправляется) выбранному сервису с языковой моделью, и тот предлагает до пяти фраз.','Включение: ⚙️ → «Онлайн-поиск фраз»: выберите сервис, введите API-ключ, отметьте согласие и нажмите «Проверить соединение». Рекомендуются Anthropic Claude или OpenRouter; для ключа задайте лимит расходов.','Подсказки из интернета не проверены, поэтому после нажатия приложение сначала спрашивает «…?». Не используйте функцию, если не хотите, чтобы слова человека уходили на внешний сервис. Ключ хранится на этом телефоне и не попадает в резервную копию.']],
    ['Ситуации','На уровнях «Лёгкое 1–3» в конце главного экрана есть плитка «Ситуации»: визит к врачу, аптека, магазин, гости, телефонный разговор. Фразы в них подобраны под конкретную ситуацию. Если вы раньше правили плитки лёгкого уровня, нажмите в редакторе «Сбросить уровень», чтобы получить новые темы.'],
@@ -317,6 +325,7 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
   aHome:'Додому',aLang:'Мова',aSet:'Налаштування',aEd:'Редактор',nomem:'Не вистачає пам’яті',testSay:'Це перевірка голосу',
   aHelp:'Довідка',v_auto:'Автоматично (голос за замовчуванням)',v_none:'Для цієї мови в телефоні немає голосів. Як їх встановити — див. «Довідка» → «Голос і озвучення».',
   abc:'Абетка',abcHint:'Натисніть першу літеру слова',abcNext:'Наступна літера:',abcNone:'Слів на ці літери немає',slow:'Повільно',
+  s_lex:'Словники слів для «Абетки» та виправлення спотворених слів (завантажуються один раз, потім працюють без інтернету)',b_lex_get:'⬇️ Завантажити словники слів',b_lex_del:'🗑️ Видалити словники слів',lex_none:'не завантажено',lex_words:'слів',lex_loading:'Завантажую: ',lex_done:'Готово. Словники збережено на цьому телефоні.',lex_err:'Не вдалося завантажити: ',lex_confirm_del:'Видалити завантажені словники слів?',lex_src:'Джерело списків: FrequencyWords (hermitdave) на основі субтитрів OpenSubtitles, ліцензія CC BY-SA 4.0. Нецензурні слова відфільтровано не повністю.',
   g_main:'Основне',g_voice:'Озвучення',g_touch:'Керування й натискання',g_ease:'Менше втоми',g_data:'Дані',
   s_uilang:'Мова меню та довідки (фрази й озвучення перемикаються кнопкою RU/UK/EN вгорі)',ui_auto:'Як у фраз та озвучення',
   s_size:'Розмір плиток',sz_m:'Звичайний',sz_l:'Великий',sz_xl:'Дуже великий (по одній у ряд)',
@@ -345,6 +354,7 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
    ['Здоров’я та ліки','Теми «Здоров’я» та «Ліки» просять друге підтвердження «Точно?», щоб випадкове натискання не ввело в оману. Застосунок не замінює лікаря. У небезпечній ситуації телефонуйте 103 (швидка допомога) або 112.'],
    ['Голос і озвучення',['Озвучення виконує синтезатор мовлення телефона. У налаштуваннях показуються лише голоси обраної мови інтерфейсу.','Якщо голосів немає: Налаштування Android → Система → Мова та введення → Синтез мовлення → Google → встановіть голосові дані російської або української мови.','Краще трохи знизити швидкість мовлення (0,7–0,85) — так легше розібрати слова. Кнопка «Перевірити голос» дає змогу послухати результат.']],
    ['Абетка (підказка за першою літерою)',['На головному екрані остання плитка — «Абетка» (крім важкого рівня).','Натисніть першу літеру слова: з’являться слова зі словника, що з неї починаються. Можна натиснути наступну літеру, щоб звузити список.','Натискання на слово додає його до рядка фрази. «Сказати так» вимовляє весь рядок, ⌫ прибирає останнє слово.']],
+   ['Словники слів (⚙️)',['У налаштуваннях можна один раз завантажити частотні списки слів (близько 20 000 форм слів для російської й української та 10 000 для англійської). Після цього вони зберігаються на телефоні й працюють без інтернету.','Вони розширюють «Абетку»: на кожну літеру з’являються сотні найуживаніших слів, а наші слова йдуть першими. Також вони допомагають виправляти сильно спотворені слова на екрані 🎤.','Списки не створюють нових фраз, а лише слова. Джерело: FrequencyWords (hermitdave), ліцензія CC BY-SA 4.0. У списках із субтитрів є шум і рідкісні грубі слова, фільтрація неповна.']],
    ['Підказка за сказаним (🎤)',['Кнопка 🎤 угорі відкриває екран підказок: людина говорить фразу, а застосунок знаходить у своєму словнику слова й пропонує готові фрази з ними.','Натисніть на відповідну фразу — вона пролунає. Для тем «Здоров’я» та «Ліки» спочатку буде запитання «Точно?».','Розпізнавання мовлення робить браузер Chrome і зазвичай потребує інтернету (запис голосу може оброблятися на серверах Google). Без інтернету впишіть почуті слова в поле вручну — добір фраз працює й так.','Порушене мовлення розпізнавач розуміє погано, тому підказки приблизні. Якщо фрази не знайшлися, спробуйте коротше або впишіть слова.']],
    ['Онлайн-пошук фраз (необов’язково)',['Якщо у словнику немає відповідної фрази, на екрані 🎤 з’являється кнопка «Пошукати в інтернеті». Вона надсилає розпізнані слова (звук не надсилається) обраному сервісу з мовною моделлю, і той пропонує до п’яти фраз.','Увімкнення: ⚙️ → «Онлайн-пошук фраз»: оберіть сервіс, введіть API-ключ, позначте згоду й натисніть «Перевірити з’єднання». Рекомендуються Anthropic Claude або OpenRouter; для ключа задайте ліміт витрат.','Підказки з інтернету не перевірені, тому після натискання застосунок спершу запитує «…?». Не користуйтеся цією функцією, якщо не хочете, щоб слова людини йшли на зовнішній сервіс. Ключ зберігається на цьому телефоні й не потрапляє в резервну копію.']],
    ['Ситуації','На рівнях «Легке 1–3» наприкінці головного екрана є плитка «Ситуації»: візит до лікаря, аптека, магазин, гості, телефонна розмова. Фрази в них підібрано під конкретну ситуацію. Якщо ви раніше правили плитки легкого рівня, натисніть у редакторі «Скинути рівень», щоб отримати нові теми.'],
@@ -384,6 +394,7 @@ en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep
   aHome:'Home',aLang:'Language',aSet:'Settings',aEd:'Editor',nomem:'Not enough storage',testSay:'This is a voice test',
   aHelp:'Help',v_auto:'Automatic (default voice)',v_none:'This phone has no voices for this language. See Help → “Voice and speech” to install them.',
   abc:'ABC',abcHint:'Tap the first letter of the word',abcNext:'Next letter:',abcNone:'No words for these letters',slow:'Slowly',
+  s_lex:'Word lists for ABC and for correcting garbled words (downloaded once, then they work offline)',b_lex_get:'⬇️ Download the word lists',b_lex_del:'🗑️ Delete the word lists',lex_none:'not downloaded',lex_words:'words',lex_loading:'Downloading: ',lex_done:'Done. The word lists are saved on this phone.',lex_err:'Could not download: ',lex_confirm_del:'Delete the downloaded word lists?',lex_src:'List source: FrequencyWords (hermitdave), based on OpenSubtitles subtitles, license CC BY-SA 4.0. Profanity is filtered only partly.',
   g_main:'General',g_voice:'Speech',g_touch:'Controls and taps',g_ease:'Less fatigue',g_data:'Data',
   s_uilang:'Menu and help language (phrases and speech are switched with the RU / UK / EN button at the top)',ui_auto:'Same as phrases and speech',
   s_size:'Tile size',sz_m:'Normal',sz_l:'Large',sz_xl:'Extra large (one per row)',
@@ -423,6 +434,7 @@ en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep
    ['Health and medicines','The Health and Medicines topics ask for a second confirmation, “Sure?”, so that an accidental tap does not mislead anyone. The app does not replace a doctor. In danger, call your local emergency number (103 or 112 in Ukraine).'],
    ['Voice and speech',['Speech comes from the phone’s speech synthesizer. Settings list only the voices of the language currently used for phrases.','If there are none: Android Settings → System → Languages and input → Text-to-speech → Google → install the voice data for the language.','A slightly slower speech rate (0.7–0.85) is easier to follow. The “Test voice” button plays a sample.']],
    ['ABC (first-letter help)',['On the home screen the last tile is “ABC” (except in the severe level).','Tap the first letter of a word: words from the dictionary starting with it appear. Tap the next letter to narrow the list.','Tapping a word adds it to the phrase line. “Say it” speaks the whole line, ⌫ removes the last word.']],
+   ['Word lists (⚙️)',['In Settings you can download frequency word lists once (about 20,000 word forms for Russian and Ukrainian and 10,000 for English). After that they are kept on the phone and work offline.','They extend ABC: each letter gets hundreds of the most common words, with our own words first. They also help correct badly garbled words on the 🎤 screen.','The lists provide words, not new phrases. Source: FrequencyWords (hermitdave), license CC BY-SA 4.0. Lists built from subtitles contain noise and a few rude words; the filtering is incomplete.']],
    ['Suggestions from what was said (🎤)',['The 🎤 button at the top opens a screen of suggestions: the person says a phrase and the app finds words from its vocabulary and offers ready-made phrases containing them.','Tap a matching phrase and it is spoken. For the Health and Medicines topics a “Sure?” question comes first.','Speech recognition is done by the Chrome browser and usually needs the internet (the voice recording may be processed on Google servers). Without the internet, type the words you heard into the field: the phrase matching works anyway.','Impaired speech is hard for a recognizer, so the suggestions are approximate. If nothing is found, try something shorter or type the words.']],
    ['Online phrase search (optional)',['If the vocabulary has no suitable phrase, the 🎤 screen shows a “Search online” button. It sends the recognized words (no audio) to the selected language-model service, which suggests up to five phrases.','To turn it on: ⚙️ → “Online phrase search”: choose a service, enter the API key, tick the consent box and press “Test the connection”. Anthropic Claude or OpenRouter are recommended; set a spending limit for the key.','Suggestions from the internet are not vetted, so after a tap the app first asks “…?”. Do not use this feature if you do not want the person’s words to go to an outside service. The key stays on this phone and is not included in the backup.']],
    ['Situations','In the Mild 1–3 levels the last tile of the home screen is “Situations”: doctor visit, pharmacy, store, guests, phone call. The phrases are chosen for each situation. If you edited tiles of a mild level earlier, tap “Reset level” in the editor to get the new topics.'],
@@ -1608,7 +1620,11 @@ function buildDict(){
     add(G(p[lang==='uk'?1:0]).replace(/\//g,' '));
   });
   flat().forEach(x=>{add(t(x.n.l));add(t(x.n.s))});
-  return Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]||a.localeCompare(b,lang));
+  const own=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]||a.localeCompare(b,lang));
+  const lx=getLex();
+  if(!lx)return own;
+  const have=new Set(own);
+  return own.concat(lx.words.filter(w=>!have.has(w)));
 }
 function abcOpen(){closeOv();path=[];abc={prefix:'',line:[],dict:buildDict()};render()}
 function renderAbc(){
@@ -1817,12 +1833,27 @@ $('#lang').onclick=()=>{
   if(isB()&&wasEn!==(lang==='en')){tree=ld(tk(),null)||getTreeForLevel();path=[];sel='';edCtx=''}
   if(abc){abc={prefix:'',line:[],dict:buildDict()}}
   labels();applyI18n();closeOv();populateVoices();render();
+  loadBundledLex(lang);
 };
 
 /* ---------- Модальное окно НАСТРОЕК ---------- */
 const settModal = $('#sett');
 const showLvNote=()=>{$('#lvNote').textContent=(U[uiL()].lv||{})[$('#setSeg').value]||''};
 $('#setSeg').onchange=showLvNote;
+$('#lexGetBtn').onclick=async()=>{
+  const note=$('#lexNote'),btn=$('#lexGetBtn');
+  btn.disabled=true;
+  try{
+    const errs=await downloadLexicons(m=>{note.textContent=m});
+    note.textContent=errs.length?uh('lex_err')+errs.join(', '):uh('lex_done');
+  }catch(e){note.textContent=uh('lex_err')+String(e&&e.message||e)}
+  btn.disabled=false;$('#lexInfo').textContent=lexInfoText();
+};
+$('#lexDelBtn').onclick=()=>{
+  if(!confirm(uh('lex_confirm_del')))return;
+  ['ru','uk','en'].forEach(l=>{try{localStorage.removeItem('aac.lex.'+l)}catch(e){}delete LEXC[l];LEXTRY[l]=true});
+  $('#lexInfo').textContent=lexInfoText();$('#lexNote').textContent='';
+};
 function syncExtUi(){
   const pv=$('#setExtProv').value;
   $('#extBox').style.display=pv==='off'?'none':'block';
@@ -1853,6 +1884,7 @@ $('#settingsBtn').onclick = () => {
   const ex = settings.ext;
   $('#setExtUrl').value = ex.url || '';$('#setExtModel').value = ex.model || '';$('#setExtKey').value = extKey();$('#setExtOk').checked = !!ex.ok;
   $('#extNote').textContent = '';syncExtUi();
+  $('#lexInfo').textContent = lexInfoText();$('#lexNote').textContent = '';
   populateVoices();
 };
 
@@ -1910,6 +1942,101 @@ $('#closeSettBtn').onclick = () => {
   render();
 };
 
+/* ---------- Словари слов (частотные списки FrequencyWords) ---------- */
+// Объём: для русского и украинского с их формами слов нужно больше, чем для английского
+const LEX_N={ru:20000,uk:20000,en:10000};
+const LEX_BASE='https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/';
+const LEX_RE={
+  ru:/^[а-я]+(?:-[а-я]+)?$/,
+  uk:/^[а-щьюяєіїґ]+(?:['’ʼ-][а-щьюяєіїґ]+)?$/,
+  en:/^[a-z]+(?:'[a-z]+)?$/
+};
+// Простая фильтрация нецензурной лексики (не исчерпывающая): списки собраны из субтитров
+const LEX_BAD={
+  ru:/хуй|хуе|хуи|хуя|пизд|бляд|бляц|блят|залуп|муда[кч]|пидор|пидар|гандон|шлюх|дерьм|говн|^(?:за|вы|по|на|съ|от|у|до|об|раз|рас|при)?еб|^жоп|^сук[аиуе]$/,
+  uk:/хуй|хуї|хує|пизд|бляд|курв|гівн|мудак|підор|підар|шлюх|^жоп|^сук[аиуе]$|^(?:за|ви|по|на|від|у|до|об|роз|при)?їб/,
+  en:/fuck|shit|cunt|bitch|asshole|pussy|whore|slut|bastard|nigg|^dick$|^cock$|^fag/
+};
+const LEXC={};              // кэш в памяти: язык → {words, rank, byLen}
+const LEXTRY={};            // для каких языков уже пробовали файлы из репозитория
+function cleanLex(lines,l,n){
+  const out=[],seen=new Set();
+  for(const raw of lines){
+    let w=String(raw).trim().split(/\s+/)[0];
+    if(!w)continue;
+    w=w.toLowerCase().replace(/ё/g,'е');
+    if(w.length<2||w.length>20||!LEX_RE[l].test(w)||LEX_BAD[l].test(w)||seen.has(w))continue;
+    seen.add(w);out.push(w);
+    if(out.length>=n)break;
+  }
+  return out;
+}
+function buildLex(words){
+  const rank=new Map(),byLen={};
+  words.forEach((w,i)=>{if(!rank.has(w)){rank.set(w,i);(byLen[w.length]=byLen[w.length]||[]).push(w)}});
+  return {words,rank,byLen};
+}
+// Список текущего (или указанного) языка: сначала сохранённый на телефоне, затем файл из репозитория
+function getLex(l){
+  l=l||lang;
+  if(LEXC[l])return LEXC[l];
+  try{
+    const raw=localStorage.getItem('aac.lex.'+l);
+    if(raw){const w=raw.split('\n').filter(Boolean);if(w.length)return LEXC[l]=buildLex(w)}
+  }catch(e){}
+  return null;
+}
+async function loadBundledLex(l){
+  if(getLex(l)||LEXTRY[l])return;
+  LEXTRY[l]=true;
+  try{
+    const res=await fetch('lex/'+l+'.txt');
+    if(!res.ok)return;
+    const w=cleanLex((await res.text()).split('\n'),l,LEX_N[l]);
+    if(w.length>=500)LEXC[l]=buildLex(w);
+  }catch(e){}
+}
+// Читаем только первые строки большого файла и сразу закрываем поток, чтобы не качать лишнего
+async function fetchLines(url,maxLines){
+  const res=await fetch(url);
+  if(!res.ok){const e=new Error('http');e.status=res.status;throw e}
+  const out=[];
+  if(res.body&&res.body.getReader){
+    const rd=res.body.getReader(),dec=new TextDecoder();let buf='';
+    while(out.length<maxLines){
+      const {done,value}=await rd.read();
+      if(done)break;
+      buf+=dec.decode(value,{stream:true});
+      const parts=buf.split('\n');buf=parts.pop();
+      for(const ln of parts){out.push(ln);if(out.length>=maxLines)break}
+    }
+    try{rd.cancel()}catch(e){}
+    if(out.length<maxLines&&buf)out.push(buf);
+  }else out.push(...(await res.text()).split('\n').slice(0,maxLines));
+  return out;
+}
+async function downloadLexicons(onStatus){
+  const errs=[];
+  for(const l of ['ru','uk','en']){
+    onStatus(uh('lex_loading')+uh('ln_'+l)+'…');
+    let lines=null;
+    for(const f of [l+'_50k.txt',l+'_full.txt']){
+      try{lines=await fetchLines(LEX_BASE+l+'/'+f,Math.round(LEX_N[l]*1.6));break}catch(e){}
+    }
+    const words=lines?cleanLex(lines,l,LEX_N[l]):[];
+    if(words.length<500){errs.push(uh('ln_'+l));continue}
+    try{localStorage.setItem('aac.lex.'+l,words.join('\n'));delete LEXC[l]}catch(e){errs.push(uh('ln_'+l))}
+  }
+  return errs;
+}
+function lexInfoText(){
+  return ['ru','uk','en'].map(l=>{
+    let n=0;try{const raw=localStorage.getItem('aac.lex.'+l);if(raw)n=raw.split('\n').filter(Boolean).length}catch(e){}
+    if(!n&&LEXC[l])n=LEXC[l].words.length;
+    return uh('ln_'+l)+': '+(n?n+' '+uh('lex_words'):uh('lex_none'));
+  }).join(' · ');
+}
+
 /* ---------- Подсказка по сказанному (распознавание речи + подбор фраз) ---------- */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 const hearEl=$('#hear');
@@ -1917,12 +2044,23 @@ let rec=null, hearTxt='', hearAlt='', IDX=[];
 const STOPW={ru:'я и в на не мне мой моя с по у это что а но да',uk:'я і в на не мені мій моя з по у це що а але',en:'i the a an to my me is it of in on and am are'};
 const norm=x=>String(x).toLowerCase().replace(/ё/g,'е').replace(/[’ʼ`]/g,"'").replace(/[^\p{L}\p{N}'\s-]/gu,' ');
 const toks=x=>norm(x).split(/[\s-]+/).map(w=>w.replace(/^'+|'+$/g,'')).filter(Boolean);
-function lev(a,b){
-  const d=Array.from({length:a.length+1},(_,i)=>[i]);
-  for(let j=1;j<=b.length;j++)d[0][j]=j;
-  for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)
-    d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
-  return d[a.length][b.length];
+// Буквы, которые часто путают в речи и при распознавании: замена стоит полцены
+const CONF=new Set('бп пб вф фв гк кг дт тд жш шж зс сз ао оа еи ие яи ия еэ эе уы ыу иі ії bp pb dt td kg gk sz zs fv vf'.split(' '));
+function levw(a,b,max){
+  const n=a.length,m=b.length,lim=max||99;
+  if(Math.abs(n-m)>lim)return 99;
+  let prev=Array.from({length:m+1},(_,j)=>j);
+  for(let i=1;i<=n;i++){
+    const cur=[i];let rowMin=i;
+    for(let j=1;j<=m;j++){
+      const ca=a[i-1],cb=b[j-1],sub=ca===cb?0:(CONF.has(ca+cb)?0.5:1);
+      const v=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+sub);
+      cur.push(v);if(v<rowMin)rowMin=v;
+    }
+    if(rowMin>lim)return 99;
+    prev=cur;
+  }
+  return prev[m];
 }
 // Похожесть двух слов: 1 — совпадают, ~0.8 — общее начало (падежи, формы), ~0.7 — одна ошибка
 function wordSim(a,b){
@@ -1931,7 +2069,7 @@ function wordSim(a,b){
   if(m<3)return 0;
   let p=0;while(p<m&&a[p]===b[p])p++;
   if(p>=3&&p/m>=0.6)return 0.8;
-  const dist=lev(a,b);
+  const dist=levw(a,b,2);
   if(Math.max(a.length,b.length)>=4&&dist<=1)return 0.7;
   if(Math.max(a.length,b.length)>=7&&dist<=2)return 0.55;
   return 0;
@@ -1959,21 +2097,35 @@ function phraseIndex(){
   });
   return out;
 }
+// Варианты исправления слова по большому словарю: только для слов, которых в словаре нет
+function lexRepairs(w){
+  const lx=getLex();
+  if(!lx||w.length<4||lx.rank.has(w))return [];
+  const maxd=w.length>=7?1.5:1,out=[];
+  for(let L=w.length-2;L<=w.length+2;L++){
+    const arr=lx.byLen[L];if(!arr)continue;
+    for(const v of arr){const d=levw(w,v,maxd);if(d<=maxd)out.push([v,d,lx.rank.get(v)])}
+  }
+  out.sort((x,y)=>x[1]-y[1]||x[2]-y[2]);
+  return out.slice(0,3).map(x=>x[0]);
+}
 function suggest(text){
   const all=toks(text),stop=new Set((STOPW[lang]||'').split(' '));
   let tk=[...new Set(all.filter(w=>!stop.has(w)&&w.length>1))];
   if(!tk.length)tk=[...new Set(all.filter(w=>w.length>1))];
   if(!tk.length)return [];
+  // у каждого услышанного слова: оно само (вес 1) и исправления из большого словаря (вес 0,9)
+  const groups=tk.map(w=>[[w,1],...lexRepairs(w).map(r=>[r,0.9])]);
   const res=[];
   for(const c of IDX){
     let m=0;const used=new Set();
-    for(const w of tk){
+    for(const g of groups){
       let best=0,bi=-1;
-      c.w.forEach((v,i)=>{if(used.has(i))return;const sm=wordSim(w,v);if(sm>best){best=sm;bi=i}});
+      c.w.forEach((v,i)=>{if(used.has(i))return;for(const [w,f] of g){const sm=wordSim(w,v)*f;if(sm>best){best=sm;bi=i}}});
       if(bi>=0&&best>=0.5){used.add(bi);m+=best}
     }
     if(m<0.7)continue;
-    res.push({c,score:2*m/(tk.length+c.w.length)+0.05*m});
+    res.push({c,score:2*m/(groups.length+c.w.length)+0.05*m});
   }
   res.sort((a,b)=>b.score-a.score||a.c.text.length-b.c.text.length);
   return res.slice(0,6).map(x=>x.c);
@@ -2175,7 +2327,7 @@ $('#diaryBtn').onclick=()=>{drawDiary();diaryEl.style.display='block';diaryEl.sc
 /* ---------- Резервная копия ---------- */
 $('#backupBtn').onclick=()=>{
   const data={};
-  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('aac.')&&!k.startsWith('aac.secret.'))data[k]=localStorage.getItem(k)}
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('aac.')&&!k.startsWith('aac.secret.')&&!k.startsWith('aac.lex.'))data[k]=localStorage.getItem(k)}
   download('govorim-backup-'+today()+'.json',JSON.stringify({app:'govorim',version:APP_VERSION,saved:new Date().toISOString(),data}),'application/json');
 };
 $('#restoreBtn').onclick=()=>$('#restoreFile').click();
@@ -2187,9 +2339,9 @@ $('#restoreFile').onchange=e=>{
     let j;try{j=JSON.parse(r.result)}catch(_){j=null}
     if(!j||j.app!=='govorim'||!j.data||typeof j.data!=='object'){alert(uh('b_bad'));return}
     if(!confirm(uh('b_confirm')))return;
-    const old=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('aac.')&&!k.startsWith('aac.secret.'))old.push(k)}
+    const old=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('aac.')&&!k.startsWith('aac.secret.')&&!k.startsWith('aac.lex.'))old.push(k)}
     old.forEach(k=>localStorage.removeItem(k));
-    Object.entries(j.data).forEach(([k,v])=>{if(k.startsWith('aac.')&&!k.startsWith('aac.secret.')&&typeof v==='string'){try{localStorage.setItem(k,v)}catch(_){}}});
+    Object.entries(j.data).forEach(([k,v])=>{if(k.startsWith('aac.')&&!k.startsWith('aac.secret.')&&!k.startsWith('aac.lex.')&&typeof v==='string'){try{localStorage.setItem(k,v)}catch(_){}}});
     location.reload();
   };
   r.readAsText(f);
@@ -2318,6 +2470,7 @@ applyUI();
 applyI18n();
 render();
 
+loadBundledLex(lang);
 // Просим браузер не удалять данные приложения при нехватке места
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
 
