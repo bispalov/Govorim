@@ -55,6 +55,16 @@
 - **Фильтрация:** остаются только слова нужного алфавита (длина 2–20 символов, без цифр и латиницы в русском и украинском), без дублей; грубые и нецензурные слова вырезаются простым фильтром. Он **не исчерпывающий**, потому что списки составлены из субтитров, поэтому в «Азбуке» всё же могут встретиться редкие шумные слова.
 - **Что не проверено:** загрузку с настоящего GitHub я не выполнял (в моей среде нет интернета); логика проверена на подставных ответах сервера. Если у украинского нет файла `uk_50k.txt`, приложение берёт `uk_full.txt` и читает из него только начало.
 
+### Онлайн-поиск слов (бесплатно, без ключа)
+
+Если слова нет даже в загруженных словарях (например, «кукуруза»), можно включить ⚙️ → «Искать слова онлайн». Тогда на экране «Азбука» и на экране 🎤 появляется кнопка «Найти слова в интернете».
+
+- **Источники:** Викисловарь (`ru.`, `uk.`, `en.wiktionary.org`, MediaWiki Action API с `origin=*`: продолжения начатого слова и подсказка «возможно, вы имели в виду») и, для английского, [Datamuse](https://www.datamuse.com/api/) (`/sug`, бесплатно до 100 000 запросов в сутки для некоммерческого использования). Ключи не нужны. Содержимое Викисловаря распространяется на условиях CC BY-SA.
+- **Что уходит наружу:** набранные буквы или слово, которое не нашлось. Поэтому функция выключена по умолчанию.
+- **Что получается:** слова, не фразы. Выбранное слово произносится и **запоминается на телефоне** (`aac.learn.*`, до 3000 слов): дальше оно находится и без интернета. Эти слова входят в резервную копию.
+- Результаты фильтруются по алфавиту языка и простым фильтром грубых слов. В Викисловаре есть слова разных языков, поэтому изредка попадаются слова другого языка с похожим алфавитом.
+- **Что не проверено:** работу с настоящими серверами я не проверял (в моей среде нет интернета); логика проверена на подставных ответах.
+
 ### Онлайн-поиск фраз, которых нет в словаре (необязательно)
 
 Если в словаре не нашлось подходящей фразы, на экране 🎤 можно нажать «Поискать в интернете»: распознанные слова (**звук не отправляется**) уйдут выбранному сервису с языковой моделью, и тот предложит до пяти коротких фраз. Фраза из интернета не проверена, поэтому после выбора приложение сначала спрашивает «…?».
@@ -65,6 +75,12 @@
 |---|---|
 | Anthropic Claude | Запросы из браузера разрешены при заголовке `anthropic-dangerous-direct-browser-access: true`, приложение добавляет его само. Модель по умолчанию `claude-haiku-5-5` (можно заменить). |
 | OpenAI-совместимый | Подходят OpenRouter (`https://openrouter.ai/api/v1`), Groq (`https://api.groq.com/openai/v1`) и собственный сервер. Прямой `api.openai.com` из браузера, по имеющимся данным, часто блокируется политикой CORS. Модель нужно указать вручную. |
+
+Если фраз нет (особенно с бесплатными моделями OpenRouter):
+
+- Кнопка «Проверить соединение» показывает, что именно ответил сервис: код ошибки и начало ответа. Некоторые бесплатные модели «думают» и тратят лимит токенов на рассуждения; приложение запрашивает 1200 токенов, читает ответ из `content` и `reasoning`, понимает JSON, список и объект с полем `phrases`.
+- Ошибка 404 «No endpoints found matching your data policy» означает, что в настройках приватности OpenRouter (`openrouter.ai/settings/privacy`) не разрешены бесплатные модели.
+- Бесплатные модели меняются и могут быть перегружены: попробуйте другую модель (универсальная `openrouter/free` или конкретная модель с суффиксом `:free`) и подождите, если сервис вернул 429.
 
 Что учесть:
 
@@ -135,7 +151,7 @@
 
 Установленное приложение обновляется только при смене версии кэша. При любом изменении файлов:
 
-1. В `sw.js` увеличьте номер: `const V = 'govorim-v19'` → `'govorim-v20'`.
+1. В `sw.js` увеличьте номер: `const V = 'govorim-v20'` → `'govorim-v21'`.
 2. В `index.html` увеличьте `APP_VERSION` (он показывается внизу настроек).
 3. Загрузите файлы. Приложение подхватит новую версию при следующем открытии с интернетом и один раз перезагрузится.
 
@@ -176,6 +192,7 @@
 - Fully trilingual interface and speech: Russian, Ukrainian and English (never mixed on screen). English phrases are built by English grammar, not translated word for word.
 - Five levels matched to the degree of the person's speech impairment (the more severe, the simpler the interface), including a phrase builder (up to 5 steps) for people who cannot recall the last words of a sentence. It supports past tense with gender forms ("I have already taken my morning pills").
 - Emergency "Help" button, "Pain" shortcut, double confirmation for health and medication phrases.
+- Optional free online word lookup (Wiktionary; Datamuse for English): finds words missing from the lists, and chosen words are remembered offline.
 - Optional frequency word lists (FrequencyWords, CC BY-SA 4.0): one-time download inside the app (or bundled with `tools/build-lexicon.py`) extends ABC and corrects garbled words; they provide words, not new phrases.
 - Optional online phrase search (off by default): your own API key for Anthropic Claude or an OpenAI-compatible service (OpenRouter, Groq, own server) proposes phrases that are not in the vocabulary; only recognized text is sent, never audio.
 - "Suggestions from what was said" (🎤): the person speaks, the browser recognizes it (usually online in Chrome), and the app offers ready phrases containing the recognized words; typing the words manually works offline.
