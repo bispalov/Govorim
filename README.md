@@ -140,6 +140,7 @@
 
 | Файл | Назначение |
 |---|---|
+| `LICENSE` | Лицензия MIT |
 | `index.html` | Всё приложение: разметка, стили, скрипт, словарь фраз, тексты интерфейса и справки |
 | `sw.js` | Service worker: офлайн-кэш и автообновление |
 | `manifest.json` | Манифест PWA (название, иконки, цвета) |
@@ -183,6 +184,25 @@
 
 Всё хранится локально на устройстве (`localStorage`): язык, настройки, правки плиток, статистика частых фраз, дневник. Данные никуда не отправляются.
 
+## Об авторстве
+
+Весь код этого приложения написан ИИ-ассистентом Claude (Anthropic) по заданию и под руководством автора проекта: идея, требования, проверка на практике и решение о публикации принадлежат автору.
+
+Тексты фраз и справки на русском, украинском и английском тоже подготовлены ИИ-ассистентом. Их не проверяли носители языка и специалисты, поэтому перед использованием с конкретным человеком их стоит просмотреть, особенно медицинские формулировки. Приложение не является медицинским изделием и не заменяет врача или логопеда.
+
+## Лицензия
+
+Приложение распространяется по лицензии [MIT](LICENSE): его можно свободно использовать, копировать, изменять и распространять, в том числе в своих проектах. Условие одно: сохраняйте в копиях текст лицензии и указание авторства. Будем благодарны, если вы также оставите ссылку на оригинальный репозиторий.
+
+Приложение предоставляется «как есть», без каких-либо гарантий.
+
+Сторонние данные и сервисы, которые приложение может использовать, имеют собственные условия, и MIT на них не распространяется:
+
+- списки слов [FrequencyWords](https://github.com/hermitdave/FrequencyWords): CC BY-SA 4.0 (см. `lex/LICENSE.txt`, если вы кладёте списки в репозиторий);
+- Викисловарь (Wikimedia): содержимое под CC BY-SA, использование API по правилам Wikimedia;
+- [Datamuse](https://www.datamuse.com/api/): бесплатно для некоммерческого использования, с указанием источника;
+- сервисы языковых моделей (необязательный онлайн-поиск фраз): условия выбранного сервиса.
+
 ---
 
 ## English summary
@@ -201,3 +221,9 @@
 - Static files only; deploy to GitHub Pages under `/Govorim/`. Bump the cache version in `sw.js` and `APP_VERSION` in `index.html` on every update.
 
 This app is not a medical device and does not replace professional care.
+
+### Authorship and license
+
+All code in this app was written by the AI assistant Claude (Anthropic) on the task and under the direction of the project author, who defined the idea and requirements, tested the app and decided to publish it. The Russian, Ukrainian and English phrase and help texts were also produced by the assistant and have not been reviewed by native speakers or specialists, so please review them (especially medical wording) before using the app with a specific person.
+
+The app is released under the [MIT license](LICENSE): you may freely use, copy, modify and distribute it. Please keep the license text and copyright notice in copies, and a link back to the original repository is appreciated. The software is provided "as is", without warranty. Third-party data and services (FrequencyWords word lists under CC BY-SA 4.0, Wiktionary, Datamuse, language-model services) have their own terms.
