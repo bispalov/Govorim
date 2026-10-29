@@ -234,6 +234,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 
   <label class="chk"><input type="checkbox" id="setHear"><span data-i="s_hear"></span></label>
   <label class="chk"><input type="checkbox" id="setSyll"><span data-i="s_syll"></span></label>
+  <label class="chk"><input type="checkbox" id="setAbcAutoHide"><span data-i="s_abchide"></span></label>
   <label class="chk"><input type="checkbox" id="setVib"><span data-i="s_vib"></span></label>
   <label class="chk"><input type="checkbox" id="setAwake"><span data-i="s_awake"></span></label>
 
@@ -282,7 +283,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 22;   // держите в соответствии с V = 'govorim-v22' в sw.js
+const APP_VERSION = 24;   // держите в соответствии с V = 'govorim-v24' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -298,6 +299,7 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
   m_words:'Слова из словаря — нажмите, и слово прозвучит:',m_lex_off:'Чтобы подсказывать отдельные слова, загрузите словари слов: ⚙️ → «Данные».',
   s_wonline:'Искать слова онлайн (Викисловарь; для английского ещё Datamuse). Бесплатно, ключ не нужен. Набранные буквы и слова отправляются этим сервисам. Выбранные слова запоминаются на телефоне.',w_err:'Не удалось связаться с сервисом словарей. Проверьте интернет.',ext_policy:'OpenRouter не нашёл подходящих бесплатных моделей из-за настроек приватности. Откройте openrouter.ai/settings/privacy и разрешите использование бесплатных моделей, либо выберите другую модель.',ext_diag:'Ответ сервиса',
   wOnline:'Найти слова в интернете',wOnlineRes:'Слова из интернета — нажмите, чтобы выбрать:',wNone:'В интернете подходящих слов не нашлось.',
+  s_abchide:'Азбука: сворачивать панель с буквами после каждой нажатой буквы, чтобы было видно больше слов (вернуть её можно кнопкой «Показать буквы»; после выбора слова она появляется сама)',
   g_main:'Основное',g_voice:'Озвучка',g_touch:'Управление и нажатия',g_ease:'Меньше усталости',g_data:'Данные',
   s_uilang:'Язык меню и справки (фразы и озвучка переключаются кнопкой RU/UK/EN вверху)',ui_auto:'Как у фраз и озвучки',
   s_size:'Размер плиток',sz_m:'Обычный',sz_l:'Крупный',sz_xl:'Очень крупный (по одной в ряд)',
@@ -325,7 +327,7 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
    ['Часто используемое','На главном экране показываются до четырёх самых частых фраз — так нужное находится быстрее. Чтобы убрать ненужную фразу, нажмите ✏️ рядом с заголовком «Часто» и коснитесь фразы; «Убрать все» очищает блок. Счётчик фразы обнуляется и начнёт набираться заново, только если её снова произнести.'],
    ['Здоровье и лекарства','Темы «Здоровье» и «Лекарства» просят второе подтверждение «Точно?», чтобы случайное нажатие не ввело в заблуждение. Приложение не заменяет врача. В опасной ситуации звоните 103 (скорая помощь) или 112.'],
    ['Голос и озвучка',['Озвучку делает синтезатор речи телефона. В настройках показываются только голоса выбранного языка интерфейса.','Если голосов нет: Настройки Android → Система → Язык и ввод → Синтез речи → Google → установите голосовые данные русского или украинского языка.','Лучше немного снизить скорость речи (0,7–0,85) — так проще разобрать слова. Кнопка «Проверить голос» позволяет послушать результат.']],
-   ['Азбука (подсказка по первой букве)',['Кнопка «Азбука» находится в шапке рядом с 🎤 (на тяжёлом уровне её нет). Буквы всегда закреплены внизу экрана, а найденные слова показываются над ними; кнопка «Скрыть буквы» освобождает место для слов, «Показать буквы» возвращает их.','Нажмите первую букву слова: появятся слова из словаря, которые с неё начинаются. Можно нажать следующую букву, чтобы сузить список.','Нажатие на слово добавляет его в строку фразы. «Сказать так» произносит всю строку, ⌫ убирает последнее слово.','Кнопка вверху экрана переключает режим: «Свободный набор» показывает всю азбуку, человек набирает слово так, как его себе представляет (можно с ошибками), а приложение предлагает подходящие слова и готовые фразы, как на экране 🎤. «Подходящие буквы» показывает лишь те буквы, после которых в словаре есть слова.']],
+   ['Азбука (подсказка по первой букве)',['Кнопка «Азбука» находится в шапке рядом с 🎤 (на тяжёлом уровне её нет). Буквы всегда закреплены внизу экрана, а найденные слова показываются над ними; кнопка «Скрыть буквы» освобождает место для слов, «Показать буквы» возвращает их. В настройках можно включить автоматическое сворачивание панели после каждой нажатой буквы: после выбора слова панель появляется снова.','Нажмите первую букву слова: появятся слова из словаря, которые с неё начинаются. Можно нажать следующую букву, чтобы сузить список.','Нажатие на слово добавляет его в строку фразы. «Сказать так» произносит всю строку, ⌫ убирает последнее слово.','Кнопка вверху экрана переключает режим: «Свободный набор» показывает всю азбуку, человек набирает слово так, как его себе представляет (можно с ошибками), а приложение предлагает подходящие слова и готовые фразы, как на экране 🎤. «Подходящие буквы» показывает лишь те буквы, после которых в словаре есть слова.']],
    ['Поиск слов онлайн (⚙️, бесплатно)',['Если нужного слова нет в словаре (например, «кукуруза»), включите в настройках «Искать слова онлайн». Тогда на экране «Азбука» и на экране 🎤 появится кнопка «Найти слова в интернете».','Слова ищутся в Викисловаре (для английского ещё в Datamuse): продолжения начатого слова и исправления опечаток. Ключ и регистрация не нужны. Набранные буквы и слова отправляются этим сервисам.','Выбранное слово произносится и запоминается на телефоне: дальше оно находится и без интернета.']],
    ['Словари слов (⚙️)',['В настройках можно один раз загрузить частотные списки слов (около 20 000 форм слов для русского и украинского и 10 000 для английского). После этого они хранятся на телефоне и работают без интернета.','Они расширяют «Азбуку»: на каждую букву появляются сотни самых употребительных слов, а наши слова идут первыми. На экране 🎤 они дают блок «Слова из словаря»: услышанные слова исправляются (например, «мошина» → «машина»), недоговорённое начало слова дополняется, и слово произносится по нажатию. Это работает и для слов, которых нет в наших фразах.','Списки не создают новые фразы, а только слова. Источник: FrequencyWords (hermitdave), лицензия CC BY-SA 4.0. В списках из субтитров есть шум и редкие грубые слова, фильтрация неполная.']],
    ['Подсказка по сказанному (🎤)',['Кнопка 🎤 вверху открывает экран подсказок: человек говорит фразу, а приложение находит в своём словаре слова и предлагает готовые фразы с ними.','Нажмите на подходящую фразу — она прозвучит. Для тем «Здоровье» и «Лекарства» сначала будет вопрос «Точно?».','Распознавание речи делает браузер Chrome и обычно требует интернета (запись голоса может обрабатываться на серверах Google). Без интернета впишите услышанные слова в поле вручную — подбор фраз работает и так.','Нарушенную речь распознаватель понимает плохо, поэтому подсказки приблизительные. Если фразы не нашлись, попробуйте короче или впишите слова.']],
@@ -371,6 +373,7 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
   m_words:'Слова зі словника — натисніть, і слово пролунає:',m_lex_off:'Щоб підказувати окремі слова, завантажте словники слів: ⚙️ → «Дані».',
   s_wonline:'Шукати слова онлайн (Вікісловник; для англійської ще Datamuse). Безкоштовно, ключ не потрібен. Набрані літери й слова надсилаються цим сервісам. Обрані слова запам’ятовуються на телефоні.',w_err:'Не вдалося зв’язатися із сервісом словників. Перевірте інтернет.',ext_policy:'OpenRouter не знайшов відповідних безкоштовних моделей через налаштування приватності. Відкрийте openrouter.ai/settings/privacy і дозвольте використання безкоштовних моделей або оберіть іншу модель.',ext_diag:'Відповідь сервісу',
   wOnline:'Знайти слова в інтернеті',wOnlineRes:'Слова з інтернету — натисніть, щоб обрати:',wNone:'В інтернеті відповідних слів не знайшлося.',
+  s_abchide:'Абетка: згортати панель з літерами після кожної натиснутої літери, щоб було видно більше слів (повернути її можна кнопкою «Показати літери»; після вибору слова вона з’являється сама)',
   g_main:'Основне',g_voice:'Озвучення',g_touch:'Керування й натискання',g_ease:'Менше втоми',g_data:'Дані',
   s_uilang:'Мова меню та довідки (фрази й озвучення перемикаються кнопкою RU/UK/EN вгорі)',ui_auto:'Як у фраз та озвучення',
   s_size:'Розмір плиток',sz_m:'Звичайний',sz_l:'Великий',sz_xl:'Дуже великий (по одній у ряд)',
@@ -398,7 +401,7 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
    ['Часто вживане','На головному екрані показуються до чотирьох найчастіших фраз — так потрібне знаходиться швидше. Щоб прибрати непотрібну фразу, натисніть ✏️ поруч із заголовком «Часто» і торкніться фрази; «Прибрати всі» очищає блок. Лічильник фрази обнуляється й почне набиратися знову, лише якщо її знову вимовити.'],
    ['Здоров’я та ліки','Теми «Здоров’я» та «Ліки» просять друге підтвердження «Точно?», щоб випадкове натискання не ввело в оману. Застосунок не замінює лікаря. У небезпечній ситуації телефонуйте 103 (швидка допомога) або 112.'],
    ['Голос і озвучення',['Озвучення виконує синтезатор мовлення телефона. У налаштуваннях показуються лише голоси обраної мови інтерфейсу.','Якщо голосів немає: Налаштування Android → Система → Мова та введення → Синтез мовлення → Google → встановіть голосові дані російської або української мови.','Краще трохи знизити швидкість мовлення (0,7–0,85) — так легше розібрати слова. Кнопка «Перевірити голос» дає змогу послухати результат.']],
-   ['Абетка (підказка за першою літерою)',['Кнопка «Абетка» розташована в шапці поруч із 🎤 (на важкому рівні її немає). Літери завжди закріплені внизу екрана, а знайдені слова показуються над ними; кнопка «Сховати літери» вивільняє місце для слів, «Показати літери» повертає їх.','Натисніть першу літеру слова: з’являться слова зі словника, що з неї починаються. Можна натиснути наступну літеру, щоб звузити список.','Натискання на слово додає його до рядка фрази. «Сказати так» вимовляє весь рядок, ⌫ прибирає останнє слово.','Кнопка вгорі екрана перемикає режим: «Вільний набір» показує всю абетку, людина набирає слово так, як його собі уявляє (можна з помилками), а застосунок пропонує відповідні слова й готові фрази, як на екрані 🎤. «Відповідні літери» показує тільки ті літери, після яких у словнику є слова.']],
+   ['Абетка (підказка за першою літерою)',['Кнопка «Абетка» розташована в шапці поруч із 🎤 (на важкому рівні її немає). Літери завжди закріплені внизу екрана, а знайдені слова показуються над ними; кнопка «Сховати літери» вивільняє місце для слів, «Показати літери» повертає їх. У налаштуваннях можна ввімкнути автоматичне згортання панелі після кожної натиснутої літери: після вибору слова панель з’являється знову.','Натисніть першу літеру слова: з’являться слова зі словника, що з неї починаються. Можна натиснути наступну літеру, щоб звузити список.','Натискання на слово додає його до рядка фрази. «Сказати так» вимовляє весь рядок, ⌫ прибирає останнє слово.','Кнопка вгорі екрана перемикає режим: «Вільний набір» показує всю абетку, людина набирає слово так, як його собі уявляє (можна з помилками), а застосунок пропонує відповідні слова й готові фрази, як на екрані 🎤. «Відповідні літери» показує тільки ті літери, після яких у словнику є слова.']],
    ['Пошук слів онлайн (⚙️, безкоштовно)',['Якщо потрібного слова немає у словнику (наприклад, «кукурудза»), увімкніть у налаштуваннях «Шукати слова онлайн». Тоді на екрані «Абетка» та на екрані 🎤 з’явиться кнопка «Знайти слова в інтернеті».','Слова шукаються у Вікісловнику (для англійської ще в Datamuse): продовження початого слова й виправлення помилок. Ключ і реєстрація не потрібні. Набрані літери й слова надсилаються цим сервісам.','Обране слово вимовляється й запам’ятовується на телефоні: далі воно знаходиться й без інтернету.']],
    ['Словники слів (⚙️)',['У налаштуваннях можна один раз завантажити частотні списки слів (близько 20 000 форм слів для російської й української та 10 000 для англійської). Після цього вони зберігаються на телефоні й працюють без інтернету.','Вони розширюють «Абетку»: на кожну літеру з’являються сотні найуживаніших слів, а наші слова йдуть першими. На екрані 🎤 вони дають блок «Слова зі словника»: почуті слова виправляються (наприклад, «мошина» → «машина»), недоказаний початок слова доповнюється, і слово вимовляється після натискання. Це працює й для слів, яких немає в наших фразах.','Списки не створюють нових фраз, а лише слова. Джерело: FrequencyWords (hermitdave), ліцензія CC BY-SA 4.0. У списках із субтитрів є шум і рідкісні грубі слова, фільтрація неповна.']],
    ['Підказка за сказаним (🎤)',['Кнопка 🎤 угорі відкриває екран підказок: людина говорить фразу, а застосунок знаходить у своєму словнику слова й пропонує готові фрази з ними.','Натисніть на відповідну фразу — вона пролунає. Для тем «Здоров’я» та «Ліки» спочатку буде запитання «Точно?».','Розпізнавання мовлення робить браузер Chrome і зазвичай потребує інтернету (запис голосу може оброблятися на серверах Google). Без інтернету впишіть почуті слова в поле вручну — добір фраз працює й так.','Порушене мовлення розпізнавач розуміє погано, тому підказки приблизні. Якщо фрази не знайшлися, спробуйте коротше або впишіть слова.']],
@@ -444,6 +447,7 @@ en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep
   m_words:'Words from the dictionary — tap and the word is spoken:',m_lex_off:'To suggest single words, download the word lists: ⚙️ → “Data”.',
   s_wonline:'Look up words online (Wiktionary; for English also Datamuse). Free, no key needed. The typed letters and words are sent to these services. Chosen words are remembered on the phone.',w_err:'Could not reach the dictionary service. Check the internet.',ext_policy:'OpenRouter found no free models allowed by your privacy settings. Open openrouter.ai/settings/privacy and allow free models, or choose another model.',ext_diag:'Service reply',
   wOnline:'Find words online',wOnlineRes:'Words from the internet — tap to choose:',wNone:'No matching words were found online.',
+  s_abchide:'ABC: collapse the letter panel after every letter tapped so more words are visible (bring it back with the “Show letters” button; it reappears by itself after a word is chosen)',
   g_main:'General',g_voice:'Speech',g_touch:'Controls and taps',g_ease:'Less fatigue',g_data:'Data',
   s_uilang:'Menu and help language (phrases and speech are switched with the RU / UK / EN button at the top)',ui_auto:'Same as phrases and speech',
   s_size:'Tile size',sz_m:'Normal',sz_l:'Large',sz_xl:'Extra large (one per row)',
@@ -482,7 +486,7 @@ en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep
    ['Often used','The home screen shows up to four of the most frequent phrases so they are quicker to find. To remove an unwanted phrase, tap ✏️ next to the “Often” heading and touch the phrase; “Remove all” clears the block. The phrase’s counter is reset and starts growing again only if the phrase is spoken again.'],
    ['Health and medicines','The Health and Medicines topics ask for a second confirmation, “Sure?”, so that an accidental tap does not mislead anyone. The app does not replace a doctor. In danger, call your local emergency number (103 or 112 in Ukraine).'],
    ['Voice and speech',['Speech comes from the phone’s speech synthesizer. Settings list only the voices of the language currently used for phrases.','If there are none: Android Settings → System → Languages and input → Text-to-speech → Google → install the voice data for the language.','A slightly slower speech rate (0.7–0.85) is easier to follow. The “Test voice” button plays a sample.']],
-   ['ABC (first-letter help)',['The “ABC” button is in the header next to 🎤 (it is not shown in the severe level). The letters are always pinned to the bottom of the screen and the words found appear above them; “Hide letters” makes room for more words and “Show letters” brings them back.','Tap the first letter of a word: words from the dictionary starting with it appear. Tap the next letter to narrow the list.','Tapping a word adds it to the phrase line. “Say it” speaks the whole line, ⌫ removes the last word.','The button at the top switches the mode: “Free typing” shows the whole alphabet, the person types the word as they imagine it (spelling mistakes are fine) and the app suggests matching words and ready phrases, as on the 🎤 screen. “Matching letters” shows only the letters that can follow in the vocabulary.']],
+   ['ABC (first-letter help)',['The “ABC” button is in the header next to 🎤 (it is not shown in the severe level). The letters are always pinned to the bottom of the screen and the words found appear above them; “Hide letters” makes room for more words and “Show letters” brings them back. In Settings you can turn on automatic collapsing of the panel after every letter tapped: after a word is chosen the panel reappears.','Tap the first letter of a word: words from the dictionary starting with it appear. Tap the next letter to narrow the list.','Tapping a word adds it to the phrase line. “Say it” speaks the whole line, ⌫ removes the last word.','The button at the top switches the mode: “Free typing” shows the whole alphabet, the person types the word as they imagine it (spelling mistakes are fine) and the app suggests matching words and ready phrases, as on the 🎤 screen. “Matching letters” shows only the letters that can follow in the vocabulary.']],
    ['Online word search (⚙️, free)',['If the word you need is not in the dictionary (for example “corn”), turn on “Look up words online” in Settings. A “Find words online” button then appears on the ABC screen and on the 🎤 screen.','Words are looked up in Wiktionary (and Datamuse for English): completions of a started word and spelling corrections. No key or sign-up is needed. The typed letters and words are sent to these services.','A chosen word is spoken and remembered on the phone, so later it is found without the internet.']],
    ['Word lists (⚙️)',['In Settings you can download frequency word lists once (about 20,000 word forms for Russian and Ukrainian and 10,000 for English). After that they are kept on the phone and work offline.','They extend ABC: each letter gets hundreds of the most common words, with our own words first. On the 🎤 screen they provide a “Words from the dictionary” block: heard words are corrected (for example “mashina” → “machine”), an unfinished word start is completed, and the word is spoken when tapped. This also works for words that are not in our phrases.','The lists provide words, not new phrases. Source: FrequencyWords (hermitdave), license CC BY-SA 4.0. Lists built from subtitles contain noise and a few rude words; the filtering is incomplete.']],
    ['Suggestions from what was said (🎤)',['The 🎤 button at the top opens a screen of suggestions: the person says a phrase and the app finds words from its vocabulary and offers ready-made phrases containing them.','Tap a matching phrase and it is spoken. For the Health and Medicines topics a “Sure?” question comes first.','Speech recognition is done by the Chrome browser and usually needs the internet (the voice recording may be processed on Google servers). Without the internet, type the words you heard into the field: the phrase matching works anyway.','Impaired speech is hard for a recognizer, so the suggestions are approximate. If nothing is found, try something shorter or type the words.']],
@@ -527,6 +531,7 @@ const DEFAULTS = {
   guard: 0,         // защита от случайных нажатий, мс
   hand: 'right',    // положение нижней панели: right / left
   wordOnline: false,   // бесплатный онлайн-поиск слов (Викисловарь, Datamuse)
+  abcAutoHide: false,  // «Азбука»: сворачивать панель с буквами после каждой нажатой буквы
   abcMode: 'prefix',   // «Азбука»: prefix — только подходящие буквы, free — свободный набор
   hear: false, syll: false, quick: false, freq: true, vib: false, awake: false, log: true,
   ext: {prov:'off', url:'', model:'', ok:false}   // онлайн-поиск фраз; сам ключ хранится отдельно (aac.secret.ext)
@@ -1738,7 +1743,7 @@ function renderAbc(){
     if(words.length){
       res.append(h('div','sec',u('abcWords')));
       const g=h('div','grid');
-      words.forEach(w=>g.append(h('button','wd',w,()=>{abc.line.push(w);abc.typed='';render()})));
+      words.forEach(w=>g.append(h('button','wd',w,()=>{abc.line.push(w);abc.typed='';abcWordDone();render()})));
       res.append(g);
     }else if(abc.typed.length>=3)res.append(h('div','sec',u('abcNone')));
     else if(!abc.typed)res.append(h('div','sec',u('abcType')));
@@ -1768,7 +1773,7 @@ function renderAbc(){
       if(!words.length)res.append(h('div','sec',u('abcNone')));
       else{
         const g=h('div','grid');
-        words.slice(0,60).forEach(w=>g.append(h('button','wd',w,()=>{abc.line.push(w);abc.prefix='';render()})));
+        words.slice(0,60).forEach(w=>g.append(h('button','wd',w,()=>{abc.line.push(w);abc.prefix='';abcWordDone();render()})));
         res.append(g);
       }
       abcOnline(res,'p:'+pre,pre);
@@ -1781,16 +1786,22 @@ function renderAbc(){
 }
 // Онлайн-поиск слов для «Азбуки»: выбранное слово добавляется в строку и запоминается
 function abcOnline(m,key,q){
-  onlineBlock(m,key,q,w=>{learnWord(w);abc.line.push(w);abc.prefix='';abc.typed='';abc.dict=buildDict();onl={key:'',st:undefined};render()},render);
+  onlineBlock(m,key,q,w=>{learnWord(w);abc.line.push(w);abc.prefix='';abc.typed='';abc.dict=buildDict();onl={key:'',st:undefined};abcWordDone();render()},render);
 }
 // Клавиатура всегда закреплена внизу экрана, найденные слова — над ней; её можно свернуть, чтобы увидеть больше слов
+// Слово выбрано: при автосворачивании панель с буквами снова разворачивается для следующего слова
+function abcWordDone(){if(settings.abcAutoHide)abc.kbOff=false}
 function abcKeyboard(free,letters){
   const kb=h('div','kb'),kh=h('div','kbh');
   kh.append(h('button','kbt',abc.kbOff?'⌨️ ▴ '+u('abcShow'):'⌨️ ▾ '+u('abcHide'),()=>{abc.kbOff=!abc.kbOff;render()}),abcModeBtn());
   kb.append(kh);
   if(abc.kbOff)return kb;
   const g=h('div','letters kbd');
-  letters.forEach(ch=>g.append(h('button','lt',ch==="'"?'’':ch.toUpperCase(),()=>{if(free)abc.typed+=ch;else abc.prefix+=ch;render()})));
+  letters.forEach(ch=>g.append(h('button','lt',ch==="'"?'’':ch.toUpperCase(),()=>{
+    if(free)abc.typed+=ch;else abc.prefix+=ch;
+    if(settings.abcAutoHide)abc.kbOff=true;      // по настройке: панель сворачивается до нажатия «Показать буквы»
+    render();
+  })));
   kb.append(g);
   return kb;
 }
@@ -2023,7 +2034,7 @@ $('#settingsBtn').onclick = () => {
   $('#rateVal').textContent = settings.rate;
   $('#setPitch').value = settings.pitch;
   $('#pitchVal').textContent = settings.pitch;
-  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Log','log'],['WordOnline','wordOnline']]
+  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Log','log'],['WordOnline','wordOnline'],['AbcAutoHide','abcAutoHide']]
     .forEach(([id,k])=>{$('#set'+id).checked=!!settings[k]});
   $('#ver').textContent = uh('ver') + ': ' + APP_VERSION;
   const ex = settings.ext;
@@ -2064,7 +2075,7 @@ $('#closeSettBtn').onclick = () => {
   settings.size = $('#setSize').value;
   settings.guard = +$('#setGuard').value;
   settings.hand = $('#setHand').value;
-  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Log','log'],['WordOnline','wordOnline']]
+  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Log','log'],['WordOnline','wordOnline'],['AbcAutoHide','abcAutoHide']]
     .forEach(([id,k])=>{settings[k]=$('#set'+id).checked});
   settings.rate = $('#setRate').value;
   settings.pitch = $('#setPitch').value;
