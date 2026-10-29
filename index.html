@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="ru">
+<html lang="uk">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#12181F">
 <link rel="manifest" href="/Govorim/manifest.json">
 <link rel="icon" href="/Govorim/icon-192.png">
-<title>Говорим вместе</title>
+<title>Говоримо разом</title>
 <style>
 :root {
   --ink: #EEF2F5;
@@ -282,7 +282,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 21;   // держите в соответствии с V = 'govorim-v21' в sw.js
+const APP_VERSION = 22;   // держите в соответствии с V = 'govorim-v22' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -509,7 +509,7 @@ en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep
   e_save:'Save',e_del:'Delete',e_add:'+ Add a tile to this section',e_cdel:'Delete this tile?',e_reset:'Reset level to default',
   e_creset:'Restore the default tiles for this level? Your edits will be deleted.',e_close:'Close editor'}};
 let lang=localStorage.getItem('aac.lang');
-if(!['ru','uk','en'].includes(lang)) lang='ru';
+if(!['ru','uk','en'].includes(lang)) lang='uk';   // при первом запуске — украинский (интерфейс следует за языком фраз)
 const LI_IDX={ru:0,uk:1,en:2};
 const u=k=>U[lang][k];                                   // подписи для человека (язык фраз)
 const uiL=()=>['ru','uk','en'].includes(settings.uiLang)?settings.uiLang:lang;

@@ -1,8 +1,8 @@
 {
   "id": "/Govorim/",
-  "name": "Говорим вместе",
-  "short_name": "Говорим",
-  "lang": "ru",
+  "name": "Говоримо разом",
+  "short_name": "Говоримо",
+  "lang": "uk",
   "start_url": "/Govorim/index.html",
   "scope": "/Govorim/",
   "display": "standalone",
