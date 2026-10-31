@@ -128,6 +128,15 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 @keyframes pulse{50%{opacity:.6}}
 .sug{width:100%;display:flex;gap:12px;align-items:center;text-align:left;min-height:68px;border-radius:16px;border:3px solid var(--accent);background:var(--card-bg);color:var(--ink);font-size:clamp(19px,5.6vw,24px);font-weight:700;padding:8px 12px;margin:8px 0;overflow-wrap:anywhere}
 .sug .em{font-size:32px;flex:none}
+.modal #showMic{background:#1F7A4D;color:#fff}
+.modal #showMic.rec{background:#B3261E}
+.tabs{display:flex;gap:8px;margin:8px 0}
+.tab{flex:1;min-width:0;min-height:48px;border-radius:12px;border:2px solid var(--border);background:var(--card-bg);color:var(--ink);font-weight:700;font-size:16px;padding:4px 8px}
+.tab.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.showbox{min-height:34vh;margin:10px 0;padding:16px;border:3px solid var(--accent);border-radius:18px;background:var(--card-bg);color:var(--ink);font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.showbox .interim{opacity:.55;font-style:italic;font-weight:600}
+.showbox .hl{background:#F2B705;color:#1B1B1B;border-radius:6px;padding:0 3px}
+.hrow{width:100%;text-align:left;min-height:48px;padding:8px 12px;margin:4px 0;border-radius:12px;background:var(--card-bg);border:2px solid var(--border);color:var(--ink);font-size:18px;font-weight:600;overflow-wrap:anywhere}
 .mini{min-height:44px;min-width:44px;padding:0 12px;border-radius:12px;background:var(--card-bg);border:2px solid var(--border);color:var(--ink);font-size:18px;font-weight:700}
 [data-size="l"] .grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr))}
 [data-size="l"] .tile{min-height:170px;font-size:clamp(18px,5.6vw,26px)}
@@ -283,7 +292,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 25;   // держите в соответствии с V = 'govorim-v25' в sw.js
+const APP_VERSION = 26;   // держите в соответствии с V = 'govorim-v26' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -300,6 +309,8 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
   s_wonline:'Искать слова онлайн (Викисловарь; для английского ещё Datamuse). Бесплатно, ключ не нужен. Набранные буквы и слова отправляются этим сервисам. Выбранные слова запоминаются на телефоне.',w_err:'Не удалось связаться с сервисом словарей. Проверьте интернет.',ext_policy:'OpenRouter не нашёл подходящих бесплатных моделей из-за настроек приватности. Откройте openrouter.ai/settings/privacy и разрешите использование бесплатных моделей, либо выберите другую модель.',ext_diag:'Ответ сервиса',
   wOnline:'Найти слова в интернете',wOnlineRes:'Слова из интернета — нажмите, чтобы выбрать:',wNone:'В интернете подходящих слов не нашлось.',
   s_abchide:'Азбука: сворачивать панель с буквами после каждой нажатой буквы, чтобы было видно больше слов (вернуть её можно кнопкой «Показать буквы»; после выбора слова или удаления буквы она появляется сама)',
+  t_sug:'Говорит человек',t_show:'Говорит собеседник',show_empty:'Нажмите «Говорить» и скажите фразу: она появится здесь крупным текстом и прозвучит голосом телефона.',show_ph:'Или впишите фразу и нажмите кнопку',show_btn:'Показать и проговорить',show_auto:'Проговаривать распознанное сразу',show_hist:'Недавние фразы (нажмите, чтобы показать снова):',
+  m_show_note:'Говорит собеседник: фраза распознаётся, показывается крупным текстом и проговаривается голосом телефона. Это помогает, когда человек не узнаёт живую речь, но понимает синтезированный голос или читает. Фраза не обязана быть в словаре. Записи не сохраняются. Распознавание речи выполняет браузер (обычно нужен интернет, см. «Справка»); без интернета можно вписать фразу.',
   g_main:'Основное',g_voice:'Озвучка',g_touch:'Управление и нажатия',g_ease:'Меньше усталости',g_data:'Данные',
   s_uilang:'Язык меню и справки (фразы и озвучка переключаются кнопкой RU/UK/EN вверху)',ui_auto:'Как у фраз и озвучки',
   s_size:'Размер плиток',sz_m:'Обычный',sz_l:'Крупный',sz_xl:'Очень крупный (по одной в ряд)',
@@ -330,6 +341,7 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
    ['Азбука (подсказка по первой букве)',['Кнопка «Азбука» находится в шапке рядом с 🎤 (на тяжёлом уровне её нет). Буквы всегда закреплены внизу экрана, а найденные слова показываются над ними; кнопка «Скрыть буквы» освобождает место для слов, «Показать буквы» возвращает их. В настройках можно включить автоматическое сворачивание панели после каждой нажатой буквы: после выбора слова или удаления буквы или слова панель появляется снова.','Нажмите первую букву слова: появятся слова из словаря, которые с неё начинаются. Можно нажать следующую букву, чтобы сузить список.','Нажатие на слово добавляет его в строку фразы. «Сказать так» произносит всю строку, ⌫ убирает последнее слово.','Кнопка вверху экрана переключает режим: «Свободный набор» показывает всю азбуку, человек набирает слово так, как его себе представляет (можно с ошибками), а приложение предлагает подходящие слова и готовые фразы, как на экране 🎤. «Подходящие буквы» показывает лишь те буквы, после которых в словаре есть слова.']],
    ['Поиск слов онлайн (⚙️, бесплатно)',['Если нужного слова нет в словаре (например, «кукуруза»), включите в настройках «Искать слова онлайн». Тогда на экране «Азбука» и на экране 🎤 появится кнопка «Найти слова в интернете».','Слова ищутся в Викисловаре (для английского ещё в Datamuse): продолжения начатого слова и исправления опечаток. Ключ и регистрация не нужны. Набранные буквы и слова отправляются этим сервисам.','Выбранное слово произносится и запоминается на телефоне: дальше оно находится и без интернета.']],
    ['Словари слов (⚙️)',['В настройках можно один раз загрузить частотные списки слов (около 20 000 форм слов для русского и украинского и 10 000 для английского). После этого они хранятся на телефоне и работают без интернета.','Они расширяют «Азбуку»: на каждую букву появляются сотни самых употребительных слов, а наши слова идут первыми. На экране 🎤 они дают блок «Слова из словаря»: услышанные слова исправляются (например, «мошина» → «машина»), недоговорённое начало слова дополняется, и слово произносится по нажатию. Это работает и для слов, которых нет в наших фразах.','Списки не создают новые фразы, а только слова. Источник: FrequencyWords (hermitdave), лицензия CC BY-SA 4.0. В списках из субтитров есть шум и редкие грубые слова, фильтрация неполная.']],
+   ['Говорит собеседник: показать и проговорить (🎤)',['Если человек не понимает живую речь или слышит другие слова, но понимает синтезированный голос или читает, откройте 🎤 и перейдите на вкладку «Говорит собеседник».','Нажмите «Говорить» и скажите фразу: она распознаётся, появляется крупным текстом (размер меняют кнопками A− и A+) и проговаривается голосом телефона; проговариваемое слово подсвечивается, если голос это поддерживает.','«Повторить» и «Медленно» произносят фразу снова. Если распознано неточно, исправьте текст в поле и нажмите «Показать и проговорить»; так же можно просто вписать фразу. Недавние фразы можно показать снова. Записи не сохраняются.','Распознавание выполняет браузер и обычно требует интернета; без него используйте поле для ввода.']],
    ['Подсказка по сказанному (🎤)',['Кнопка 🎤 вверху открывает экран подсказок: человек говорит фразу, а приложение находит в своём словаре слова и предлагает готовые фразы с ними.','Нажмите на подходящую фразу — она прозвучит. Для тем «Здоровье» и «Лекарства» сначала будет вопрос «Точно?».','Распознавание речи делает браузер Chrome и обычно требует интернета (запись голоса может обрабатываться на серверах Google). Без интернета впишите услышанные слова в поле вручную — подбор фраз работает и так.','Нарушенную речь распознаватель понимает плохо, поэтому подсказки приблизительные. Если фразы не нашлись, попробуйте короче или впишите слова.']],
    ['Онлайн-поиск фраз (необязательно)',['Если в словаре нет подходящей фразы, на экране 🎤 появляется кнопка «Поискать в интернете». Она отправляет распознанные слова (звук не отправляется) выбранному сервису с языковой моделью, и тот предлагает до пяти фраз.','Включение: ⚙️ → «Онлайн-поиск фраз»: выберите сервис, введите API-ключ, отметьте согласие и нажмите «Проверить соединение». Рекомендуются Anthropic Claude или OpenRouter; для ключа задайте лимит расходов.','Подсказки из интернета не проверены, поэтому после нажатия приложение сначала спрашивает «…?». Не используйте функцию, если не хотите, чтобы слова человека уходили на внешний сервис. Ключ хранится на этом телефоне и не попадает в резервную копию.']],
    ['Ситуации','На уровнях «Лёгкое 1–3» в конце главного экрана есть плитка «Ситуации»: визит к врачу, аптека, магазин, гости, телефонный разговор. Фразы в них подобраны под конкретную ситуацию. Если вы раньше правили плитки лёгкого уровня, нажмите в редакторе «Сбросить уровень», чтобы получить новые темы.'],
@@ -374,6 +386,8 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
   s_wonline:'Шукати слова онлайн (Вікісловник; для англійської ще Datamuse). Безкоштовно, ключ не потрібен. Набрані літери й слова надсилаються цим сервісам. Обрані слова запам’ятовуються на телефоні.',w_err:'Не вдалося зв’язатися із сервісом словників. Перевірте інтернет.',ext_policy:'OpenRouter не знайшов відповідних безкоштовних моделей через налаштування приватності. Відкрийте openrouter.ai/settings/privacy і дозвольте використання безкоштовних моделей або оберіть іншу модель.',ext_diag:'Відповідь сервісу',
   wOnline:'Знайти слова в інтернеті',wOnlineRes:'Слова з інтернету — натисніть, щоб обрати:',wNone:'В інтернеті відповідних слів не знайшлося.',
   s_abchide:'Абетка: згортати панель з літерами після кожної натиснутої літери, щоб було видно більше слів (повернути її можна кнопкою «Показати літери»; після вибору слова або видалення літери вона з’являється сама)',
+  t_sug:'Говорить людина',t_show:'Говорить співрозмовник',show_empty:'Натисніть «Говорити» і скажіть фразу: вона з’явиться тут великим текстом і пролунає голосом телефона.',show_ph:'Або впишіть фразу й натисніть кнопку',show_btn:'Показати й проговорити',show_auto:'Проговорювати розпізнане одразу',show_hist:'Нещодавні фрази (натисніть, щоб показати знову):',
+  m_show_note:'Говорить співрозмовник: фраза розпізнається, показується великим текстом і проговорюється голосом телефона. Це допомагає, коли людина не впізнає живе мовлення, але розуміє синтезований голос або читає. Фраза не мусить бути у словнику. Записи не зберігаються. Розпізнавання мовлення виконує браузер (зазвичай потрібен інтернет, див. «Довідка»); без інтернету можна вписати фразу.',
   g_main:'Основне',g_voice:'Озвучення',g_touch:'Керування й натискання',g_ease:'Менше втоми',g_data:'Дані',
   s_uilang:'Мова меню та довідки (фрази й озвучення перемикаються кнопкою RU/UK/EN вгорі)',ui_auto:'Як у фраз та озвучення',
   s_size:'Розмір плиток',sz_m:'Звичайний',sz_l:'Великий',sz_xl:'Дуже великий (по одній у ряд)',
@@ -404,6 +418,7 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
    ['Абетка (підказка за першою літерою)',['Кнопка «Абетка» розташована в шапці поруч із 🎤 (на важкому рівні її немає). Літери завжди закріплені внизу екрана, а знайдені слова показуються над ними; кнопка «Сховати літери» вивільняє місце для слів, «Показати літери» повертає їх. У налаштуваннях можна ввімкнути автоматичне згортання панелі після кожної натиснутої літери: після вибору слова або видалення літери чи слова панель з’являється знову.','Натисніть першу літеру слова: з’являться слова зі словника, що з неї починаються. Можна натиснути наступну літеру, щоб звузити список.','Натискання на слово додає його до рядка фрази. «Сказати так» вимовляє весь рядок, ⌫ прибирає останнє слово.','Кнопка вгорі екрана перемикає режим: «Вільний набір» показує всю абетку, людина набирає слово так, як його собі уявляє (можна з помилками), а застосунок пропонує відповідні слова й готові фрази, як на екрані 🎤. «Відповідні літери» показує тільки ті літери, після яких у словнику є слова.']],
    ['Пошук слів онлайн (⚙️, безкоштовно)',['Якщо потрібного слова немає у словнику (наприклад, «кукурудза»), увімкніть у налаштуваннях «Шукати слова онлайн». Тоді на екрані «Абетка» та на екрані 🎤 з’явиться кнопка «Знайти слова в інтернеті».','Слова шукаються у Вікісловнику (для англійської ще в Datamuse): продовження початого слова й виправлення помилок. Ключ і реєстрація не потрібні. Набрані літери й слова надсилаються цим сервісам.','Обране слово вимовляється й запам’ятовується на телефоні: далі воно знаходиться й без інтернету.']],
    ['Словники слів (⚙️)',['У налаштуваннях можна один раз завантажити частотні списки слів (близько 20 000 форм слів для російської й української та 10 000 для англійської). Після цього вони зберігаються на телефоні й працюють без інтернету.','Вони розширюють «Абетку»: на кожну літеру з’являються сотні найуживаніших слів, а наші слова йдуть першими. На екрані 🎤 вони дають блок «Слова зі словника»: почуті слова виправляються (наприклад, «мошина» → «машина»), недоказаний початок слова доповнюється, і слово вимовляється після натискання. Це працює й для слів, яких немає в наших фразах.','Списки не створюють нових фраз, а лише слова. Джерело: FrequencyWords (hermitdave), ліцензія CC BY-SA 4.0. У списках із субтитрів є шум і рідкісні грубі слова, фільтрація неповна.']],
+   ['Говорить співрозмовник: показати й проговорити (🎤)',['Якщо людина не розуміє живе мовлення або чує інші слова, але розуміє синтезований голос чи читає, відкрийте 🎤 і перейдіть на вкладку «Говорить співрозмовник».','Натисніть «Говорити» і скажіть фразу: вона розпізнається, з’являється великим текстом (розмір змінюють кнопками A− і A+) і проговорюється голосом телефона; слово, що проговорюється, підсвічується, якщо голос це підтримує.','«Повтор» і «Повільно» вимовляють фразу знову. Якщо розпізнано неточно, виправте текст у полі й натисніть «Показати й проговорити»; так само можна просто вписати фразу. Нещодавні фрази можна показати знову. Записи не зберігаються.','Розпізнавання виконує браузер і зазвичай потребує інтернету; без нього користуйтеся полем для введення.']],
    ['Підказка за сказаним (🎤)',['Кнопка 🎤 угорі відкриває екран підказок: людина говорить фразу, а застосунок знаходить у своєму словнику слова й пропонує готові фрази з ними.','Натисніть на відповідну фразу — вона пролунає. Для тем «Здоров’я» та «Ліки» спочатку буде запитання «Точно?».','Розпізнавання мовлення робить браузер Chrome і зазвичай потребує інтернету (запис голосу може оброблятися на серверах Google). Без інтернету впишіть почуті слова в поле вручну — добір фраз працює й так.','Порушене мовлення розпізнавач розуміє погано, тому підказки приблизні. Якщо фрази не знайшлися, спробуйте коротше або впишіть слова.']],
    ['Онлайн-пошук фраз (необов’язково)',['Якщо у словнику немає відповідної фрази, на екрані 🎤 з’являється кнопка «Пошукати в інтернеті». Вона надсилає розпізнані слова (звук не надсилається) обраному сервісу з мовною моделлю, і той пропонує до п’яти фраз.','Увімкнення: ⚙️ → «Онлайн-пошук фраз»: оберіть сервіс, введіть API-ключ, позначте згоду й натисніть «Перевірити з’єднання». Рекомендуються Anthropic Claude або OpenRouter; для ключа задайте ліміт витрат.','Підказки з інтернету не перевірені, тому після натискання застосунок спершу запитує «…?». Не користуйтеся цією функцією, якщо не хочете, щоб слова людини йшли на зовнішній сервіс. Ключ зберігається на цьому телефоні й не потрапляє в резервну копію.']],
    ['Ситуації','На рівнях «Легке 1–3» наприкінці головного екрана є плитка «Ситуації»: візит до лікаря, аптека, магазин, гості, телефонна розмова. Фрази в них підібрано під конкретну ситуацію. Якщо ви раніше правили плитки легкого рівня, натисніть у редакторі «Скинути рівень», щоб отримати нові теми.'],
@@ -448,6 +463,8 @@ en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep
   s_wonline:'Look up words online (Wiktionary; for English also Datamuse). Free, no key needed. The typed letters and words are sent to these services. Chosen words are remembered on the phone.',w_err:'Could not reach the dictionary service. Check the internet.',ext_policy:'OpenRouter found no free models allowed by your privacy settings. Open openrouter.ai/settings/privacy and allow free models, or choose another model.',ext_diag:'Service reply',
   wOnline:'Find words online',wOnlineRes:'Words from the internet — tap to choose:',wNone:'No matching words were found online.',
   s_abchide:'ABC: collapse the letter panel after every letter tapped so more words are visible (bring it back with the “Show letters” button; it reappears by itself after a word is chosen or a letter is deleted)',
+  t_sug:'The person speaks',t_show:'Someone speaks to the person',show_empty:'Tap “Speak” and say a phrase: it appears here in large text and is spoken by the phone’s voice.',show_ph:'Or type a phrase and press the button',show_btn:'Show and speak',show_auto:'Speak the recognized text right away',show_hist:'Recent phrases (tap to show again):',
+  m_show_note:'Someone speaks to the person: the phrase is recognized, shown in large text and spoken in the phone’s voice. This helps when the person does not recognize live speech but understands a synthesized voice or can read. The phrase need not be in the vocabulary. Nothing is saved. Speech recognition is done by the browser (usually needs the internet, see Help); without the internet you can type the phrase.',
   g_main:'General',g_voice:'Speech',g_touch:'Controls and taps',g_ease:'Less fatigue',g_data:'Data',
   s_uilang:'Menu and help language (phrases and speech are switched with the RU / UK / EN button at the top)',ui_auto:'Same as phrases and speech',
   s_size:'Tile size',sz_m:'Normal',sz_l:'Large',sz_xl:'Extra large (one per row)',
@@ -489,6 +506,7 @@ en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep
    ['ABC (first-letter help)',['The “ABC” button is in the header next to 🎤 (it is not shown in the severe level). The letters are always pinned to the bottom of the screen and the words found appear above them; “Hide letters” makes room for more words and “Show letters” brings them back. In Settings you can turn on automatic collapsing of the panel after every letter tapped: after a word is chosen or a letter or word is deleted the panel reappears.','Tap the first letter of a word: words from the dictionary starting with it appear. Tap the next letter to narrow the list.','Tapping a word adds it to the phrase line. “Say it” speaks the whole line, ⌫ removes the last word.','The button at the top switches the mode: “Free typing” shows the whole alphabet, the person types the word as they imagine it (spelling mistakes are fine) and the app suggests matching words and ready phrases, as on the 🎤 screen. “Matching letters” shows only the letters that can follow in the vocabulary.']],
    ['Online word search (⚙️, free)',['If the word you need is not in the dictionary (for example “corn”), turn on “Look up words online” in Settings. A “Find words online” button then appears on the ABC screen and on the 🎤 screen.','Words are looked up in Wiktionary (and Datamuse for English): completions of a started word and spelling corrections. No key or sign-up is needed. The typed letters and words are sent to these services.','A chosen word is spoken and remembered on the phone, so later it is found without the internet.']],
    ['Word lists (⚙️)',['In Settings you can download frequency word lists once (about 20,000 word forms for Russian and Ukrainian and 10,000 for English). After that they are kept on the phone and work offline.','They extend ABC: each letter gets hundreds of the most common words, with our own words first. On the 🎤 screen they provide a “Words from the dictionary” block: heard words are corrected (for example “mashina” → “machine”), an unfinished word start is completed, and the word is spoken when tapped. This also works for words that are not in our phrases.','The lists provide words, not new phrases. Source: FrequencyWords (hermitdave), license CC BY-SA 4.0. Lists built from subtitles contain noise and a few rude words; the filtering is incomplete.']],
+   ['Someone speaks: show and speak (🎤)',['If the person does not understand live speech or hears other words, but understands a synthesized voice or can read, open 🎤 and switch to the “Someone speaks to the person” tab.','Tap “Speak” and say a phrase: it is recognized, shown in large text (change the size with the A− and A+ buttons) and spoken in the phone’s voice; the word being spoken is highlighted if the voice supports it.','“Repeat” and “Slowly” say the phrase again. If it was recognized inaccurately, correct the text in the field and press “Show and speak”; you can also just type a phrase. Recent phrases can be shown again. Nothing is saved.','Recognition is done by the browser and usually needs the internet; without it, use the input field.']],
    ['Suggestions from what was said (🎤)',['The 🎤 button at the top opens a screen of suggestions: the person says a phrase and the app finds words from its vocabulary and offers ready-made phrases containing them.','Tap a matching phrase and it is spoken. For the Health and Medicines topics a “Sure?” question comes first.','Speech recognition is done by the Chrome browser and usually needs the internet (the voice recording may be processed on Google servers). Without the internet, type the words you heard into the field: the phrase matching works anyway.','Impaired speech is hard for a recognizer, so the suggestions are approximate. If nothing is found, try something shorter or type the words.']],
    ['Online phrase search (optional)',['If the vocabulary has no suitable phrase, the 🎤 screen shows a “Search online” button. It sends the recognized words (no audio) to the selected language-model service, which suggests up to five phrases.','To turn it on: ⚙️ → “Online phrase search”: choose a service, enter the API key, tick the consent box and press “Test the connection”. Anthropic Claude or OpenRouter are recommended; set a spending limit for the key.','Suggestions from the internet are not vetted, so after a tap the app first asks “…?”. Do not use this feature if you do not want the person’s words to go to an outside service. The key stays on this phone and is not included in the backup.']],
    ['Situations','In the Mild 1–3 levels the last tile of the home screen is “Situations”: doctor visit, pharmacy, store, guests, phone call. The phrases are chosen for each situation. If you edited tiles of a mild level earlier, tap “Reset level” in the editor to get the new topics.'],
@@ -532,6 +550,9 @@ const DEFAULTS = {
   hand: 'right',    // положение нижней панели: right / left
   wordOnline: false,   // бесплатный онлайн-поиск слов (Викисловарь, Datamuse)
   abcAutoHide: false,  // «Азбука»: сворачивать панель с буквами после каждой нажатой буквы
+  hearTab: 'sug',      // вкладка экрана 🎤: sug — подсказки по речи человека, show — показать речь собеседника
+  showAuto: true,      // проговаривать распознанное автоматически
+  readSize: 1,         // размер крупного текста: 0…3
   abcMode: 'prefix',   // «Азбука»: prefix — только подходящие буквы, free — свободный набор
   hear: false, syll: false, quick: false, freq: true, vib: false, awake: false, log: true,
   ext: {prov:'off', url:'', model:'', ok:false}   // онлайн-поиск фраз; сам ключ хранится отдельно (aac.secret.ext)
@@ -546,6 +567,7 @@ if(![0,400,800,1500].includes(+settings.guard)) settings.guard = 0;
 settings.guard = +settings.guard;
 if(settings.hand!=='left') settings.hand = 'right';
 if(settings.abcMode!=='free') settings.abcMode = 'prefix';
+if(settings.hearTab!=='show') settings.hearTab = 'sug';
 if(!settings.ext || typeof settings.ext !== 'object') settings.ext = {prov:'off', url:'', model:'', ok:false};
 if(!['off','anthropic','openai'].includes(settings.ext.prov)) settings.ext.prov = 'off';
 
@@ -1562,7 +1584,7 @@ function getVoices(){
   return speechSynthesis.getVoices();
 }
 
-function speak(txt,f){
+function speak(txt,f,cb){
   if(!('speechSynthesis' in window))return;
   speechSynthesis.cancel();
   const m = new SpeechSynthesisUtterance(txt);
@@ -1574,6 +1596,7 @@ function speak(txt,f){
   const chosen = (settings.voices || {})[lang];
   const v = (chosen && voices.find(x => x.voiceURI === chosen && voiceOk(x))) || voices.find(voiceOk);
   try{ if(v) m.voice = v; }catch(e){}
+  if(cb){m.onboundary=e=>{if(cb.b)cb.b(e.charIndex)};m.onend=m.onerror=()=>{if(cb.e)cb.e()}}   // подсветка проговариваемого слова (если голос поддерживает)
   speechSynthesis.speak(m);
 }
 
@@ -2455,7 +2478,10 @@ async function runExt(){
   refreshHear();
 }
 
-function stopRec(){if(rec){try{rec.abort()}catch(e){}rec=null}}
+function stopRec(){
+  if(rec){try{rec.abort()}catch(e){}rec=null}
+  if(rec2){try{rec2.abort()}catch(e){}rec2=null}
+}
 function closeHear(){stopRec();hearEl.style.display='none'}
 function hearStatus(msg){const e=$('#hearSt');if(e)e.textContent=msg||''}
 function refreshHear(){
@@ -2543,23 +2569,130 @@ function toggleListen(){
   rec=r;
   try{r.start()}catch(e){rec=null;hearStatus(u('m_err'))}
 }
+let hearTab=settings.hearTab;
 function openHear(){
   IDX=phraseIndex();hearTxt='';hearAlt='';hearExt=undefined;
   hearEl.innerHTML='';
   const head=h('div','helphead');
   head.append(h('h2',null,u('m_title')),h('button',null,u('done'),closeHear));
-  hearEl.append(head,h('p','note',uh('m_note')));
-  const mic=h('button','ans neu sm','🎤 '+u('m_say'),toggleListen);mic.id='micGo';
-  mic.style.width='100%';
-  hearEl.append(mic);
-  const st=h('p','note','');st.id='hearSt';hearEl.append(st);
-  hearEl.append(h('label',null,u('m_heard')));
-  const inp=h('input');inp.type='text';inp.id='hearIn';inp.autocomplete='off';
-  inp.oninput=()=>{hearTxt=inp.value;hearAlt='';hearExt=undefined;refreshHear()};
-  hearEl.append(inp);
-  const sug=h('div');sug.id='hearSug';hearEl.append(sug);
+  hearEl.append(head);
+  const tabs=h('div','tabs');
+  [['sug','t_sug'],['show','t_show']].forEach(([k,key])=>tabs.append(h('button','tab'+(hearTab===k?' on':''),u(key),()=>{
+    stopRec();hearTab=k;settings.hearTab=k;saveSettings();openHear();
+  })));
+  hearEl.append(tabs);
+  const body=h('div');body.id='hearBody';hearEl.append(body);
+  if(hearTab==='show')drawShowTab(body);else drawSuggestTab(body);
   hearEl.style.display='block';hearEl.scrollTop=0;
 }
+// Вкладка «Говорит человек»: подсказки по его речи
+function drawSuggestTab(body){
+  body.append(h('p','note',uh('m_note')));
+  const mic=h('button','ans neu sm','🎤 '+u('m_say'),toggleListen);mic.id='micGo';
+  mic.style.width='100%';
+  body.append(mic);
+  const st=h('p','note','');st.id='hearSt';body.append(st);
+  body.append(h('label',null,u('m_heard')));
+  const inp=h('input');inp.type='text';inp.id='hearIn';inp.autocomplete='off';
+  inp.oninput=()=>{hearTxt=inp.value;hearAlt='';hearExt=undefined;refreshHear()};
+  body.append(inp);
+  const sug=h('div');sug.id='hearSug';body.append(sug);
+}
+/* ---------- Вкладка «Говорит собеседник»: распознать, показать крупно и проговорить ---------- */
+const SHOW_PX=[28,40,56,72],SHOW_VW=[8,11,15,19];
+let showText='',showHist=[],rec2=null,showWords=[];
+function showSize(){const i=Math.max(0,Math.min(3,Number(settings.readSize)||0));return `min(${SHOW_PX[i]}px,${SHOW_VW[i]}vw)`}
+function saveSettings(){try{localStorage.setItem('aac.settings',JSON.stringify(settings))}catch(e){}}
+function showStatus(msg){const e=$('#showSt');if(e)e.textContent=msg||''}
+// Текст слова за словом: так проговариваемое слово можно подсвечивать
+function renderShow(interim){
+  const box=$('#showText');if(!box)return;
+  box.innerHTML='';box.style.fontSize=showSize();showWords=[];
+  const txt=interim!=null?interim:showText;
+  if(!txt){box.append(h('span','interim',u('show_empty')));box.style.fontSize='clamp(18px,5vw,24px)'}
+  else{
+    let last=0;
+    for(const m of txt.matchAll(/\S+/g)){
+      if(m.index>last)box.append(document.createTextNode(txt.slice(last,m.index)));
+      const sp=h('span',interim!=null?'interim':null,m[0]);box.append(sp);
+      showWords.push({s:m.index,e:m.index+m[0].length,el:sp});last=m.index+m[0].length;
+    }
+  }
+  const hs=$('#showHist');
+  if(hs){
+    hs.innerHTML='';
+    if(showHist.length){
+      hs.append(h('h3',null,u('show_hist')));
+      showHist.forEach(t2=>hs.append(h('button','hrow',t2,()=>showShow(t2,true))));
+    }
+  }
+}
+function hlWord(idx){showWords.forEach(w=>w.el.classList.toggle('hl',idx>=w.s&&idx<w.e))}
+function showSay(f){
+  if(!showText)return;
+  speak(showText,f,{b:i=>hlWord(i),e:()=>hlWord(-1)});
+}
+function showShow(text,speakNow){
+  text=String(text||'').trim();
+  showText=text;
+  if(text)showHist=[text,...showHist.filter(x=>x!==text)].slice(0,30);
+  const inp=$('#showIn');if(inp)inp.value=text;
+  renderShow();
+  if(text&&speakNow)showSay(1);
+}
+function showListen(){
+  const mic=$('#showMic');
+  if(rec2){try{rec2.stop()}catch(e){}return}
+  if(!SR){showStatus(u('m_nosr'));const i=$('#showIn');if(i)i.focus();return}
+  const r=new SR();
+  r.lang={ru:'ru-RU',uk:'uk-UA',en:'en-US'}[lang];
+  r.interimResults=true;r.maxAlternatives=1;r.continuous=false;
+  if(!navigator.onLine&&'processLocally' in r){try{r.processLocally=true}catch(e){}}
+  let err='',got='';
+  speechSynthesis&&speechSynthesis.cancel&&speechSynthesis.cancel();       // чтобы микрофон не слушал синтезатор
+  r.onstart=()=>{mic.textContent='⏹ '+u('m_stop');mic.classList.add('rec');showStatus(u('m_listen'))};
+  r.onresult=e=>{
+    got=Array.from(e.results).map(x=>x[0].transcript).join(' ').trim();
+    renderShow(got);                              // слова появляются по мере произнесения
+  };
+  r.onerror=e=>{
+    err=e.error;
+    showStatus(err==='not-allowed'||err==='service-not-allowed'?u('m_nomic'):err==='network'||err==='language-not-supported'?u('m_net'):err==='no-speech'?u('m_nosp'):u('m_err'));
+  };
+  r.onend=()=>{
+    rec2=null;mic.textContent='🎤 '+u('m_say');mic.classList.remove('rec');
+    if(got){showStatus('');showShow(got,settings.showAuto!==false)}      // распознано: показать крупно и проговорить
+    else{renderShow();if(!err)showStatus(u('m_nosp'))}
+  };
+  rec2=r;
+  try{r.start()}catch(e){rec2=null;showStatus(u('m_err'))}
+}
+function drawShowTab(body){
+  body.append(h('p','note',uh('m_show_note')));
+  const box=h('div','showbox');box.id='showText';body.append(box);
+  const st=h('p','note','');st.id='showSt';body.append(st);
+  const mic=h('button','ans yes','🎤 '+u('m_say'),showListen);mic.id='showMic';mic.style.width='100%';body.append(mic);
+  const r1=h('div','row');
+  r1.append(h('button','ans neu sm','🔊 '+u('rep'),()=>showSay(1)),h('button','ans neu sm','🐢 '+u('slow'),()=>showSay(0.6)));
+  body.append(r1);
+  const r2=h('div','row');
+  r2.append(h('button','mini','A−',()=>{settings.readSize=Math.max(0,(Number(settings.readSize)||0)-1);saveSettings();renderShow()}),
+            h('button','mini','A+',()=>{settings.readSize=Math.min(3,(Number(settings.readSize)||0)+1);saveSettings();renderShow()}),
+            h('button','mini','🗑',()=>{showText='';const i=$('#showIn');if(i)i.value='';renderShow()}));
+  body.append(r2);
+  const lab=h('label','chk');
+  const cb=h('input');cb.type='checkbox';cb.checked=settings.showAuto!==false;
+  cb.onchange=()=>{settings.showAuto=cb.checked;saveSettings()};
+  lab.append(cb,h('span',null,u('show_auto')));
+  body.append(lab);
+  const inp=h('input');inp.type='text';inp.id='showIn';inp.autocomplete='off';inp.placeholder=u('show_ph');
+  inp.onkeydown=e=>{if(e.key==='Enter')showShow(inp.value,true)};
+  body.append(inp,h('button','ans neu sm',u('show_btn'),()=>showShow(inp.value,true)));
+  body.lastChild.style.width='100%';body.lastChild.style.margin='8px 0';
+  const hs=h('div');hs.id='showHist';body.append(hs);
+  renderShow();
+}
+
 $('#micBtn').onclick=openHear;
 $('#abcBtn').onclick=abcOpen;
 
