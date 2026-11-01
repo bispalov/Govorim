@@ -302,7 +302,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 27;   // держите в соответствии с V = 'govorim-v27' в sw.js
+const APP_VERSION = 28;   // держите в соответствии с V = 'govorim-v28' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -2702,16 +2702,17 @@ function showListen(){
 }
 function drawShowTab(body){
   const box=h('div','showbox');box.id='showText';body.append(box);
-  const st=h('p','note','');st.id='showSt';body.append(st);
-  const mic=h('button','ans yes','🎤 '+u('m_say'),showListen);mic.id='showMic';mic.style.width='100%';body.append(mic);
-  const r1=h('div','row');
-  r1.append(h('button','ans neu sm','🔊 '+u('rep'),()=>showSay(1)),h('button','ans neu sm','🐢 '+u('slow'),()=>showSay(0.6)));
-  body.append(r1);
+  // Размер текста и сброс — сразу под областью с распознанным текстом
   const r2=h('div','row');
   r2.append(h('button','mini','A−',()=>{settings.readSize=Math.max(0,(Number(settings.readSize)||0)-1);saveSettings();renderShow()}),
             h('button','mini','A+',()=>{settings.readSize=Math.min(3,(Number(settings.readSize)||0)+1);saveSettings();renderShow()}),
             h('button','mini','🗑',()=>{showText='';const i=$('#showIn');if(i)i.value='';renderShow()}));
   body.append(r2);
+  const st=h('p','note','');st.id='showSt';body.append(st);
+  const mic=h('button','ans yes','🎤 '+u('m_say'),showListen);mic.id='showMic';mic.style.width='100%';body.append(mic);
+  const r1=h('div','row');
+  r1.append(h('button','ans neu sm','🔊 '+u('rep'),()=>showSay(1)),h('button','ans neu sm','🐢 '+u('slow'),()=>showSay(0.6)));
+  body.append(r1);
   const lab=h('label','chk');
   const cb=h('input');cb.type='checkbox';cb.checked=settings.showAuto!==false;
   cb.onchange=()=>{settings.showAuto=cb.checked;saveSettings()};
