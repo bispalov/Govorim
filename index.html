@@ -302,7 +302,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 30;   // держите в соответствии с V = 'govorim-v28' в sw.js
+const APP_VERSION = 31;   // держите в соответствии с V = 'govorim-v28' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -2609,10 +2609,14 @@ function refreshHear(){
       });
     }
   }else if(!list.length)ex.append(h('p','note',uh('m_ext_off')));
+  const fb=h('div');box.append(fb);
+  drawFreq(fb,new Set(list.map(c=>pkey(c.text))));
 }
 // Фразы, которые человек чаще всего выбирал из подсказок: показываются, пока ничего не услышано
-function drawFreq(box){
-  const top=topPicks(5);if(!top.length)return;
+function drawFreq(box,skip){
+  let top=topPicks(5);
+  if(skip&&skip.size)top=top.filter(x=>!skip.has(x.k));   // уже показанные в подсказках не дублируем
+  if(!top.length)return;
   box.append(h('h3',null,u('m_freq')));
   top.forEach(x=>{
     const row=h('div','hwrap'),b=h('button','sug',null,()=>{
