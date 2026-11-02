@@ -302,7 +302,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 28;   // держите в соответствии с V = 'govorim-v28' в sw.js
+const APP_VERSION = 29;   // держите в соответствии с V = 'govorim-v28' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -352,7 +352,7 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
    ['Поиск слов онлайн (⚙️, бесплатно)',['Если нужного слова нет в словаре (например, «кукуруза»), включите в настройках «Искать слова онлайн». Тогда на экране «Азбука» и на экране 🎤 появится кнопка «Найти слова в интернете».','Слова ищутся в Викисловаре (для английского ещё в Datamuse): продолжения начатого слова и исправления опечаток. Ключ и регистрация не нужны. Набранные буквы и слова отправляются этим сервисам.','Выбранное слово произносится и запоминается на телефоне: дальше оно находится и без интернета.']],
    ['Словари слов (⚙️)',['В настройках можно один раз загрузить частотные списки слов (около 20 000 форм слов для русского и украинского и 10 000 для английского). После этого они хранятся на телефоне и работают без интернета.','Они расширяют «Азбуку»: на каждую букву появляются сотни самых употребительных слов, а наши слова идут первыми. На экране 🎤 они дают блок «Слова из словаря»: услышанные слова исправляются (например, «мошина» → «машина»), недоговорённое начало слова дополняется, и слово произносится по нажатию. Это работает и для слов, которых нет в наших фразах.','Списки не создают новые фразы, а только слова. Источник: FrequencyWords (hermitdave), лицензия CC BY-SA 4.0. В списках из субтитров есть шум и редкие грубые слова, фильтрация неполная.']],
    ['Говорит собеседник: показать и проговорить (🎤)',['Если человек не понимает живую речь или слышит другие слова, но понимает синтезированный голос или читает, откройте 🎤 и перейдите на вкладку «Говорит собеседник».','Нажмите «Говорить» и скажите фразу: она распознаётся, появляется крупным текстом (размер меняют кнопками A− и A+) и проговаривается голосом телефона; проговариваемое слово подсвечивается, если голос это поддерживает.','«Повторить» и «Медленно» произносят фразу снова. Если распознано неточно, исправьте текст в поле и нажмите «Показать и проговорить»; так же можно просто вписать фразу. Недавние фразы можно показать снова, а значок 🗑 справа от фразы удаляет её. Последние пять фраз хранятся на этом телефоне, пока вы их не удалите.','Распознавание выполняет браузер и обычно требует интернета; без него используйте поле для ввода.']],
-   ['Подсказка по сказанному (🎤)',['Кнопка 🎤 вверху открывает экран подсказок: человек говорит фразу, а приложение находит в своём словаре слова и предлагает готовые фразы с ними.','Нажмите на подходящую фразу — она прозвучит. Для тем «Здоровье» и «Лекарства» сначала будет вопрос «Точно?».','Распознавание речи делает браузер Chrome и обычно требует интернета (запись голоса может обрабатываться на серверах Google). Без интернета впишите услышанные слова в поле вручную — подбор фраз работает и так.','Нарушенную речь распознаватель понимает плохо, поэтому подсказки приблизительные. Если фразы не нашлись, попробуйте короче или впишите слова.']],
+   ['Подсказка по сказанному (🎤)',['Кнопка 🎤 вверху открывает экран подсказок: человек говорит фразу, а приложение находит в своём словаре слова и предлагает готовые фразы с ними.','Нажмите на подходящую фразу — она прозвучит. Для тем «Здоровье» и «Лекарства» сначала будет вопрос «Точно?».','Распознавание речи делает браузер Chrome и обычно требует интернета (запись голоса может обрабатываться на серверах Google). Без интернета впишите услышанные слова в поле вручную — подбор фраз работает и так.','Нарушенную речь распознаватель понимает плохо, поэтому подсказки приблизительные. Если фразы не нашлись, попробуйте короче или впишите слова.','Приложение запоминает фразы, которые человек выбирал из подсказок, и то, как он их искажённо произносил. В следующий раз такие фразы поднимаются выше (отмечены ★), а самые частые видны сразу на экране до начала речи — каждую можно убрать значком 🗑 или забыть все. Также учитывается то, что только что было сказано. Всё хранится только на этом устройстве. Если включён онлайн-поиск, в запрос уходят также последние сказанные и самые частые фразы — чтобы ответ лучше подходил к контексту.']],
    ['Онлайн-поиск фраз (необязательно)',['Если в словаре нет подходящей фразы, на экране 🎤 появляется кнопка «Поискать в интернете». Она отправляет распознанные слова (звук не отправляется) выбранному сервису с языковой моделью, и тот предлагает до пяти фраз.','Включение: ⚙️ → «Онлайн-поиск фраз»: выберите сервис, введите API-ключ, отметьте согласие и нажмите «Проверить соединение». Рекомендуются Anthropic Claude или OpenRouter; для ключа задайте лимит расходов.','Подсказки из интернета не проверены, поэтому после нажатия приложение сначала спрашивает «…?». Не используйте функцию, если не хотите, чтобы слова человека уходили на внешний сервис. Ключ хранится на этом телефоне и не попадает в резервную копию.']],
    ['Ситуации','На уровнях «Лёгкое 1–3» в конце главного экрана есть плитка «Ситуации»: визит к врачу, аптека, магазин, гости, телефонный разговор. Фразы в них подобраны под конкретную ситуацию. Если вы раньше правили плитки лёгкого уровня, нажмите в редакторе «Сбросить уровень», чтобы получить новые темы.'],
    ['Услышать, потом выбрать (⚙️)','Если включено, первое нажатие на плитку только произносит слово и обводит плитку жёлтой рамкой, а второе нажатие на ту же плитку выбирает её. Нажатие на другую плитку снова только озвучивает её.'],
@@ -385,7 +385,7 @@ ru:{title:'Говорим вместе',freq:'Часто',yes:'Да',no:'Нет'
   ext_etime:'Сервис не ответил вовремя.',ext_eother:'Сервис вернул ошибку: ',ext_ecfg:'Онлайн-поиск не настроен: проверьте адрес (нужен https://), модель и ключ.',
   m_ext_off:'Подходящих фраз нет в словаре. Онлайн-поиск можно включить: ⚙️ → «Онлайн-поиск фраз».',
   m_online:'Поискать в интернете',m_searching:'Ищу варианты…',m_online_res:'Варианты из интернета — нажмите, и вас спросят «…?»:',m_online_none:'Онлайн-поиск тоже ничего не предложил.',
-  m_title:'🎤 Подсказка по сказанному',m_say:'Говорить',m_stop:'Остановить',m_listen:'Слушаю… говорите',m_heard:'Что услышано (можно исправить или вписать слова):',m_sugg:'Возможно, вы хотели сказать — нажмите, и фраза прозвучит:',m_none:'Подходящих фраз не найдено. Попробуйте сказать иначе или впишите слова.',m_nomic:'Нет доступа к микрофону. Разрешите его в настройках браузера.',m_nosr:'Распознавание речи в этом браузере недоступно. Впишите слова вручную.',m_net:'Для распознавания нужен интернет. Впишите слова вручную.',m_nosp:'Ничего не услышано. Попробуйте ещё раз.',m_err:'Не удалось распознать. Попробуйте ещё раз или впишите слова.',m_note:'Распознавание речи выполняет браузер Chrome: обычно нужен интернет, и запись голоса может обрабатываться на серверах Google. Подбор фраз по найденным словам работает без интернета. Нарушенную речь распознать трудно, поэтому слова можно вписать вручную (в том числе голосовым вводом клавиатуры).',f_edit:'Изменить список «Часто»',f_clear:'🗑️ Убрать все',f_done:'Готово',f_cclear:'Убрать все фразы из блока «Часто»?',f_hint:'Нажмите на фразу, чтобы убрать её из блока.',e_name:'Название',e_phrase:'Фраза',ln_ru:'русский',ln_uk:'украинский',ln_en:'английский'},
+  m_title:'🎤 Подсказка по сказанному',m_freq:'Часто выбирали:',m_forget:'Забыть запомненные фразы',m_forgetq:'Забыть все фразы, запомненные по выбору из подсказок?',m_say:'Говорить',m_stop:'Остановить',m_listen:'Слушаю… говорите',m_heard:'Что услышано (можно исправить или вписать слова):',m_sugg:'Возможно, вы хотели сказать — нажмите, и фраза прозвучит:',m_none:'Подходящих фраз не найдено. Попробуйте сказать иначе или впишите слова.',m_nomic:'Нет доступа к микрофону. Разрешите его в настройках браузера.',m_nosr:'Распознавание речи в этом браузере недоступно. Впишите слова вручную.',m_net:'Для распознавания нужен интернет. Впишите слова вручную.',m_nosp:'Ничего не услышано. Попробуйте ещё раз.',m_err:'Не удалось распознать. Попробуйте ещё раз или впишите слова.',m_note:'Распознавание речи выполняет браузер Chrome: обычно нужен интернет, и запись голоса может обрабатываться на серверах Google. Подбор фраз по найденным словам работает без интернета. Нарушенную речь распознать трудно, поэтому слова можно вписать вручную (в том числе голосовым вводом клавиатуры).',f_edit:'Изменить список «Часто»',f_clear:'🗑️ Убрать все',f_done:'Готово',f_cclear:'Убрать все фразы из блока «Часто»?',f_hint:'Нажмите на фразу, чтобы убрать её из блока.',e_name:'Название',e_phrase:'Фраза',ln_ru:'русский',ln_uk:'украинский',ln_en:'английский'},
 uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні',back:'Назад',rep:'Повтор',help:'Допомога',pain:'Болить',sure:'Точно?',done:'Готово',cancel:'Скасувати',mods:['зараз','потім','ще','досить'],helpSay:'Допоможіть! Мені потрібна допомога!',helpTxt:'МЕНІ ПОТРІБНА ДОПОМОГА',
   built:'Ваша фраза',sayso:'Сказати так',cont:'Продовжте фразу — оберіть слово:',pick:'Оберіть тему:',ver:'Версія застосунку',
   aHome:'Додому',aLang:'Мова',aSet:'Налаштування',aEd:'Редактор',nomem:'Не вистачає пам’яті',testSay:'Це перевірка голосу',
@@ -429,7 +429,7 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
    ['Пошук слів онлайн (⚙️, безкоштовно)',['Якщо потрібного слова немає у словнику (наприклад, «кукурудза»), увімкніть у налаштуваннях «Шукати слова онлайн». Тоді на екрані «Абетка» та на екрані 🎤 з’явиться кнопка «Знайти слова в інтернеті».','Слова шукаються у Вікісловнику (для англійської ще в Datamuse): продовження початого слова й виправлення помилок. Ключ і реєстрація не потрібні. Набрані літери й слова надсилаються цим сервісам.','Обране слово вимовляється й запам’ятовується на телефоні: далі воно знаходиться й без інтернету.']],
    ['Словники слів (⚙️)',['У налаштуваннях можна один раз завантажити частотні списки слів (близько 20 000 форм слів для російської й української та 10 000 для англійської). Після цього вони зберігаються на телефоні й працюють без інтернету.','Вони розширюють «Абетку»: на кожну літеру з’являються сотні найуживаніших слів, а наші слова йдуть першими. На екрані 🎤 вони дають блок «Слова зі словника»: почуті слова виправляються (наприклад, «мошина» → «машина»), недоказаний початок слова доповнюється, і слово вимовляється після натискання. Це працює й для слів, яких немає в наших фразах.','Списки не створюють нових фраз, а лише слова. Джерело: FrequencyWords (hermitdave), ліцензія CC BY-SA 4.0. У списках із субтитрів є шум і рідкісні грубі слова, фільтрація неповна.']],
    ['Говорить співрозмовник: показати й проговорити (🎤)',['Якщо людина не розуміє живе мовлення або чує інші слова, але розуміє синтезований голос чи читає, відкрийте 🎤 і перейдіть на вкладку «Говорить співрозмовник».','Натисніть «Говорити» і скажіть фразу: вона розпізнається, з’являється великим текстом (розмір змінюють кнопками A− і A+) і проговорюється голосом телефона; слово, що проговорюється, підсвічується, якщо голос це підтримує.','«Повтор» і «Повільно» вимовляють фразу знову. Якщо розпізнано неточно, виправте текст у полі й натисніть «Показати й проговорити»; так само можна просто вписати фразу. Нещодавні фрази можна показати знову, а значок 🗑 праворуч від фрази видаляє її. Останні п’ять фраз зберігаються на цьому телефоні, доки ви їх не видалите.','Розпізнавання виконує браузер і зазвичай потребує інтернету; без нього користуйтеся полем для введення.']],
-   ['Підказка за сказаним (🎤)',['Кнопка 🎤 угорі відкриває екран підказок: людина говорить фразу, а застосунок знаходить у своєму словнику слова й пропонує готові фрази з ними.','Натисніть на відповідну фразу — вона пролунає. Для тем «Здоров’я» та «Ліки» спочатку буде запитання «Точно?».','Розпізнавання мовлення робить браузер Chrome і зазвичай потребує інтернету (запис голосу може оброблятися на серверах Google). Без інтернету впишіть почуті слова в поле вручну — добір фраз працює й так.','Порушене мовлення розпізнавач розуміє погано, тому підказки приблизні. Якщо фрази не знайшлися, спробуйте коротше або впишіть слова.']],
+   ['Підказка за сказаним (🎤)',['Кнопка 🎤 угорі відкриває екран підказок: людина говорить фразу, а застосунок знаходить у своєму словнику слова й пропонує готові фрази з ними.','Натисніть на відповідну фразу — вона пролунає. Для тем «Здоров’я» та «Ліки» спочатку буде запитання «Точно?».','Розпізнавання мовлення робить браузер Chrome і зазвичай потребує інтернету (запис голосу може оброблятися на серверах Google). Без інтернету впишіть почуті слова в поле вручну — добір фраз працює й так.','Порушене мовлення розпізнавач розуміє погано, тому підказки приблизні. Якщо фрази не знайшлися, спробуйте коротше або впишіть слова.','Застосунок запам’ятовує фрази, які людина обирала з підказок, і те, як вона їх спотворено вимовляла. Наступного разу такі фрази піднімаються вище (позначені ★), а найчастіші видно одразу на екрані до початку мовлення — кожну можна прибрати значком 🗑 або забути всі. Також враховується те, що щойно було сказано. Усе зберігається лише на цьому пристрої. Якщо ввімкнено онлайн-пошук, у запит також іде кілька останніх сказаних і найчастіших фраз — щоб відповідь краще пасувала до контексту.']],
    ['Онлайн-пошук фраз (необов’язково)',['Якщо у словнику немає відповідної фрази, на екрані 🎤 з’являється кнопка «Пошукати в інтернеті». Вона надсилає розпізнані слова (звук не надсилається) обраному сервісу з мовною моделлю, і той пропонує до п’яти фраз.','Увімкнення: ⚙️ → «Онлайн-пошук фраз»: оберіть сервіс, введіть API-ключ, позначте згоду й натисніть «Перевірити з’єднання». Рекомендуються Anthropic Claude або OpenRouter; для ключа задайте ліміт витрат.','Підказки з інтернету не перевірені, тому після натискання застосунок спершу запитує «…?». Не користуйтеся цією функцією, якщо не хочете, щоб слова людини йшли на зовнішній сервіс. Ключ зберігається на цьому телефоні й не потрапляє в резервну копію.']],
    ['Ситуації','На рівнях «Легке 1–3» наприкінці головного екрана є плитка «Ситуації»: візит до лікаря, аптека, магазин, гості, телефонна розмова. Фрази в них підібрано під конкретну ситуацію. Якщо ви раніше правили плитки легкого рівня, натисніть у редакторі «Скинути рівень», щоб отримати нові теми.'],
    ['Почути, потім обрати (⚙️)','Якщо увімкнено, перше натискання на плитку лише вимовляє слово й обводить плитку жовтою рамкою, а друге натискання на ту саму плитку обирає її. Натискання на іншу плитку знову лише озвучує її.'],
@@ -462,7 +462,7 @@ uk:{title:'Говоримо разом',freq:'Часто',yes:'Так',no:'Ні'
   ext_etime:'Сервіс не відповів вчасно.',ext_eother:'Сервіс повернув помилку: ',ext_ecfg:'Онлайн-пошук не налаштовано: перевірте адресу (потрібен https://), модель і ключ.',
   m_ext_off:'Відповідних фраз немає у словнику. Онлайн-пошук можна ввімкнути: ⚙️ → «Онлайн-пошук фраз».',
   m_online:'Пошукати в інтернеті',m_searching:'Шукаю варіанти…',m_online_res:'Варіанти з інтернету — натисніть, і вас запитають «…?»:',m_online_none:'Онлайн-пошук теж нічого не запропонував.',
-  m_title:'🎤 Підказка за сказаним',m_say:'Говорити',m_stop:'Зупинити',m_listen:'Слухаю… говоріть',m_heard:'Що почуто (можна виправити або вписати слова):',m_sugg:'Можливо, ви хотіли сказати — натисніть, і фраза пролунає:',m_none:'Відповідних фраз не знайдено. Спробуйте сказати інакше або впишіть слова.',m_nomic:'Немає доступу до мікрофона. Дозвольте його в налаштуваннях браузера.',m_nosr:'Розпізнавання мовлення в цьому браузері недоступне. Впишіть слова вручну.',m_net:'Для розпізнавання потрібен інтернет. Впишіть слова вручну.',m_nosp:'Нічого не почуто. Спробуйте ще раз.',m_err:'Не вдалося розпізнати. Спробуйте ще раз або впишіть слова.',m_note:'Розпізнавання мовлення виконує браузер Chrome: зазвичай потрібен інтернет, а запис голосу може оброблятися на серверах Google. Добір фраз за знайденими словами працює без інтернету. Порушене мовлення розпізнати важко, тому слова можна вписати вручну (зокрема голосовим уведенням клавіатури).',f_edit:'Змінити список «Часто»',f_clear:'🗑️ Прибрати всі',f_done:'Готово',f_cclear:'Прибрати всі фрази з блоку «Часто»?',f_hint:'Натисніть на фразу, щоб прибрати її з блоку.',e_name:'Назва',e_phrase:'Фраза',ln_ru:'російською',ln_uk:'українською',ln_en:'англійською'},
+  m_title:'🎤 Підказка за сказаним',m_freq:'Часто обирали:',m_forget:'Забути запам’ятані фрази',m_forgetq:'Забути всі фрази, запам’ятані за вибором із підказок?',m_say:'Говорити',m_stop:'Зупинити',m_listen:'Слухаю… говоріть',m_heard:'Що почуто (можна виправити або вписати слова):',m_sugg:'Можливо, ви хотіли сказати — натисніть, і фраза пролунає:',m_none:'Відповідних фраз не знайдено. Спробуйте сказати інакше або впишіть слова.',m_nomic:'Немає доступу до мікрофона. Дозвольте його в налаштуваннях браузера.',m_nosr:'Розпізнавання мовлення в цьому браузері недоступне. Впишіть слова вручну.',m_net:'Для розпізнавання потрібен інтернет. Впишіть слова вручну.',m_nosp:'Нічого не почуто. Спробуйте ще раз.',m_err:'Не вдалося розпізнати. Спробуйте ще раз або впишіть слова.',m_note:'Розпізнавання мовлення виконує браузер Chrome: зазвичай потрібен інтернет, а запис голосу може оброблятися на серверах Google. Добір фраз за знайденими словами працює без інтернету. Порушене мовлення розпізнати важко, тому слова можна вписати вручну (зокрема голосовим уведенням клавіатури).',f_edit:'Змінити список «Часто»',f_clear:'🗑️ Прибрати всі',f_done:'Готово',f_cclear:'Прибрати всі фрази з блоку «Часто»?',f_hint:'Натисніть на фразу, щоб прибрати її з блоку.',e_name:'Назва',e_phrase:'Фраза',ln_ru:'російською',ln_uk:'українською',ln_en:'англійською'},
 en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep:'Repeat',help:'Help',pain:'Pain',sure:'Sure?',done:'Done',cancel:'Cancel',mods:['now','later','more','enough'],helpSay:'Help! I need help!',helpTxt:'I NEED HELP',
   built:'Your phrase',sayso:'Say it',cont:'Continue the phrase — choose a word:',pick:'Choose a topic:',ver:'App version',
   aHome:'Home',aLang:'Language',aSet:'Settings',aEd:'Editor',nomem:'Not enough storage',testSay:'This is a voice test',
@@ -500,7 +500,7 @@ en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep
   ext_etime:'The service did not answer in time.',ext_eother:'The service returned an error: ',ext_ecfg:'Online search is not set up: check the address (https:// required), model and key.',
   m_ext_off:'There is no suitable phrase in the vocabulary. You can turn on online search: ⚙️ → “Online phrase search”.',
   m_online:'Search online',m_searching:'Looking for options…',m_online_res:'Options from the internet — tap one and you will be asked “…?”:',m_online_none:'Online search found nothing either.',
-  m_title:'🎤 Suggestions from what was said',m_say:'Speak',m_stop:'Stop',m_listen:'Listening… please speak',m_heard:'What was heard (you can correct it or type words):',m_sugg:'Maybe you meant — tap and the phrase is spoken:',m_none:'No matching phrases found. Try saying it differently or type the words.',m_nomic:'No access to the microphone. Allow it in the browser settings.',m_nosr:'Speech recognition is not available in this browser. Type the words instead.',m_net:'Recognition needs the internet. Type the words instead.',m_nosp:'Nothing was heard. Please try again.',m_err:'Could not recognize that. Try again or type the words.',m_note:'Speech recognition is done by the Chrome browser: it usually needs the internet, and the voice recording may be processed on Google servers. Matching phrases to the recognized words works offline. Impaired speech is hard to recognize, so words can also be typed in (including with the keyboard’s voice input).',f_edit:'Edit the “Often” list',f_clear:'🗑️ Remove all',f_done:'Done',f_cclear:'Remove all phrases from the “Often” block?',f_hint:'Tap a phrase to remove it from the block.',e_name:'Name',e_phrase:'Phrase',ln_ru:'Russian',ln_uk:'Ukrainian',ln_en:'English',
+  m_title:'🎤 Suggestions from what was said',m_freq:'Often chosen:',m_forget:'Forget remembered phrases',m_forgetq:'Forget all phrases remembered from chosen suggestions?',m_say:'Speak',m_stop:'Stop',m_listen:'Listening… please speak',m_heard:'What was heard (you can correct it or type words):',m_sugg:'Maybe you meant — tap and the phrase is spoken:',m_none:'No matching phrases found. Try saying it differently or type the words.',m_nomic:'No access to the microphone. Allow it in the browser settings.',m_nosr:'Speech recognition is not available in this browser. Type the words instead.',m_net:'Recognition needs the internet. Type the words instead.',m_nosp:'Nothing was heard. Please try again.',m_err:'Could not recognize that. Try again or type the words.',m_note:'Speech recognition is done by the Chrome browser: it usually needs the internet, and the voice recording may be processed on Google servers. Matching phrases to the recognized words works offline. Impaired speech is hard to recognize, so words can also be typed in (including with the keyboard’s voice input).',f_edit:'Edit the “Often” list',f_clear:'🗑️ Remove all',f_done:'Done',f_cclear:'Remove all phrases from the “Often” block?',f_hint:'Tap a phrase to remove it from the block.',e_name:'Name',e_phrase:'Phrase',ln_ru:'Russian',ln_uk:'Ukrainian',ln_en:'English',
   helpDoc:{title:'❓ Help',s:[
    ['What this app is for','The app helps people communicate with someone whose speech has been affected by a stroke (aphasia). Instead of searching for words, they just tap large tiles and the phone says the phrase aloud. Everything works without the internet.'],
    ['Quick start',['Choose a topic on the home screen (for example, “Food and drink”).','Tap tiles: the phrase is chosen step by step.','The app asks, for example, “I want tea?”. Tap “Yes” and the phrase is spoken; “No” cancels.','After it is spoken you can tap “Repeat” or “Done”.']],
@@ -517,7 +517,7 @@ en:{title:'Let’s talk together',freq:'Often',yes:'Yes',no:'No',back:'Back',rep
    ['Online word search (⚙️, free)',['If the word you need is not in the dictionary (for example “corn”), turn on “Look up words online” in Settings. A “Find words online” button then appears on the ABC screen and on the 🎤 screen.','Words are looked up in Wiktionary (and Datamuse for English): completions of a started word and spelling corrections. No key or sign-up is needed. The typed letters and words are sent to these services.','A chosen word is spoken and remembered on the phone, so later it is found without the internet.']],
    ['Word lists (⚙️)',['In Settings you can download frequency word lists once (about 20,000 word forms for Russian and Ukrainian and 10,000 for English). After that they are kept on the phone and work offline.','They extend ABC: each letter gets hundreds of the most common words, with our own words first. On the 🎤 screen they provide a “Words from the dictionary” block: heard words are corrected (for example “mashina” → “machine”), an unfinished word start is completed, and the word is spoken when tapped. This also works for words that are not in our phrases.','The lists provide words, not new phrases. Source: FrequencyWords (hermitdave), license CC BY-SA 4.0. Lists built from subtitles contain noise and a few rude words; the filtering is incomplete.']],
    ['Someone speaks: show and speak (🎤)',['If the person does not understand live speech or hears other words, but understands a synthesized voice or can read, open 🎤 and switch to the “Someone speaks to the person” tab.','Tap “Speak” and say a phrase: it is recognized, shown in large text (change the size with the A− and A+ buttons) and spoken in the phone’s voice; the word being spoken is highlighted if the voice supports it.','“Repeat” and “Slowly” say the phrase again. If it was recognized inaccurately, correct the text in the field and press “Show and speak”; you can also just type a phrase. Recent phrases can be shown again, and the 🗑 icon next to a phrase deletes it. The last five phrases are kept on this phone until you delete them.','Recognition is done by the browser and usually needs the internet; without it, use the input field.']],
-   ['Suggestions from what was said (🎤)',['The 🎤 button at the top opens a screen of suggestions: the person says a phrase and the app finds words from its vocabulary and offers ready-made phrases containing them.','Tap a matching phrase and it is spoken. For the Health and Medicines topics a “Sure?” question comes first.','Speech recognition is done by the Chrome browser and usually needs the internet (the voice recording may be processed on Google servers). Without the internet, type the words you heard into the field: the phrase matching works anyway.','Impaired speech is hard for a recognizer, so the suggestions are approximate. If nothing is found, try something shorter or type the words.']],
+   ['Suggestions from what was said (🎤)',['The 🎤 button at the top opens a screen of suggestions: the person says a phrase and the app finds words from its vocabulary and offers ready-made phrases containing them.','Tap a matching phrase and it is spoken. For the Health and Medicines topics a “Sure?” question comes first.','Speech recognition is done by the Chrome browser and usually needs the internet (the voice recording may be processed on Google servers). Without the internet, type the words you heard into the field: the phrase matching works anyway.','Impaired speech is hard for a recognizer, so the suggestions are approximate. If nothing is found, try something shorter or type the words.','The app remembers the phrases the person chose from suggestions and how they pronounced them in a distorted way. Next time such phrases rank higher (marked ★), and the most frequent ones are shown right away, before any speech — remove one with 🗑 or forget them all. What was just said is also taken into account. Everything is stored only on this device. If online search is on, the last spoken and the most frequent phrases are also sent with the request so the answer fits the context better.']],
    ['Online phrase search (optional)',['If the vocabulary has no suitable phrase, the 🎤 screen shows a “Search online” button. It sends the recognized words (no audio) to the selected language-model service, which suggests up to five phrases.','To turn it on: ⚙️ → “Online phrase search”: choose a service, enter the API key, tick the consent box and press “Test the connection”. Anthropic Claude or OpenRouter are recommended; set a spending limit for the key.','Suggestions from the internet are not vetted, so after a tap the app first asks “…?”. Do not use this feature if you do not want the person’s words to go to an outside service. The key stays on this phone and is not included in the backup.']],
    ['Situations','In the Mild 1–3 levels the last tile of the home screen is “Situations”: doctor visit, pharmacy, store, guests, phone call. The phrases are chosen for each situation. If you edited tiles of a mild level earlier, tap “Reset level” in the editor to get the new topics.'],
    ['Hear first, then choose (⚙️)','When on, the first tap on a tile only says the word and outlines the tile in yellow; a second tap on the same tile selects it. Tapping another tile only says that one.'],
@@ -1923,7 +1923,7 @@ function answer(yes){
   const txt=t(cn.s)+(mod?' '+mod:'');bump(cn.id);say(txt);
 }
 function say(txt,silent){
-  last=txt;if(!silent){speak(txt);logPhrase(txt)}cn=null;
+  last=txt;if(!silent){speak(txt);logPhrase(txt);pushCtx(txt)}cn=null;
   ov.innerHTML='';ov.className='';ov.style.display='flex';clearInterval(tmr);
   const r=h('div','row');
   r.append(h('button','ans neu','🔊 '+u('rep'),()=>speak(last)),h('button','ans yes',u('done'),()=>{closeOv();path=[];render()}));
@@ -2334,6 +2334,37 @@ function wordSim(a,b){
   if(Math.max(a.length,b.length)>=7&&dist<=2)return 0.55;
   return 0;
 }
+
+/* ---------- Что человек выбирал из подсказок: частые фразы и «как произнёс → что имел в виду» (только на этом устройстве) ---------- */
+const PICK_MAX=40,ASSOC_MAX=60;
+let ctxSaid=[];                                  // последние произнесённые фразы — контекст для подбора
+const pushCtx=t=>{ctxSaid=[String(t),...ctxSaid].slice(0,3)};
+function loadPicks(){const o=ld('aac.pick.'+lang,{});return {f:Array.isArray(o.f)?o.f:[],a:Array.isArray(o.a)?o.a:[]}}
+function savePicks(p){try{localStorage.setItem('aac.pick.'+lang,JSON.stringify(p))}catch(e){}}
+const pkey=t=>norm(t).replace(/\s+/g,' ').trim();
+function contentToks(text){
+  const stop=new Set((STOPW[lang]||'').split(' ')),all=toks(text);
+  const r=[...new Set(all.filter(w=>w.length>1&&!stop.has(w)))];
+  return r.length?r:[...new Set(all.filter(w=>w.length>1))];
+}
+function recordPick(text,e,heard){
+  text=String(text||'').trim();if(!text)return;
+  const p=loadPicks(),k=pkey(text);
+  const it=p.f.find(x=>x.k===k);
+  if(it){it.n++;it.t=Date.now();if(e)it.e=e}else p.f.push({k,s:text,e:e||'',n:1,t:Date.now()});
+  p.f.sort((a,b)=>b.n-a.n||b.t-a.t);p.f=p.f.slice(0,PICK_MAX);
+  const ht=contentToks(heard||'').sort(),pt=new Set(contentToks(text));
+  // запоминаем связь только если сказанное заметно отличалось от выбранной фразы (то есть речь была искажена)
+  if(ht.length&&ht.some(w=>!pt.has(w))){
+    const hk=ht.join(' '),a=p.a.find(x=>x.h===hk&&x.k===k);
+    if(a){a.n++;a.t=Date.now()}else p.a.push({h:hk,k,s:text,e:e||'',n:1,t:Date.now()});
+    p.a.sort((x,y)=>y.n-x.n||y.t-x.t);p.a=p.a.slice(0,ASSOC_MAX);
+  }
+  savePicks(p);
+}
+const topPicks=(n)=>loadPicks().f.slice(0,n);
+function forgetPick(k){const p=loadPicks();p.f=p.f.filter(x=>x.k!==k);p.a=p.a.filter(x=>x.k!==k);savePicks(p)}
+function forgetAllPicks(){try{localStorage.removeItem('aac.pick.'+lang)}catch(e){}}
 // Все известные приложению фразы текущего языка: словарь целиком + плитки текущего дерева (включая добавленные вручную)
 function phraseIndex(){
   const out=[],seen=new Set();
@@ -2390,9 +2421,26 @@ function suggest(text){
   let tk=[...new Set(all.filter(w=>!stop.has(w)&&w.length>1))];
   if(!tk.length)tk=[...new Set(all.filter(w=>w.length>1))];
   if(!tk.length)return [];
+  const P=loadPicks(),fmap=new Map(P.f.map(x=>[x.k,x]));
+  const ctxW=new Set(ctxSaid.flatMap(t=>contentToks(t)));
   // у каждого услышанного слова: оно само (вес 1) и исправления из большого словаря (вес 0,9)
   const groups=tk.map(w=>[[w,1],...lexRepairs(w).map(r=>[r,0.9])]);
-  const res=[];
+  // выбранное раньше при похожем произношении: средняя близость слов «как говорил» к услышанному
+  const assoc=new Map();
+  for(const a of P.a){
+    const hw=a.h.split(' ');let sum=0;
+    for(const w of hw){let b=0;for(const t of tk)b=Math.max(b,wordSim(t,w));sum+=b}
+    const sim=sum/Math.max(hw.length,tk.length);
+    if(sim>=0.6){const bonus=sim*Math.min(1,Math.log2(a.n+1)/1.5);assoc.set(a.k,Math.max(assoc.get(a.k)||0,bonus))}
+  }
+  const res=[],seenK=new Set();
+  const extra=c=>{
+    const k=pkey(c.text),f=fmap.get(k);
+    let b=f?0.06*Math.min(3,Math.log2(f.n+1)):0;           // часто выбирали — выше
+    if(ctxW.size){let sh=0;c.w.forEach(v=>{if(ctxW.has(v))sh++});b+=Math.min(0.12,0.04*sh)}   // слова из только что сказанного
+    b+=0.5*(assoc.get(k)||0);                                // уже было так же искажено и выбрано это
+    return {b,f,k};
+  };
   for(const c of IDX){
     let m=0;const used=new Set();
     for(const g of groups){
@@ -2400,8 +2448,16 @@ function suggest(text){
       c.w.forEach((v,i)=>{if(used.has(i))return;for(const [w,f] of g){const sm=wordSim(w,v)*f;if(sm>best){best=sm;bi=i}}});
       if(bi>=0&&best>=0.5){used.add(bi);m+=best}
     }
-    if(m<0.7)continue;
-    res.push({c,score:2*m/(groups.length+c.w.length)+0.05*m});
+    const x=extra(c);
+    if(m<0.7&&!(m>=0.5&&x.f)&&!assoc.has(x.k))continue;
+    seenK.add(x.k);
+    res.push({c:x.f?{...c,pk:x.f.n}:c,score:2*m/(groups.length+c.w.length)+0.05*m+x.b});
+  }
+  // выбранные раньше фразы, которых нет в словаре (например, найденные онлайн), но связь с услышанным есть
+  for(const [k,b] of assoc){
+    if(seenK.has(k))continue;
+    const f=fmap.get(k)||P.a.find(a=>a.k===k);if(!f)continue;
+    res.push({c:{text:f.s,e:f.e,crit:false,w:toks(f.s),pk:(fmap.get(k)||{}).n||1},score:0.5*b+0.3});
   }
   res.sort((a,b)=>b.score-a.score||a.c.text.length-b.c.text.length);
   return res.slice(0,6).map(x=>x.c);
@@ -2432,15 +2488,19 @@ function parsePhrases(txt,jsonOnly){
   return items.length>=2?items.slice(0,5):[];
 }
 let extDiag='';                               // что вернул сервис, если фраз нет (для помощника)
-async function extSuggest(heard,alts,cfg,key){
+async function extSuggest(heard,alts,cfg,key,ctx){
   cfg=cfg||extCfg();key=key||extKey();extDiag='';
   if(!cfg||!key){const e=new Error('cfg');e.cfg=true;throw e}
   const L={ru:'Russian',uk:'Ukrainian',en:'English'}[lang];
   const sys='You help a person with aphasia after a stroke to communicate. You receive a possibly garbled or incomplete speech-recognition result in '+L+'. '
     +'Suggest up to 5 short, simple, everyday first-person phrases in '+L+' (needs, feelings, requests, questions) that the person most likely wanted to say, most likely first. '
     +(lang==='en'?'':'The speaker is '+(settings.gender==='m'?'male':'female')+'; use matching past-tense verb forms. ')
+    +'The words may be distorted by the speech disorder: also consider similar-sounding words and words that do not fit the context. Prefer phrases that fit the recent context and the person\'s usual phrases when they match. '
     +'Use only the given words and their meaning as clues; do not invent medical facts or give advice. Answer with a JSON array of strings and nothing else.';
-  const usr='Recognized: '+String(heard).slice(0,300)+(alts?'\nAlternative recognitions: '+String(alts).slice(0,200):'');
+  const usr='Recognized: '+String(heard).slice(0,300)+(alts?'\nAlternative recognitions: '+String(alts).slice(0,200):'')
+    +(ctx&&ctx.said&&ctx.said.length?'\nRecently said in the conversation: '+ctx.said.join(' | ').slice(0,300):'')
+    +(ctx&&ctx.freq&&ctx.freq.length?'\nPhrases this person often chooses: '+ctx.freq.join(' | ').slice(0,300):'')
+    +(ctx&&ctx.cand&&ctx.cand.length?'\nLocal candidates: '+ctx.cand.join(' | ').slice(0,300):'');
   const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),25000);
   try{
     let res;
@@ -2486,7 +2546,8 @@ let hearExt;                                   // undefined — не искал�
 async function runExt(){
   const heard=hearTxt.trim(),alts=hearAlt.trim();
   hearExt='loading';refreshHear();
-  try{hearExt=await extSuggest(heard,alts)}catch(e){hearExt={err:extErr(e)}}
+  const ctx={said:ctxSaid.slice(),freq:topPicks(5).map(x=>x.s),cand:suggest((heard+' '+alts).trim()).slice(0,4).map(c=>c.text)};
+  try{hearExt=await extSuggest(heard,alts,null,null,ctx)}catch(e){hearExt={err:extErr(e)}}
   refreshHear();
 }
 
@@ -2500,7 +2561,7 @@ function refreshHear(){
   const box=$('#hearSug');if(!box)return;
   box.innerHTML='';
   const text=(hearTxt+' '+hearAlt).trim();
-  if(!text)return;
+  if(!text){drawFreq(box);return}
   const list=suggest(text);
   if(!list.length)box.append(h('p',null,u('m_none')));
   else{
@@ -2508,6 +2569,7 @@ function refreshHear(){
     list.forEach(c=>{
       const b=h('button','sug',null,()=>pickSug(c));
       b.append(h('span','em',c.e||'💬'),h('span',null,c.text));
+      if(c.pk)b.append(h('span','note',' ★'));
       box.append(b);
     });
   }
@@ -2541,15 +2603,32 @@ function refreshHear(){
     else{
       ex.append(h('h3',null,u('m_online_res')));
       hearExt.forEach(t2=>{
-        const b=h('button','sug',null,()=>{closeHear();ask({id:'x:'+t2,s:t2,l:t2,e:'🌐'})});   // непроверенная фраза: сначала вопрос «…?»
+        const b=h('button','sug',null,()=>{recordPick(t2,'🌐',text);closeHear();ask({id:'x:'+t2,s:t2,l:t2,e:'🌐'})});   // непроверенная фраза: сначала вопрос «…?»
         b.append(h('span','em','🌐'),h('span',null,t2));
         ex.append(b);
       });
     }
   }else if(!list.length)ex.append(h('p','note',uh('m_ext_off')));
 }
+// Фразы, которые человек чаще всего выбирал из подсказок: показываются, пока ничего не услышано
+function drawFreq(box){
+  const top=topPicks(5);if(!top.length)return;
+  box.append(h('h3',null,u('m_freq')));
+  top.forEach(x=>{
+    const row=h('div','hwrap'),b=h('button','sug',null,()=>{
+      const c={text:x.s,e:x.e,crit:(IDX.find(i=>pkey(i.text)===x.k)||{}).crit};
+      pickSug(c);
+    });
+    b.append(h('span','em',x.e||'💬'),h('span',null,x.s));
+    const del=h('button','hdel','🗑',()=>{forgetPick(x.k);refreshHear()});
+    del.setAttribute('aria-label',uh('e_del'));
+    row.append(b,del);box.append(row);
+  });
+  box.append(h('button','mini',uh('m_forget'),()=>{if(confirm(uh('m_forgetq'))){forgetAllPicks();refreshHear()}}));
+}
 // Выбор подсказки: сразу произносим; в темах с двойным подтверждением сначала спрашиваем «Точно?»
 function pickSug(c){
+  recordPick(c.text,c.e,(hearTxt+' '+hearAlt).trim());
   closeHear();
   if(c.crit)ask({id:'m:'+c.text,s:c.text,l:c.text,e:c.e,crit:1});
   else say(c.text);
@@ -2620,7 +2699,7 @@ function drawSuggestTab(body){
   inp.oninput=()=>{hearTxt=inp.value;hearAlt='';hearExt=undefined;refreshHear()};
   body.append(inp);
   const sug=h('div');sug.id='hearSug';body.append(sug);
-  inp.value=hearTxt;if(hearTxt)refreshHear();
+  inp.value=hearTxt;refreshHear();
 }
 /* ---------- Вкладка «Говорит собеседник»: распознать, показать крупно и проговорить ---------- */
 const SHOW_PX=[28,40,56,72],SHOW_VW=[8,11,15,19];

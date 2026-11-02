@@ -46,6 +46,7 @@
 
 - Розпізнавання мовлення виконує сам браузер (Web Speech API). У Chrome на Android воно зазвичай **потребує інтернету**, а запис голосу може оброблятися на серверах Google. **Добір фраз за знайденими словами працює без інтернету.** Якщо розпізнавання недоступне, слова вписуються в поле вручну (наприклад, голосовим уведенням клавіатури).
 - Порушене мовлення розпізнавачі розуміють погано, тому це підказка, а не точний переклад.
+- **Навчання за вибором (безкоштовно, лише на пристрої):** застосунок запам’ятовує фрази, які людина обирала з підказок, і те, як вона їх спотворено вимовляла. Такі фрази піднімаються вище (★), п’ять найчастіших видно одразу, ще до початку мовлення (кожну можна прибрати 🗑 або забути всі). Враховується й те, що щойно було сказано. Жоден безкоштовний сервіс не «розуміє» афатичне мовлення, тому основа — власний нечіткий підбір за словами, подібними звуками, контекстом і попереднім вибором. Якщо ввімкнено онлайн-пошук фраз, у запит додатково йдуть кілька останніх сказаних і найчастіших фраз.
 
 ### Словники слів і онлайн-пошук
 
@@ -84,7 +85,7 @@
 
 Встановлений застосунок оновлюється лише за зміни версії кешу. За будь-якої зміни файлів:
 
-1. У `sw.js` збільште номер: `const V = 'govorim-v28'` → `'govorim-v29'`.
+1. У `sw.js` збільште номер: `const V = 'govorim-v29'` → `'govorim-v30'`.
 2. В `index.html` збільште `APP_VERSION` (він показується внизу налаштувань).
 3. Завантажте файли. Застосунок підхопить нову версію під час наступного відкриття з інтернетом і один раз перезавантажиться.
 
@@ -94,7 +95,7 @@
 
 ### Зберігання даних
 
-Усе зберігається локально на пристрої (`localStorage`): мова, налаштування, правки плиток, статистика, щоденник, словники слів. Дані нікуди не надсилаються, окрім випадків, коли ви самі вмикаєте онлайн-пошук слів чи фраз.
+Усе зберігається локально на пристрої (`localStorage`): мова, налаштування, правки плиток, статистика, щоденник, словники слів, запам’ятований вибір із підказок (`aac.pick.*`). Дані нікуди не надсилаються, окрім випадків, коли ви самі вмикаєте онлайн-пошук слів чи фраз.
 
 ### Про авторство
 
@@ -156,6 +157,7 @@
 - **Подбор фраз по найденным словам работает без интернета.** Если распознавание недоступно или человек говорит слишком неразборчиво, слова вписываются в поле вручную (удобно голосовым вводом клавиатуры телефона или пальцем).
 - Нарушенную речь распознаватели понимают плохо, поэтому это подсказка, а не точный перевод. Приложение сравнивает слова с фразами всех тем текущего языка: учитываются окончания, небольшие искажения и уже добавленные вами плитки.
 - Распознавание работает на языке фраз, выбранном кнопкой RU / UK / EN.
+- **Обучение по выбору (бесплатно, только на устройстве):** приложение запоминает фразы, которые человек выбирал из подсказок, и то, как он их искажённо произносил. Такие фразы поднимаются выше (★), пять самых частых видны сразу, до начала речи (каждую можно убрать 🗑 или забыть все). Учитывается и то, что только что было сказано. Ни один бесплатный сервис по-настоящему не «понимает» афатическую речь, поэтому основа — собственный нечёткий подбор по словам, похожим звукам, контексту и прежнему выбору. Если включён онлайн-поиск фраз, в запрос дополнительно уходят несколько последних сказанных и самых частых фраз.
 
 #### Словари слов для «Азбуки» и исправления слов
 
@@ -265,7 +267,7 @@
 
 Установленное приложение обновляется только при смене версии кэша. При любом изменении файлов:
 
-1. В `sw.js` увеличьте номер: `const V = 'govorim-v28'` → `'govorim-v29'`.
+1. В `sw.js` увеличьте номер: `const V = 'govorim-v29'` → `'govorim-v30'`.
 2. В `index.html` увеличьте `APP_VERSION` (он показывается внизу настроек).
 3. Загрузите файлы. Приложение подхватит новую версию при следующем открытии с интернетом и один раз перезагрузится.
 
@@ -295,7 +297,7 @@
 
 ### Хранение данных
 
-Всё хранится локально на устройстве (`localStorage`): язык, настройки, правки плиток, статистика частых фраз, дневник. Данные никуда не отправляются.
+Всё хранится локально на устройстве (`localStorage`): язык, настройки, правки плиток, статистика частых фраз, дневник, запомненный выбор из подсказок (`aac.pick.*`). Данные никуда не отправляются.
 
 ### Об авторстве
 
@@ -330,6 +332,7 @@
 - Optional online phrase search (off by default): your own API key for Anthropic Claude or an OpenAI-compatible service (OpenRouter, Groq, own server) proposes phrases that are not in the vocabulary; only recognized text is sent, never audio.
 - "Someone speaks to the person" (second tab of the 🎤 screen): for people who do not recognize live speech but understand a synthesized voice or can read. The partner speaks, the phrase is recognized, shown in large text and spoken by the phone's voice (the spoken word is highlighted when the voice supports it); typing works offline; the last five phrases are kept on the phone until you delete them with 🗑.
 - "Suggestions from what was said" (🎤): the person speaks, the browser recognizes it (usually online in Chrome), and the app offers ready phrases containing the recognized words; typing the words manually works offline.
+- Learning from choices (free, on-device only): the app remembers the phrases the person picked from suggestions and how they pronounced them in a distorted way. Such phrases rank higher (★), the five most frequent are shown right away before any speech (remove one with 🗑 or forget all), and what was just said is taken into account. No free service truly understands aphasic speech, so the core is the app's own fuzzy matching by words, similar sounds, context and earlier choices. With online phrase search on, the last spoken and most frequent phrases are also sent with the request.
 - First-letter word finder, situation phrasebooks (doctor, pharmacy, shop, guests, phone), "hear first, then choose", syllable view, tap guard, left-hand layout, speak-immediately mode, separate menu language, communication diary and JSON backup/restore.
 - Voice list is filtered by the current interface language; in-app help and tile editor included.
 - Static files only; deploy to GitHub Pages under `/Govorim/`. Bump the cache version in `sw.js` and `APP_VERSION` in `index.html` on every update.
