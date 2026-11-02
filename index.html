@@ -302,7 +302,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 29;   // держите в соответствии с V = 'govorim-v28' в sw.js
+const APP_VERSION = 30;   // держите в соответствии с V = 'govorim-v28' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -2579,7 +2579,7 @@ function refreshHear(){
     box.append(h('h3',null,u('m_words')));
     const g=h('div','grid');
     lw.forEach(x=>{
-      const b=h('button','wd',null,()=>{closeHear();say(x.word)});
+      const b=h('button','wd',null,()=>{stopRec();say(x.word)});
       b.append(h('span',null,x.word));
       if(x.from!==x.word)b.append(h('span','note',' ← '+x.from));
       g.append(b);
@@ -2590,7 +2590,7 @@ function refreshHear(){
   const lxw=getLex(),known=new Set(IDX.flatMap(c=>c.w)),stopw=new Set((STOPW[lang]||'').split(' '));
   const unk=toks(text).filter(w=>w.length>=2&&!stopw.has(w)&&!known.has(w)&&!(lxw&&lxw.rank.has(w)));
   const q1=unk[0]||toks(text).filter(w=>w.length>=2&&!stopw.has(w)).slice(-1)[0];
-  onlineBlock(box,'h:'+q1,q1,w=>{learnWord(w);closeHear();say(w)},refreshHear);
+  onlineBlock(box,'h:'+q1,q1,w=>{learnWord(w);stopRec();say(w)},refreshHear);
   // Онлайн-поиск: только по нажатию и только если включён в настройках
   const ex=h('div');box.append(ex);
   if(extReady()){
@@ -2603,7 +2603,7 @@ function refreshHear(){
     else{
       ex.append(h('h3',null,u('m_online_res')));
       hearExt.forEach(t2=>{
-        const b=h('button','sug',null,()=>{recordPick(t2,'🌐',text);closeHear();ask({id:'x:'+t2,s:t2,l:t2,e:'🌐'})});   // непроверенная фраза: сначала вопрос «…?»
+        const b=h('button','sug',null,()=>{recordPick(t2,'🌐',text);stopRec();ask({id:'x:'+t2,s:t2,l:t2,e:'🌐'})});   // непроверенная фраза: сначала вопрос «…?»
         b.append(h('span','em','🌐'),h('span',null,t2));
         ex.append(b);
       });
@@ -2629,7 +2629,7 @@ function drawFreq(box){
 // Выбор подсказки: сразу произносим; в темах с двойным подтверждением сначала спрашиваем «Точно?»
 function pickSug(c){
   recordPick(c.text,c.e,(hearTxt+' '+hearAlt).trim());
-  closeHear();
+  stopRec();   // остаёмся на экране подсказок: после «Готово» он очищается для следующей фразы
   if(c.crit)ask({id:'m:'+c.text,s:c.text,l:c.text,e:c.e,crit:1});
   else say(c.text);
 }
