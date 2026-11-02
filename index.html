@@ -155,6 +155,8 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 @keyframes hbPulse{0%{box-shadow:0 0 0 0 var(--accent);background:var(--accent)}60%{box-shadow:0 0 0 8px transparent}100%{background:var(--bg)}}
 .hbuild{max-height:45vh;overflow-y:auto}
 .chip.drag{opacity:.6;outline:3px dashed var(--accent)}
+.wd.armed{background:var(--accent);color:#fff;border-color:var(--accent);animation:wdArm .7s ease-out}
+@keyframes wdArm{0%{box-shadow:0 0 0 0 var(--accent);transform:scale(1)}40%{transform:scale(1.06)}100%{box-shadow:0 0 0 12px transparent;transform:scale(1)}}
 .wd.held{outline:4px solid var(--accent);transform:scale(.97)}
 .hbuild .row{display:flex;gap:8px;margin-top:6px}
 .hbuild .row button{flex:1}
@@ -320,7 +322,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 39;   // держите в соответствии с V = 'govorim-v28' в sw.js
+const APP_VERSION = 40;   // держите в соответствии с V = 'govorim-v28' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -2590,11 +2592,11 @@ function wordBtn(label,add,sayIt){
   let t=null,long=false;
   b.style.userSelect='none';b.style.webkitTouchCallout='none';
   b.addEventListener('contextmenu',e=>e.preventDefault());
-  b.addEventListener('pointerdown',()=>{long=false;clearTimeout(t);t=setTimeout(()=>{long=true;b.classList.add('held')},500)});
+  b.addEventListener('pointerdown',()=>{long=false;clearTimeout(t);t=setTimeout(()=>{long=true;b.classList.add('armed')},500)});   // можно отпускать: кнопка вспыхивает и закрашивается, как рамка при добавлении
   const stop=()=>clearTimeout(t);
-  b.addEventListener('pointercancel',()=>{stop();long=false;b.classList.remove('held')});
-  b.addEventListener('pointerleave',()=>{stop();if(!long)b.classList.remove('held');else long=false,b.classList.remove('held')});
-  b.addEventListener('pointerup',()=>{stop();if(long){long=false;b._skip=true;b.classList.remove('held');add()}});
+  b.addEventListener('pointercancel',()=>{stop();long=false;b.classList.remove('armed')});
+  b.addEventListener('pointerleave',()=>{stop();long=false;b.classList.remove('armed')});
+  b.addEventListener('pointerup',()=>{stop();if(long){long=false;b._skip=true;b.classList.remove('armed');add()}});
   b.addEventListener('click',()=>{if(b._skip){b._skip=false;return}sayIt();b.classList.add('held');setTimeout(()=>b.classList.remove('held'),350)});
   return b;
 }
