@@ -145,7 +145,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 .lnk{background:none;border:0;color:var(--accent);font-weight:700;font-size:15px;padding:4px 4px;min-height:36px;text-align:left}
 .hbuild{position:sticky;top:0;z-index:2;background:var(--bg);border:3px solid var(--navy);border-radius:16px;padding:8px;margin:6px 0 10px}
 .hbuild .chip{min-height:48px;margin:3px 4px 3px 0;font-weight:700}
-.hchips{display:flex;flex-wrap:wrap;max-height:24vh;overflow-y:auto}
+.hchips{display:flex;flex-wrap:wrap}
 .hbuild .sum{text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1 1 auto;min-width:0}
 .hbuild .row .ans{flex:0 0 auto;min-height:52px;padding:0 14px;font-size:18px}
 .hbuild .sum{min-height:52px;font-size:18px}
@@ -316,7 +316,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 37;   // держите в соответствии с V = 'govorim-v28' в sw.js
+const APP_VERSION = 38;   // держите в соответствии с V = 'govorim-v28' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -2598,7 +2598,8 @@ function wordBtn(label,add,sayIt){
 function dragChip(c,cw,onTap){
   // Удержание (около полсекунды) «берёт» слово, затем его можно перетащить; короткое нажатие убирает слово
   let sx=0,sy=0,armed=false,drag=false,id=null,moved=false,t=null;
-  c.style.touchAction='none';c.style.userSelect='none';c.style.webkitTouchCallout='none';   // на сенсорном экране жест на слове не должен превращаться в прокрутку страницы
+  c.style.touchAction='pan-y';c.style.userSelect='none';c.style.webkitTouchCallout='none';   // пока слово не «взято» удержанием, вертикальный жест прокручивает блок
+  c.addEventListener('touchmove',e=>{if(armed&&e.cancelable)e.preventDefault()},{passive:false});   // взятое слово тянется, а не прокручивает
   c.addEventListener('contextmenu',e=>e.preventDefault());
   c.addEventListener('pointerdown',e=>{
     sx=e.clientX;sy=e.clientY;armed=false;drag=false;moved=false;id=e.pointerId;
@@ -2645,6 +2646,11 @@ function drawBuild(box){
   top.append(sum,say1);d.append(top);
   if(hearOpen){
     d.append(h('div','note',u('m_build')));
+    // кнопки управления — над словами, чтобы до них не нужно было прокручивать длинную фразу
+    const fr=h('div','row');fr.style.flexWrap='wrap';
+    fr.append(h('button','mini',(hearFn?'− ':'＋ ')+u('m_fn'),()=>{hearFn=!hearFn;refreshHear()}),h('button','mini',uh('m_buildclr'),()=>{hearBuild=[];hearOpen=false;refreshHear()}));
+    d.append(fr);
+    if(hearFn){const fw=h('div','row');fw.style.flexWrap='wrap';(FNW[lang]||'').split(' ').forEach(w=>fw.append(h('button','chip',w,()=>addBuild(w))));d.append(fw)}
     const cw=h('div','hchips');d.append(cw);
     hearBuild.forEach((w,i)=>{
       const c=h('button','chip',w+' ✕');
@@ -2652,10 +2658,6 @@ function drawBuild(box){
       dragChip(c,cw,()=>{hearBuild.splice(i,1);refreshHear()});
       cw.append(c);
     });
-    const fr=h('div','row');fr.style.flexWrap='wrap';
-    fr.append(h('button','mini',(hearFn?'− ':'＋ ')+u('m_fn'),()=>{hearFn=!hearFn;refreshHear()}),h('button','mini',uh('m_buildclr'),()=>{hearBuild=[];hearOpen=false;refreshHear()}));
-    d.append(fr);
-    if(hearFn){const fw=h('div','row');fw.style.flexWrap='wrap';(FNW[lang]||'').split(' ').forEach(w=>fw.append(h('button','chip',w,()=>addBuild(w))));d.append(fw)}
   }
   box.append(d);
 }
