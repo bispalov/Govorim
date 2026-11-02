@@ -316,7 +316,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 35;   // держите в соответствии с V = 'govorim-v28' в sw.js
+const APP_VERSION = 36;   // держите в соответствии с V = 'govorim-v28' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -2596,12 +2596,12 @@ function wordBtn(label,add,sayIt){
 function dragChip(c,cw,onTap){
   // Удержание (около полсекунды) «берёт» слово, затем его можно перетащить; короткое нажатие убирает слово
   let sx=0,sy=0,armed=false,drag=false,id=null,moved=false,t=null;
-  c.style.touchAction='manipulation';c.style.userSelect='none';c.style.webkitTouchCallout='none';
+  c.style.touchAction='none';c.style.userSelect='none';c.style.webkitTouchCallout='none';   // на сенсорном экране жест на слове не должен превращаться в прокрутку страницы
   c.addEventListener('contextmenu',e=>e.preventDefault());
   c.addEventListener('pointerdown',e=>{
     sx=e.clientX;sy=e.clientY;armed=false;drag=false;moved=false;id=e.pointerId;
     clearTimeout(t);
-    t=setTimeout(()=>{armed=true;moved=true;c.classList.add('drag');c.style.touchAction='none';try{c.setPointerCapture(id)}catch(_){}try{navigator.vibrate&&navigator.vibrate(30)}catch(_){}},450);
+    t=setTimeout(()=>{armed=true;moved=true;c.classList.add('drag');try{c.setPointerCapture(id)}catch(_){}try{navigator.vibrate&&navigator.vibrate(30)}catch(_){}},450);
   });
   c.addEventListener('pointermove',e=>{
     if(id==null)return;
@@ -2620,7 +2620,7 @@ function dragChip(c,cw,onTap){
   const end=()=>{
     clearTimeout(t);
     if(armed){
-      armed=false;c.classList.remove('drag');c.style.touchAction='manipulation';
+      armed=false;c.classList.remove('drag');
       if(drag){const order=Array.from(cw.children).map(x=>+x.dataset.i);hearBuild=order.map(k=>hearBuild[k]);refreshHear()}
       drag=false;
     }
