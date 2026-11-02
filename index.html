@@ -149,6 +149,9 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 .hbuild .sum{text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1 1 auto;min-width:0}
 .hbuild .row .ans{flex:0 0 auto;min-height:52px;padding:0 14px;font-size:18px}
 .hbuild .sum{min-height:52px;font-size:18px}
+.hbuild .ctl{background:var(--navy);color:#fff;border:2px solid var(--navy);border-radius:10px}
+.hbuild .ctl .cnt{opacity:.85}
+.hbuild .ctl .newest{background:#fff;color:var(--navy)}
 .hbuild .sum .newest{background:var(--accent);color:#fff;border-radius:6px;padding:0 5px;font-weight:800}
 .hbuild .sum .cnt{opacity:.7;font-size:15px}
 .hbuild.pulse{animation:hbPulse .8s ease-out}
@@ -322,7 +325,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 40;   // держите в соответствии с V = 'govorim-v28' в sw.js
+const APP_VERSION = 41;   // держите в соответствии с V = 'govorim-v28' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -2646,7 +2649,7 @@ function drawBuild(box){
   const fresh=hearPulse;hearPulse=false;
   // Свёрнутый вид: одна строка — собранная фраза и кнопка «Сказать»; по нажатию на фразу блок раскрывается для правки
   const top=h('div','row');
-  const sum=h('button','mini sum',null,()=>{hearOpen=!hearOpen;refreshHear()});
+  const sum=h('button','mini sum ctl',null,()=>{hearOpen=!hearOpen;refreshHear()});
   // видны последние слова (новое выделено) и счётчик: так заметно, что слово добавилось, даже когда блок свёрнут
   const n=hearBuild.length,tail=hearBuild.slice(-3);
   sum.append(document.createTextNode((hearOpen?'▾ ':'▸ ')+(n>3?'… ':'')+tail.slice(0,-1).join(' ')+(tail.length>1?' ':'')));
@@ -2660,7 +2663,7 @@ function drawBuild(box){
     d.append(h('div','note',u('m_build')));
     // кнопки управления — над словами, чтобы до них не нужно было прокручивать длинную фразу
     const fr=h('div','row');fr.style.flexWrap='wrap';
-    fr.append(h('button','mini',(hearFn?'− ':'＋ ')+u('m_fn'),()=>{hearFn=!hearFn;refreshHear()}),h('button','mini',uh('m_buildclr'),()=>{hearBuild=[];hearOpen=false;refreshHear()}));
+    fr.append(h('button','mini ctl',(hearFn?'− ':'＋ ')+u('m_fn'),()=>{hearFn=!hearFn;refreshHear()}),h('button','mini ctl',uh('m_buildclr'),()=>{hearBuild=[];hearOpen=false;refreshHear()}));
     d.append(fr);
     if(hearFn){const fw=h('div','row');fw.style.flexWrap='wrap';(FNW[lang]||'').split(' ').forEach(w=>fw.append(h('button','chip',w,()=>addBuild(w))));d.append(fw)}
     const cw=h('div','hchips');d.append(cw);
