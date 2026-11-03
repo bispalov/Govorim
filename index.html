@@ -128,8 +128,8 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 @keyframes pulse{50%{opacity:.6}}
 .sug{width:100%;display:flex;gap:12px;align-items:center;text-align:left;min-height:68px;border-radius:16px;border:3px solid var(--accent);background:var(--card-bg);color:var(--ink);font-size:clamp(19px,5.6vw,24px);font-weight:700;padding:8px 12px;margin:8px 0;overflow-wrap:anywhere}
 .sug .em{font-size:32px;flex:none}
-#showMic{background:#1F7A4D;color:#fff}
-#showMic.rec{background:#B3261E}
+#micGo,#showMic{background:#1F7A4D;color:#fff;width:100%;min-height:76px}
+#micGo.rec,#showMic.rec{background:#B3261E}
 #hearBody label{display:block;margin:10px 0 4px;font-weight:700;font-size:17px}
 #hearBody label.chk{display:flex;align-items:flex-start;gap:12px;font-weight:600;margin:12px 0}
 #hearBody input[type=text]{width:100%;font:inherit;font-size:18px;font-weight:500;padding:10px;border:2px solid var(--border);border-radius:10px;background:var(--card-bg);color:var(--ink)}
@@ -142,7 +142,8 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 .notebox{margin:2px 0 8px}
 .notebox .note{margin:2px 4px;font-size:15px;font-weight:500;opacity:.85;line-height:1.35}
 .notebox .note.clamp{display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.lnk{background:none;border:0;color:var(--accent);font-weight:700;font-size:15px;padding:4px 4px;min-height:36px;text-align:left}
+.lnk{background:none;border:0;color:var(--accent);font-weight:700;font-size:17px;padding:4px 4px;min-height:44px;text-align:left;display:flex;align-items:center;gap:8px}
+.lnk .arr{font-size:26px;line-height:1}
 .hbuild{position:sticky;top:0;z-index:2;background:var(--bg);border:3px solid var(--navy);border-radius:16px;padding:8px;margin:6px 8px 10px}
 .hbuild .chip{min-height:48px;margin:3px 4px 3px 0;font-weight:700}
 .hchips{display:flex;flex-wrap:wrap}
@@ -152,7 +153,9 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 .hbuild .sum{height:56px;min-height:56px;max-height:56px;padding:4px 10px;font-size:17px}
 .hbuild .ctl{background:var(--navy);color:#fff;border:2px solid var(--navy);border-radius:10px}
 .hbuild .ctl .cnt{opacity:.85}
-.hbuild .sum .arr{font-size:26px;line-height:1;flex:0 0 auto}
+.hbuild .arr{font-size:26px;line-height:1;flex:0 0 auto}
+.hbuild .fn{display:flex;align-items:center;justify-content:center;gap:6px;height:52px;white-space:nowrap;flex:1.5 1 0;min-width:0;padding:0 8px;font-size:16px}
+.hbuild .row>.ctl:not(.fn){flex:1 1 0;height:52px}
 .hbuild .ctl .newest{background:#fff;color:var(--navy)}
 .hbuild .sum .newest{background:var(--accent);color:#fff;border-radius:6px;padding:0 5px;font-weight:800}
 .hbuild .sum .cnt{opacity:.7;font-size:15px}
@@ -170,7 +173,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 .hwrap{display:flex;gap:6px;align-items:stretch;margin:4px 0}
 .hwrap .hrow{flex:1;margin:0}
 .hdel{flex:0 0 52px;border-radius:12px;background:var(--card-bg);border:2px solid var(--border);color:var(--ink);font-size:20px}
-.showbox{min-height:26vh;margin:10px 0;padding:16px;border:3px solid var(--accent);border-radius:18px;background:var(--card-bg);color:var(--ink);font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.showbox{min-height:20vh;margin:10px 0;padding:16px;border:3px solid var(--accent);border-radius:18px;background:var(--card-bg);color:var(--ink);font-weight:700;line-height:1.3;overflow-wrap:anywhere}
 .showbox .interim{opacity:.55;font-style:italic;font-weight:600}
 .showbox .hl{background:#F2B705;color:#1B1B1B;border-radius:6px;padding:0 3px}
 .hrow{width:100%;text-align:left;min-height:48px;padding:8px 12px;margin:4px 0;border-radius:12px;background:var(--card-bg);border:2px solid var(--border);color:var(--ink);font-size:18px;font-weight:600;overflow-wrap:anywhere}
@@ -327,7 +330,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 43;   // держите в соответствии с V = 'govorim-v28' в sw.js
+const APP_VERSION = 44;   // держите в соответствии с V = 'govorim-v28' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -2665,8 +2668,10 @@ function drawBuild(box){
   if(hearOpen){
     d.append(h('div','note',u('m_build')));
     // кнопки управления — над словами, чтобы до них не нужно было прокручивать длинную фразу
-    const fr=h('div','row');fr.style.flexWrap='wrap';
-    fr.append(h('button','mini ctl',(hearFn?'− ':'＋ ')+u('m_fn'),()=>{hearFn=!hearFn;refreshHear()}),h('button','mini ctl',uh('m_buildclr'),()=>{hearBuild=[];hearOpen=false;refreshHear()}));
+    const fnBtn=h('button','mini ctl fn',null,()=>{hearFn=!hearFn;refreshHear()});
+    fnBtn.append(h('span','arr',hearFn?'▼':'▶'),h('span',null,u('m_fn')));fnBtn.setAttribute('aria-expanded',hearFn?'true':'false');
+    const fr=h('div','row');
+    fr.append(fnBtn,h('button','mini ctl',uh('m_buildclr'),()=>{hearBuild=[];hearOpen=false;refreshHear()}));
     d.append(fr);
     if(hearFn){const fw=h('div','row');fw.style.flexWrap='wrap';(FNW[lang]||'').split(' ').forEach(w=>fw.append(h('button','chip',w,()=>addBuild(w))));d.append(fw)}
     const cw=h('div','hchips');d.append(cw);
@@ -2817,7 +2822,7 @@ function renderHearScreen(){
   // Описание режима: по умолчанию свёрнуто до двух строк, раскрывается по кнопке
   const nb=h('div','notebox'),np=h('p','note',uh(hearTab==='show'?'m_show_note':'m_note'));
   const lnk=h('button','lnk','',null);
-  const upd=()=>{const o=hearNoteOpen[hearTab];np.classList.toggle('clamp',!o);lnk.textContent=(o?'▴ ':'▾ ')+u(o?'m_less':'m_more')};
+  const upd=()=>{const o=hearNoteOpen[hearTab];np.classList.toggle('clamp',!o);lnk.textContent='';lnk.append(h('span','arr',o?'▲':'▼'),h('span',null,u(o?'m_less':'m_more')))};
   lnk.onclick=()=>{hearNoteOpen[hearTab]=!hearNoteOpen[hearTab];upd()};
   upd();nb.append(np,lnk);m.append(nb);
   const body=h('div');body.id='hearBody';m.append(body);
@@ -2825,7 +2830,7 @@ function renderHearScreen(){
 }
 // Вкладка «Говорит человек»: подсказки по его речи
 function drawSuggestTab(body){
-  const mic=h('button','ans neu sm','🎤 '+u('m_say'),toggleListen);mic.id='micGo';
+  const mic=h('button','ans yes','🎤 '+u('m_say'),toggleListen);mic.id='micGo';
   mic.style.width='100%';
   body.append(mic);
   const st=h('p','note','');st.id='hearSt';body.append(st);
@@ -2923,7 +2928,7 @@ function drawShowTab(body){
             h('button','mini','🗑',()=>{showText='';const i=$('#showIn');if(i)i.value='';renderShow()}));
   body.append(r2);
   const st=h('p','note','');st.id='showSt';body.append(st);
-  const mic=h('button','ans yes','🎤 '+u('m_say'),showListen);mic.id='showMic';mic.style.width='100%';body.append(mic);
+  const mic=h('button','ans yes','🎤 '+u('m_say'),showListen);mic.id='showMic';body.append(mic);
   const r1=h('div','row');
   r1.append(h('button','ans neu sm','🔊 '+u('rep'),()=>showSay(1)),h('button','ans neu sm','🐢 '+u('slow'),()=>showSay(0.6)));
   body.append(r1);
