@@ -338,7 +338,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 49;   // держите в соответствии с V = 'govorim-v28' в sw.js
+const APP_VERSION = 50;   // держите в соответствии с V = 'govorim-v28' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -2860,6 +2860,15 @@ function drawSlot(d){
   bx.append(row);drawSlotOnline(bx,i);d.append(bx);
 }
 let hearSig='';   // подпись состояния фразы: если она изменилась, в упрощённом виде прокручиваем к началу блока, чтобы был виден результат
+// «Очистить»: сбрасывает весь экран — фразу, услышанный текст, подсказки, онлайн-результаты и поле ввода
+function clearHear(){
+  hearBuild=[];hearSlot=-1;hearOpen=false;hearFn=false;hearMore=false;
+  hearTxt='';hearAlt='';hearExt=undefined;onl={key:'',st:undefined};slotOnl={key:'',st:undefined};
+  const i=$('#hearIn');if(i)i.value='';
+  const st=$('#hearSt');if(st)st.textContent='';
+  refreshHear();
+  const m=$('#main');if(m)m.scrollTop=0;
+}
 function drawBuildSimple(box){
   const d=h('div','hbuild simple'+(hearPulse?' pulse':''));hearPulse=false;
   const sig=hearBuild.join('\u0001')+'|'+hearSlot+'|'+(hearFn?1:0),changed=sig!==hearSig;hearSig=sig;
@@ -2877,7 +2886,7 @@ function drawBuildSimple(box){
   const fnBtn=h('button','mini ctl fn',null,()=>{hearFn=!hearFn;refreshHear()});
   fnBtn.append(h('span','arr',hearFn?'▼':'▶'),h('span',null,u('m_fn')));fnBtn.setAttribute('aria-expanded',hearFn?'true':'false');
   const fr=h('div','row');
-  fr.append(fnBtn,h('button','mini ctl',uh('m_buildclr'),()=>{hearBuild=[];hearSlot=-1;refreshHear()}));
+  fr.append(fnBtn,h('button','mini ctl',uh('m_buildclr'),clearHear));
   d.append(fr);
   if(hearFn){const fw=h('div','row');fw.style.flexWrap='wrap';(FNW[lang]||'').split(' ').forEach(w=>fw.append(h('button','chip',w,()=>addBuild(w))));d.append(fw)}
   box.append(d);
@@ -2907,7 +2916,7 @@ function drawBuild(box){
     const fnBtn=h('button','mini ctl fn',null,()=>{hearFn=!hearFn;refreshHear()});
     fnBtn.append(h('span','arr',hearFn?'▼':'▶'),h('span',null,u('m_fn')));fnBtn.setAttribute('aria-expanded',hearFn?'true':'false');
     const fr=h('div','row');
-    fr.append(fnBtn,h('button','mini ctl',uh('m_buildclr'),()=>{hearBuild=[];hearSlot=-1;hearOpen=false;refreshHear()}));
+    fr.append(fnBtn,h('button','mini ctl',uh('m_buildclr'),clearHear));
     d.append(fr);
     if(hearFn){const fw=h('div','row');fw.style.flexWrap='wrap';(FNW[lang]||'').split(' ').forEach(w=>fw.append(h('button','chip',w,()=>addBuild(w))));d.append(fw)}
     const cw=h('div','hchips');d.append(cw);
