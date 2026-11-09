@@ -248,6 +248,14 @@ main .note,#stage .note{font-size:16px;font-weight:500;opacity:.8;line-height:1.
 .hbuild.editing{position:static;max-height:none;overflow:visible}
 .typin{display:block;width:100%;font:inherit;font-size:20px;font-weight:600;padding:10px 12px;margin:8px 0 4px;border:3px solid var(--accent);border-radius:12px;background:var(--card-bg);color:var(--ink);user-select:text}
 .hwrap .sug{flex:1 1 auto;min-width:0;margin:0}
+.iab{flex:none;background:#F2B705;color:#1A1A1A;padding:6px 8px 8px 12px;font-size:15px;font-weight:700;line-height:1.25}
+.iab .top{display:flex;align-items:flex-start;gap:6px;margin-bottom:6px}
+.iab p{margin:4px 0 0;flex:1;min-width:0}
+.iab .row{display:flex;flex-wrap:wrap;gap:6px}
+.iab button,.iab a{flex:1 1 0;min-width:min-content;min-height:44px;border-radius:10px;border:0;font:inherit;display:flex;align-items:center;justify-content:center;text-align:center;padding:4px 10px;text-decoration:none}
+.iab .go{background:#16384F;color:#fff}
+.iab .cp{background:#fff;color:#1A1A1A}
+.iab .x{flex:0 0 auto;background:transparent;color:#1A1A1A;font-size:22px;min-width:44px;min-height:40px;padding:0}
 </style>
 </head>
 <body>
@@ -368,7 +376,7 @@ main .note,#stage .note{font-size:16px;font-weight:500;opacity:.8;line-height:1.
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 56;   // держите в соответствии с V = 'govorim-v56' в sw.js
+const APP_VERSION = 57;   // держите в соответствии с V = 'govorim-v57' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -379,7 +387,7 @@ ru:{title:'Говорим вместе',g_home:'Главный экран и п�
   s_recent:'Недавно сказанные: сколько последних фраз, произнесённых через 🎤 и «Азбуку», показывать на главном экране',
   s_showauto:'«Говорит собеседник»: проговаривать распознанное сразу',s_showemoji:'«Говорит собеседник»: показывать картинки-эмодзи рядом со знакомыми словами',
   sm_on:'вкл.',sm_off:'выкл.',sm_guard:'защита',sm_simple:'упрощённый вид',sm_auto:'проговаривать сразу',sm_abchide:'сворачивать буквы',sm_words:'слова онлайн',sm_phr:'фразы онлайн',sm_diary:'дневник',sm_recent:'недавние',
-  fn_g:['Я, ты, мы… (местоимения)','В, на, с… (предлоги)','Не, да, это… (другие слова)'],m_typeRep:'✎ Набрать другое слово',m_typeIns:'＋ Вставить слово перед ним',m_typePh:'Начните набирать слово',m_typeAsIs:'Как набрано',m_toFrame:'В рамку для правки',m_ctx:'Похоже, это слово не подходит по смыслу.',kbSmall:'Мельче',kbBig:'Крупнее',rec_title:'Недавно сказанные',listen:'Послушать',undo:'Вернуть',qr_title:'Ответить собеседнику:',show_tap:'Нажмите на слово, чтобы услышать его отдельно и медленно.',
+  fn_g:['Я, ты, мы… (местоимения)','В, на, с… (предлоги)','Не, да, это… (другие слова)'],m_typeRep:'✎ Набрать другое слово',m_typeIns:'＋ Вставить слово перед ним',m_typePh:'Начните набирать слово',m_typeAsIs:'Как набрано',m_toFrame:'В рамку для правки',m_ctx:'Похоже, это слово не подходит по смыслу.',iab_t:'Открыто внутри Facebook или другого приложения: ваших настроек и фраз здесь не видно.',iab_ios:'Открыто внутри Facebook или другого приложения: ваших настроек и фраз здесь не видно. Меню ⋯ → «Открыть в браузере».',iab_open:'Открыть в Chrome',iab_copy:'Копировать ссылку',iab_copied:'Ссылка скопирована',iab_x:'Скрыть',kbSmall:'Мельче',kbBig:'Крупнее',rec_title:'Недавно сказанные',listen:'Послушать',undo:'Вернуть',qr_title:'Ответить собеседнику:',show_tap:'Нажмите на слово, чтобы услышать его отдельно и медленно.',
   qr:['Повторите, пожалуйста','Говорите медленнее','Я не понимаю','Напишите, пожалуйста'],
   freq:'Часто',yes:'Да',no:'Нет',back:'Назад',rep:'Повтор',help:'Помощь',pain:'Больно',sure:'Точно?',done:'Готово',cancel:'Отмена',mods:['сейчас','потом','ещё','хватит'],helpSay:'Помогите! Мне нужна помощь!',helpTxt:'МНЕ НУЖНА ПОМОЩЬ',
   built:'Ваша фраза',sayso:'Сказать так',cont:'Продолжите фразу — выберите слово:',pick:'Выберите тему:',ver:'Версия приложения',
@@ -436,6 +444,7 @@ ru:{title:'Говорим вместе',g_home:'Главный экран и п�
    ['Меньше усталости (⚙️)','«Говорить сразу» убирает вопрос «…?»: фраза звучит сразу после нажатия на плитку или подсказку (в темах «Здоровье» и «Лекарства» и для фраз из интернета вопрос остаётся). Блок «Часто» можно отключить, чтобы плитки всегда стояли на своих местах.'],
    ['Дневник общения','Открывается из настроек. На телефоне хранятся произнесённые фразы с датой и временем (последние 1000). Видны активность за 7 дней и самые частые фразы; можно сохранить текстовый файл для логопеда. Дневник можно выключить и очистить.'],
    ['Резервная копия','В настройках: «Сохранить копию данных» создаёт файл со всеми настройками, правками плиток и дневником, «Загрузить копию данных» восстанавливает их (например, на новом телефоне). Сделайте копию перед очисткой данных браузера или сменой телефона.'],
+   ['Открыто из Facebook или другого приложения','По ссылке из Facebook, Instagram, Messenger и других приложений страница часто открывается во встроенном браузере. У него своё хранилище: ваши настройки и фразы там не видны, а сделанные там изменения не попадут в установленное приложение. В этом случае вверху появляется жёлтая плашка: «Открыть в Chrome» открывает ту же страницу в Chrome (на Android), «Копировать ссылку» — чтобы вставить её в браузер самому. Удобнее всего запускать приложение с иконки на главном экране.'],
    ['Язык меню','В настройках можно задать язык меню и справки отдельно от языка фраз и озвучки: например, фразы и голос на украинском, а меню на русском. Подписи для самого человека (кнопки «Да», «Нет» и т. п.) следуют за языком фраз.'],
    ['Редактор плиток','Откройте нужный раздел (например, «Самочувствие» → «Мне» → «плохо») и нажмите ✏️: редактор откроется именно в этом разделе. Здесь можно добавить плитку («+ Добавить плитку в этот раздел»), изменить название, фразу или значок плитки, удалить ненужную. Другой раздел можно выбрать в списке. «Сбросить уровень» возвращает стандартный набор. Правки хранятся на этом устройстве. В лёгких уровнях плитка — часть фразы; формы по полу пишутся так: вып{ил~ила}.'],
    ['Установка и обновление',['В Chrome откройте меню ⋮ → «Установить приложение» (или «Добавить на главный экран»).','После первого запуска приложение работает без интернета.','Новая версия подгружается сама при открытии с интернетом. Номер версии виден внизу настроек.']],
@@ -465,7 +474,7 @@ uk:{title:'Говоримо разом',g_home:'Головний екран і �
   s_recent:'Нещодавно сказані: скільки останніх фраз, вимовлених через 🎤 і «Абетку», показувати на головному екрані',
   s_showauto:'«Говорить співрозмовник»: проговорювати розпізнане одразу',s_showemoji:'«Говорить співрозмовник»: показувати картинки-емодзі поруч зі знайомими словами',
   sm_on:'увімк.',sm_off:'вимк.',sm_guard:'захист',sm_simple:'спрощений вигляд',sm_auto:'проговорювати одразу',sm_abchide:'згортати літери',sm_words:'слова онлайн',sm_phr:'фрази онлайн',sm_diary:'щоденник',sm_recent:'нещодавні',
-  fn_g:['Я, ти, ми… (займенники)','В, на, з… (прийменники)','Не, так, це… (інші слова)'],m_typeRep:'✎ Набрати інше слово',m_typeIns:'＋ Вставити слово перед ним',m_typePh:'Почніть набирати слово',m_typeAsIs:'Як набрано',m_toFrame:'У рамку для правки',m_ctx:'Схоже, це слово не підходить за змістом.',kbSmall:'Дрібніше',kbBig:'Крупніше',rec_title:'Нещодавно сказані',listen:'Послухати',undo:'Повернути',qr_title:'Відповісти співрозмовнику:',show_tap:'Натисніть на слово, щоб почути його окремо й повільно.',
+  fn_g:['Я, ти, ми… (займенники)','В, на, з… (прийменники)','Не, так, це… (інші слова)'],m_typeRep:'✎ Набрати інше слово',m_typeIns:'＋ Вставити слово перед ним',m_typePh:'Почніть набирати слово',m_typeAsIs:'Як набрано',m_toFrame:'У рамку для правки',m_ctx:'Схоже, це слово не підходить за змістом.',iab_t:'Відкрито всередині Facebook або іншого застосунку: ваших налаштувань і фраз тут не видно.',iab_ios:'Відкрито всередині Facebook або іншого застосунку: ваших налаштувань і фраз тут не видно. Меню ⋯ → «Відкрити в браузері».',iab_open:'Відкрити в Chrome',iab_copy:'Копіювати посилання',iab_copied:'Посилання скопійовано',iab_x:'Сховати',kbSmall:'Дрібніше',kbBig:'Крупніше',rec_title:'Нещодавно сказані',listen:'Послухати',undo:'Повернути',qr_title:'Відповісти співрозмовнику:',show_tap:'Натисніть на слово, щоб почути його окремо й повільно.',
   qr:['Повторіть, будь ласка','Говоріть повільніше','Я не розумію','Напишіть, будь ласка'],
   freq:'Часто',yes:'Так',no:'Ні',back:'Назад',rep:'Повтор',help:'Допомога',pain:'Болить',sure:'Точно?',done:'Готово',cancel:'Скасувати',mods:['зараз','потім','ще','досить'],helpSay:'Допоможіть! Мені потрібна допомога!',helpTxt:'МЕНІ ПОТРІБНА ДОПОМОГА',
   built:'Ваша фраза',sayso:'Сказати так',cont:'Продовжте фразу — оберіть слово:',pick:'Оберіть тему:',ver:'Версія застосунку',
@@ -522,6 +531,7 @@ uk:{title:'Говоримо разом',g_home:'Головний екран і �
    ['Менше втоми (⚙️)','«Говорити одразу» прибирає запитання «…?»: фраза звучить одразу після натискання на плитку чи підказку (у темах «Здоров’я» та «Ліки» і для фраз з інтернету запитання залишається). Блок «Часто» можна вимкнути, щоб плитки завжди стояли на своїх місцях.'],
    ['Щоденник спілкування','Відкривається з налаштувань. На телефоні зберігаються вимовлені фрази з датою й часом (останні 1000). Видно активність за 7 днів і найчастіші фрази; можна зберегти текстовий файл для логопеда. Щоденник можна вимкнути й очистити.'],
    ['Резервна копія','У налаштуваннях: «Зберегти копію даних» створює файл з усіма налаштуваннями, правками плиток і щоденником, «Завантажити копію даних» відновлює їх (наприклад, на новому телефоні). Зробіть копію перед очищенням даних браузера чи зміною телефона.'],
+   ['Відкрито з Facebook або іншого застосунку','За посиланням із Facebook, Instagram, Messenger та інших застосунків сторінка часто відкривається у вбудованому браузері. У нього своє сховище: ваші налаштування й фрази там не видно, а зроблені там зміни не потраплять у встановлений застосунок. У такому разі вгорі з’являється жовта плашка: «Відкрити в Chrome» відкриває ту саму сторінку в Chrome (на Android), «Копіювати посилання» — щоб вставити його в браузер самостійно. Найзручніше запускати застосунок з іконки на головному екрані.'],
    ['Мова меню','У налаштуваннях можна задати мову меню й довідки окремо від мови фраз та озвучення: наприклад, фрази й голос українською, а меню російською. Підписи для самої людини (кнопки «Так», «Ні» тощо) йдуть за мовою фраз.'],
    ['Редактор плиток','Відкрийте потрібний розділ (наприклад, «Самопочуття» → «Мені» → «погано») і натисніть ✏️: редактор відкриється саме в цьому розділі. Тут можна додати плитку («+ Додати плитку в цей розділ»), змінити назву, фразу або значок плитки, видалити непотрібну. Інший розділ можна обрати у списку. «Скинути рівень» повертає стандартний набір. Правки зберігаються на цьому пристрої. У легких рівнях плитка — частина фрази; форми за статтю пишуться так: вип{ив~ила}.'],
    ['Встановлення й оновлення',['У Chrome відкрийте меню ⋮ → «Установити застосунок» (або «Додати на головний екран»).','Після першого запуску застосунок працює без інтернету.','Нова версія підтягується сама під час відкриття з інтернетом. Номер версії видно внизу налаштувань.']],
@@ -551,7 +561,7 @@ en:{title:'Let’s talk together',g_home:'Home screen and tiles',g_mic:'🎤 Sug
   s_recent:'Recently said: how many of the last phrases spoken through 🎤 and ABC to show on the home screen',
   s_showauto:'“Someone speaks”: speak the recognized text right away',s_showemoji:'“Someone speaks”: show emoji pictures next to familiar words',
   sm_on:'on',sm_off:'off',sm_guard:'tap guard',sm_simple:'simplified view',sm_auto:'speak right away',sm_abchide:'collapse letters',sm_words:'words online',sm_phr:'phrases online',sm_diary:'diary',sm_recent:'recent',
-  fn_g:['I, you, we… (pronouns)','To, in, on… (prepositions)','Not, yes, this… (other words)'],m_typeRep:'✎ Type another word',m_typeIns:'＋ Insert a word before it',m_typePh:'Start typing a word',m_typeAsIs:'As typed',m_toFrame:'To the frame for editing',m_ctx:'This word does not seem to fit the meaning.',kbSmall:'Smaller',kbBig:'Larger',rec_title:'Recently said',listen:'Listen',undo:'Undo',qr_title:'Reply to the speaker:',show_tap:'Tap a word to hear it separately and slowly.',
+  fn_g:['I, you, we… (pronouns)','To, in, on… (prepositions)','Not, yes, this… (other words)'],m_typeRep:'✎ Type another word',m_typeIns:'＋ Insert a word before it',m_typePh:'Start typing a word',m_typeAsIs:'As typed',m_toFrame:'To the frame for editing',m_ctx:'This word does not seem to fit the meaning.',iab_t:'Opened inside Facebook or another app: your settings and phrases are not visible here.',iab_ios:'Opened inside Facebook or another app: your settings and phrases are not visible here. Menu ⋯ → “Open in browser”.',iab_open:'Open in Chrome',iab_copy:'Copy link',iab_copied:'Link copied',iab_x:'Hide',kbSmall:'Smaller',kbBig:'Larger',rec_title:'Recently said',listen:'Listen',undo:'Undo',qr_title:'Reply to the speaker:',show_tap:'Tap a word to hear it separately and slowly.',
   qr:['Please repeat','Please speak more slowly','I don’t understand','Please write it down'],
   freq:'Often',yes:'Yes',no:'No',back:'Back',rep:'Repeat',help:'Help',pain:'Pain',sure:'Sure?',done:'Done',cancel:'Cancel',mods:['now','later','more','enough'],helpSay:'Help! I need help!',helpTxt:'I NEED HELP',
   built:'Your phrase',sayso:'Say it',cont:'Continue the phrase — choose a word:',pick:'Choose a topic:',ver:'App version',
@@ -619,6 +629,7 @@ en:{title:'Let’s talk together',g_home:'Home screen and tiles',g_mic:'🎤 Sug
    ['Less fatigue (⚙️)','“Speak immediately” removes the “…?” question: the phrase is spoken right after tapping a tile or a suggestion (in Health and Medicines and for phrases from the internet the question stays). The “Often” block can be turned off so tiles always stay in place.'],
    ['Communication diary','Opens from Settings. The phone stores the spoken phrases with date and time (the last 1000). You can see activity over 7 days and the most frequent phrases, and save a text file for a speech therapist. The diary can be turned off and cleared.'],
    ['Backup','In Settings, “Save a data backup” creates a file with all settings, tile edits and the diary; “Load a data backup” restores them (for example, on a new phone). Make a backup before clearing browser data or changing phones.'],
+   ['Opened from Facebook or another app','A link from Facebook, Instagram, Messenger and other apps often opens in their built-in browser. It has its own storage: your settings and phrases are not visible there, and changes made there do not reach the installed app. In that case a yellow bar appears at the top: “Open in Chrome” opens the same page in Chrome (on Android), “Copy link” lets you paste it into a browser yourself. It is easiest to start the app from its home screen icon.'],
    ['Menu language','Settings let you choose the menu and help language separately from the language of phrases and speech: for example, phrases and voice in Ukrainian and the menu in English. The labels meant for the person (“Yes”, “No”, etc.) follow the phrase language.'],
    ['Tile editor','Open the section you need (for example, “Feelings” → “I feel” → “cold”) and tap ✏️: the editor opens in that very section. You can add a tile (“+ Add a tile to this section”), change its name, phrase or icon, or delete one. Choose another section from the list. “Reset level” restores the standard set. Edits are kept on this device. English and Russian/Ukrainian phrases are stored separately in the mild levels, so edit them in the language you are using. In the mild levels a tile is a part of a phrase.'],
    ['Install and updates',['In Chrome open the menu ⋮ → “Install app” (or “Add to Home screen”).','After the first launch the app works without the internet.','A new version loads by itself when the app is opened online. The version number is at the bottom of Settings.']],
@@ -2180,6 +2191,38 @@ function appBack(){
 }
 addEventListener('popstate',()=>{backArmed=false;if(appBack())armBack()});
 
+/* ---------- Открыто во встроенном браузере (Facebook, Instagram, Messenger и т. п.) ----------
+   У встроенного браузера своё хранилище: настройки и фразы из Chrome там не видны, а сделанное там не попадёт в установленное приложение.
+   Плашка вверху (на языке меню) предлагает открыть ту же страницу в Chrome; на Android — сразу через intent. */
+function inAppBrowser(){
+  try{if(matchMedia('(display-mode: standalone)').matches||navigator.standalone)return false}catch(_){}
+  const ua=navigator.userAgent||'';
+  return /FBAN|FBAV|FB_IAB|FBIOS|Instagram|Messenger|Line\/|MicroMessenger|Snapchat|; wv\)/i.test(ua);
+}
+function drawIab(){
+  const old=$('#iab');if(old)old.remove();
+  try{if(sessionStorage.getItem('aac.iab.hide'))return}catch(_){}
+  if(!inAppBrowser())return;
+  const android=/Android/i.test(navigator.userAgent),url=location.href.split('#')[0];
+  const d=h('div','iab');d.id='iab';d.setAttribute('role','alert');
+  const top=h('div','top'),r=h('div','row');
+  top.append(h('p',null,uh(android?'iab_t':'iab_ios')));
+  if(android){
+    const a=h('a','go','🌐 '+uh('iab_open'));
+    a.href='intent://'+location.host+location.pathname+location.search+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(url)+';end';
+    r.append(a);
+  }
+  const cp=h('button','cp',uh('iab_copy'),async()=>{
+    let ok=false;try{await navigator.clipboard.writeText(url);ok=true}catch(_){}
+    if(!ok){try{const t=document.createElement('textarea');t.value=url;document.body.append(t);t.select();ok=document.execCommand('copy');t.remove()}catch(_){}}
+    if(ok)cp.textContent='✔ '+uh('iab_copied');
+  });
+  const x=h('button','x','✕',()=>{try{sessionStorage.setItem('aac.iab.hide','1')}catch(_){}d.remove()});x.setAttribute('aria-label',uh('iab_x'));
+  top.append(x);r.append(cp);d.append(top,r);
+  document.body.prepend(d);
+}
+drawIab();
+
 /* ---------- Не гасить экран (Wake Lock) ---------- */
 let wl=null;
 async function setAwake(){
@@ -3710,6 +3753,7 @@ function applyI18n(){
   document.querySelectorAll('[data-i]').forEach(e=>e.textContent=uh(e.dataset.i));
   [['#home','aHome'],['#micBtn','aMic'],['#abcBtn','abc'],['#lang','aLang'],['#settingsBtn','aSet'],['#helpBtn','aHelp'],['#gear','aEd']].forEach(([q,k])=>$(q).setAttribute('aria-label',uh(k)));
   document.title=u('title');
+  if(typeof drawIab==='function'&&$('#iab'))drawIab();   // плашка «открыто внутри Facebook» — на новом языке меню
   fill('#setSeg',Object.entries(uh('lvl')),settings.level);
   fill('#setGender',[['f',uh('g_f')],['m',uh('g_m')]],settings.gender);
   fill('#setUiLang',[['auto',uh('ui_auto')],['ru','Русский'],['uk','Українська'],['en','English']],settings.uiLang);

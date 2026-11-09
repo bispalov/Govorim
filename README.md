@@ -67,6 +67,8 @@
 2. Меню ⋮ → **«Установити застосунок»** (або «Додати на головний екран»).
 3. Після першого запуску застосунок працює без інтернету.
 
+Якщо відкрити посилання з Facebook, Instagram, Messenger та інших застосунків, сторінка відкривається в їхньому вбудованому браузері з окремим сховищем: налаштувань і фраз там не видно. Застосунок це розпізнає й показує вгорі жовту плашку з кнопками «Відкрити в Chrome» (Android) і «Копіювати посилання». Найкраще запускати застосунок з іконки на головному екрані. Перед переустановленням зробіть резервну копію (⚙️ → «Дані» → «Зберегти копію даних»).
+
 Якщо голосів потрібної мови немає: *Налаштування Android → Система → Мова та введення → Синтез мовлення → Google → голосові дані мови*. Швидкість мовлення краще знизити до 0,7–0,85.
 
 ### Публікація на GitHub Pages
@@ -92,7 +94,7 @@
 
 Встановлений застосунок оновлюється лише за зміни версії кешу. За будь-якої зміни файлів:
 
-1. У `sw.js` збільште номер: `const V = 'govorim-v56'` → `'govorim-v57'`.
+1. У `sw.js` збільште номер: `const V = 'govorim-v57'` → `'govorim-v58'`.
 2. В `index.html` збільште `APP_VERSION` (він показується внизу налаштувань).
 3. Завантажте файли. Застосунок підхопить нову версію під час наступного відкриття з інтернетом і один раз перезавантажиться.
 
@@ -254,6 +256,8 @@
 2. Меню ⋮ → **«Установить приложение»** (или «Добавить на главный экран»).
 3. После первого запуска приложение работает без интернета.
 
+Если открыть ссылку из Facebook, Instagram, Messenger и других приложений, страница открывается в их встроенном браузере с отдельным хранилищем: настроек и фраз там не видно. Приложение это распознаёт и показывает вверху жёлтую плашку с кнопками «Открыть в Chrome» (Android) и «Копировать ссылку». Лучше всего запускать приложение с иконки на главном экране. Перед переустановкой сделайте резервную копию (⚙️ → «Данные» → «Сохранить копию данных»).
+
 #### Голоса
 
 Список голосов в настройках показывает только голоса текущего языка фраз (кнопка RU / UK / EN). Если голосов нет, установите их: *Настройки Android → Система → Язык и ввод → Синтез речи → Google → голосовые данные русского или украинского языка*. Скорость речи лучше снизить до 0,7–0,85.
@@ -282,7 +286,7 @@
 
 Установленное приложение обновляется только при смене версии кэша. При любом изменении файлов:
 
-1. В `sw.js` увеличьте номер: `const V = 'govorim-v56'` → `'govorim-v57'`.
+1. В `sw.js` увеличьте номер: `const V = 'govorim-v57'` → `'govorim-v58'`.
 2. В `index.html` увеличьте `APP_VERSION` (он показывается внизу настроек).
 3. Загрузите файлы. Приложение подхватит новую версию при следующем открытии с интернетом и один раз перезагрузится.
 
@@ -358,6 +362,7 @@
 - Any word in the 🎤 frame can be replaced (not only “?” words): tap it for options, type the intended word with suggestions, or insert a missing word before it; real words that a similar-sounding, better-fitting word could replace are marked “?” automatically; ✎ next to a ready phrase moves it into the frame for editing.
 - Partner-speech tab: tap a word to hear it slowly, emoji next to familiar words, quick replies (“Please repeat”, “I don’t understand”…).
 - Voice list is filtered by the current phrase language; in-app help and tile editor included.
+- When opened inside the Facebook, Instagram or Messenger built-in browser (separate storage, settings not visible), a yellow bar offers “Open in Chrome” (Android intent) and “Copy link”.
 - Static files only; deploy to GitHub Pages under `/Govorim/`. Bump the cache version in `sw.js` and `APP_VERSION` in `index.html` on every update.
 
 This app is not a medical device and does not replace professional care.
