@@ -70,7 +70,7 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 
 .tile{min-width:0;min-height:120px;border-radius:18px;border:3px solid var(--c);background:color-mix(in srgb, var(--c) 20%, var(--card-bg));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 6px;font-size:clamp(15px,4.8vw,22px);font-weight:700;text-align:center;overflow-wrap:break-word;color:var(--ink)}
 .tile .em{font-size:clamp(40px,12vw,52px);line-height:1}
-.tile img,.big img{width:80px;height:80px;object-fit:cover;border-radius:12px}
+.tile img,.big img{width:clamp(64px,22vw,96px);height:clamp(64px,22vw,96px);object-fit:cover;border-radius:14px}
 
 .say{width:100%;min-height:64px;margin-bottom:10px;border-radius:16px;background:var(--navy);color:#fff;font-size:clamp(18px,5.4vw,22px);padding:10px;text-align:left;overflow-wrap:anywhere}
 
@@ -93,9 +93,11 @@ main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
 
 /* Нижняя панель: 6 равных колонок, ничего не вылезает за экран */
 #bar{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding:6px 4px;background:var(--card-bg);border-top:2px solid var(--border)}
-#bar button{min-width:0;min-height:64px;padding:2px 1px;border-radius:12px;font-size:clamp(8px,2.6vw,12px);letter-spacing:-.2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:color-mix(in srgb, var(--navy) 15%, var(--card-bg));color:var(--ink);font-weight:700;overflow:hidden}
-#bar button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#bar .i{font-size:clamp(20px,6vw,24px)}
+#bar button{min-width:0;min-height:64px;padding:2px 1px;border-radius:12px;font-size:clamp(11px,3.3vw,14px);letter-spacing:-.3px;line-height:1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:color-mix(in srgb, var(--navy) 15%, var(--card-bg));color:var(--ink);font-weight:700;overflow:hidden}
+#bar button span{max-width:100%;overflow-wrap:anywhere;hyphens:auto;text-align:center}   /* длинная подпись — в две строки, а не обрезается */
+#bar .i{font-size:clamp(18px,5.4vw,22px)}
+body.bar-nolbl #bar button span:not(.i){display:none}
+body.bar-nolbl #bar .i{font-size:clamp(26px,8vw,32px)}
 #bar .yes{background:#1F7A4D;color:#fff}
 #bar .no{background:#B3261E;color:#fff}
 #bar .hp{background:#B3261E;color:#fff}
@@ -258,6 +260,32 @@ main .note,#stage .note{font-size:16px;font-weight:500;opacity:.8;line-height:1.
 .iab .go{background:#16384F;color:#fff}
 .iab .cp{background:#fff;color:#1A1A1A}
 .iab .x{flex:0 0 auto;background:transparent;color:#1A1A1A;font-size:22px;min-width:44px;min-height:40px;padding:0}
+/* Отклик на нажатие: кнопка «вдавливается» и подсвечивается */
+button{transition:transform .08s ease,filter .08s ease}
+button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15)}
+:root[data-theme="light"] button.prs:not(.chip){filter:brightness(.88) saturate(1.2)}
+/* Выбор удержанием: полоска заполняется за время удержания */
+.tile,.ans,.sug,#bar button{position:relative}
+.holding{overflow:hidden}
+.holding::after{content:'';position:absolute;left:0;bottom:0;height:8px;width:0;background:#F2B705;animation:holdbar var(--hold,.5s) linear forwards;pointer-events:none}
+@keyframes holdbar{to{width:100%}}
+/* Окно «Сказано»: крупная фраза, размер A−/A+ */
+#ov .said{max-width:100%;font-weight:800;line-height:1.15;overflow-wrap:anywhere}
+#ov .srow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+#ov .srow button{flex:0 1 auto;min-width:56px;min-height:48px;border-radius:12px;background:var(--card-bg);border:2px solid var(--border);color:var(--ink);font-weight:700;padding:0 12px}
+/* Показать собеседнику: фраза на весь экран, можно перевернуть */
+#bigShow{position:fixed;inset:0;z-index:60;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;padding:12px}
+#bigShow .bs-t{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;line-height:1.1;overflow:hidden;overflow-wrap:normal;word-break:normal;hyphens:manual;transition:transform .2s}   /* слова не рвутся: шрифт уменьшается, пока самое длинное слово не поместится */
+#bigShow.flip .bs-t{transform:rotate(180deg)}
+#bigShow .row{display:flex;gap:8px}
+#bigShow .row button{flex:1 1 0;min-width:min-content;min-height:56px;border-radius:14px;background:var(--navy);color:#fff;font-weight:800;font-size:18px}
+/* Сигнал «Помощь»: звонок близкому */
+#ov.red .call{display:flex;align-items:center;justify-content:center;gap:10px;width:min(100%,420px);min-height:72px;border-radius:18px;background:#fff;color:#7A1510;font-weight:800;font-size:clamp(20px,6vw,26px);text-decoration:none;padding:6px 14px;text-align:center}
+#ov.red .ans{flex:0 0 auto;width:min(100%,420px);min-height:80px}
+/* Редактор: фото плитки */
+.edpic{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0}
+.edpic img{width:72px;height:72px;object-fit:cover;border-radius:12px;border:2px solid var(--border)}
+.edpic button{flex:1 1 0;min-width:min-content}
 </style>
 </head>
 <body>
@@ -300,6 +328,13 @@ main .note,#stage .note{font-size:16px;font-weight:500;opacity:.8;line-height:1.
     <label data-i="s_theme"></label>
     <select id="setTheme"></select>
   </div></div>
+  <div class="sg" data-g="sos"><button class="sgh" type="button" data-t="g_sos"></button><div class="sgb">
+    <div class="note" data-i="s_sosnote"></div>
+    <label><span data-i="s_sosname"></span> 1</label><input type="text" id="setSosN0" autocomplete="off">
+    <label><span data-i="s_sostel"></span> 1</label><input type="tel" id="setSosT0" autocomplete="off" inputmode="tel">
+    <label><span data-i="s_sosname"></span> 2</label><input type="text" id="setSosN1" autocomplete="off">
+    <label><span data-i="s_sostel"></span> 2</label><input type="tel" id="setSosT1" autocomplete="off" inputmode="tel">
+  </div></div>
   <div class="sg" data-g="voice"><button class="sgh" type="button" data-t="g_voice"></button><div class="sgb">
     <label data-i="s_voice"></label>
     <select id="setVoice"></select>
@@ -325,6 +360,9 @@ main .note,#stage .note{font-size:16px;font-weight:500;opacity:.8;line-height:1.
     <select id="setGuard"></select>
     <label data-i="s_hand"></label>
     <select id="setHand"></select>
+    <label class="chk"><input type="checkbox" id="setHoldSel"><span data-i="s_holdsel"></span></label>
+    <label data-i="s_barlbl"></label>
+    <select id="setBarLbl"></select>
     <label class="chk"><input type="checkbox" id="setWordTap"><span data-i="s_wordtap"></span></label>
     <label class="chk"><input type="checkbox" id="setVib"><span data-i="s_vib"></span></label>
     <label class="chk"><input type="checkbox" id="setAwake"><span data-i="s_awake"></span></label>
@@ -379,19 +417,19 @@ main .note,#stage .note{font-size:16px;font-weight:500;opacity:.8;line-height:1.
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 59;   // держите в соответствии с V = 'govorim-v59' в sw.js
+const APP_VERSION = 60;   // держите в соответствии с V = 'govorim-v60' в sw.js
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
 
 /* ---------- Интернационализация ---------- */
 const U={
-ru:{title:'Говорим вместе',g_home:'Главный экран и плитки',g_mic:'🎤 Подсказка по сказанному',g_abc:'🔤 Азбука',g_net:'Интернет (необязательно)',
+ru:{title:'Говорим вместе',g_sos:'🆘 Помощь: кому позвонить',s_sosnote:'На красном экране «Помощь» появится крупная кнопка звонка. Набор номера всё равно подтверждается в телефоне. Номера хранятся только на этом телефоне.',s_sosname:'Имя',s_sostel:'Номер телефона',sm_nosos:'не задано',s_barlbl:'Подписи на нижней панели',bl_big:'Крупные',bl_off:'Только значки',s_holdsel:'Выбор удержанием: плитка и большие кнопки срабатывают, только если их удержать около полсекунды (против тремора и случайных касаний)',sm_hold:'удержание',g_home:'Главный экран и плитки',g_mic:'🎤 Подсказка по сказанному',g_abc:'🔤 Азбука',g_net:'Интернет (необязательно)',
   s_recent:'Недавно сказанные: сколько последних фраз, произнесённых через 🎤 и «Азбуку», показывать на главном экране',
   s_showauto:'«Говорит собеседник»: проговаривать распознанное сразу',s_showemoji:'«Говорит собеседник»: показывать картинки-эмодзи рядом со знакомыми словами',
   sm_on:'вкл.',sm_off:'выкл.',sm_guard:'защита',sm_simple:'упрощённый вид',sm_auto:'проговаривать сразу',sm_abchide:'сворачивать буквы',sm_words:'слова онлайн',sm_phr:'фразы онлайн',sm_diary:'дневник',sm_recent:'недавние',
-  fn_g:['Я, ты, мы… (местоимения)','В, на, с… (предлоги)','Не, да, это… (другие слова)'],m_typeRep:'✎ Набрать другое слово',m_typeIns:'＋ Вставить слово перед ним',m_typePh:'Начните набирать слово',m_typeAsIs:'Как набрано',m_toFrame:'В рамку для правки',m_ctx:'Похоже, это слово не подходит по смыслу.',iab_t:'Открыто внутри Facebook или другого приложения: ваших настроек и фраз здесь не видно.',iab_ios:'Открыто внутри Facebook или другого приложения: ваших настроек и фраз здесь не видно. Меню ⋯ → «Открыть в браузере».',iab_open:'Открыть в Chrome',iab_copy:'Копировать ссылку',iab_copied:'Ссылка скопирована',iab_x:'Скрыть',kbSmall:'Мельче',kbBig:'Крупнее',rec_title:'Недавно сказанные',listen:'Послушать',undo:'Вернуть',qr_title:'Ответить собеседнику:',show_tap:'Нажмите на слово, чтобы услышать его отдельно и медленно.',
-  qr:['Повторите, пожалуйста','Говорите медленнее','Я не понимаю','Напишите, пожалуйста'],
+  fn_g:['Я, ты, мы… (местоимения)','В, на, с… (предлоги)','Не, да, это… (другие слова)'],m_typeRep:'✎ Набрать другое слово',m_typeIns:'＋ Вставить слово перед ним',m_typePh:'Начните набирать слово',m_typeAsIs:'Как набрано',m_toFrame:'В рамку для правки',m_ctx:'Похоже, это слово не подходит по смыслу.',iab_t:'Открыто внутри Facebook или другого приложения: ваших настроек и фраз здесь не видно.',iab_ios:'Открыто внутри Facebook или другого приложения: ваших настроек и фраз здесь не видно. Меню ⋯ → «Открыть в браузере».',iab_open:'Открыть в Chrome',iab_copy:'Копировать ссылку',iab_copied:'Ссылка скопирована',iab_x:'Скрыть',said_show:'Показать собеседнику',bs_flip:'⟳ Перевернуть',bs_close:'✕ Закрыть',sos_call:'Позвонить',ed_photo:'Фото вместо значка',ed_photo_add:'📷 Выбрать фото',ed_photo_del:'Убрать фото',ed_photo_big:'Фото не поместилось в память телефона. Попробуйте другое фото или удалите лишние фото в плитках.',abc_clr:'Очистить всю строку',kbSmall:'Мельче',kbBig:'Крупнее',rec_title:'Недавно сказанные',listen:'Послушать',undo:'Вернуть',qr_title:'Ответить собеседнику:',show_tap:'Нажмите на слово, чтобы услышать его отдельно и медленно.',
+  qr:['Повторите, пожалуйста','Говорите медленнее','Я не понимаю','Я не знаю','Напишите, пожалуйста'],
   freq:'Часто',yes:'Да',no:'Нет',back:'Назад',rep:'Повтор',help:'Помощь',pain:'Больно',sure:'Точно?',done:'Готово',cancel:'Отмена',mods:['сейчас','потом','ещё','хватит'],helpSay:'Помогите! Мне нужна помощь!',helpTxt:'МНЕ НУЖНА ПОМОЩЬ',
   built:'Ваша фраза',sayso:'Сказать так',cont:'Продолжите фразу — выберите слово:',pick:'Выберите тему:',ver:'Версия приложения',
   aHome:'Домой',aLang:'Язык',aSet:'Настройки',aEd:'Редактор',nomem:'Не хватает памяти',testSay:'Это проверка голоса',
@@ -447,6 +485,13 @@ ru:{title:'Говорим вместе',g_home:'Главный экран и п�
    ['Меньше усталости (⚙️)','«Говорить сразу» убирает вопрос «…?»: фраза звучит сразу после нажатия на плитку или подсказку (в темах «Здоровье» и «Лекарства» и для фраз из интернета вопрос остаётся). Блок «Часто» можно отключить, чтобы плитки всегда стояли на своих местах.'],
    ['Дневник общения','Открывается из настроек. На телефоне хранятся произнесённые фразы с датой и временем (последние 1000). Видны активность за 7 дней и самые частые фразы; можно сохранить текстовый файл для логопеда. Дневник можно выключить и очистить.'],
    ['Резервная копия','В настройках: «Сохранить копию данных» создаёт файл со всеми настройками, правками плиток и дневником, «Загрузить копию данных» восстанавливает их (например, на новом телефоне). Сделайте копию перед очисткой данных браузера или сменой телефона.'],
+   ['Боль: где и насколько сильно','На среднем уровне «Болит» (и кнопка 🤕 внизу) показывает место: голова, сердце, живот, спина, горло, зубы, грудь, рука, нога или «Другое». Затем можно выбрать силу боли: 🙂 немного, 😐 умеренно, 😣 сильно, 😫 очень сильно — получится, например, «У меня сильно болит голова». Сказать без силы боли можно синей кнопкой с фразой вверху. На лёгких уровнях сила боли — последний шаг в теме «Здоровье».'],
+   ['«Не знаю»','На тяжёлом и среднем уровнях есть плитка 🤷 «Не знаю», на лёгких — «Я не знаю» и «Я не уверен(а)» в теме «Общение и чувства», на вкладке «Говорит собеседник» — быстрый ответ «Я не знаю».'],
+   ['Показать фразу крупно','После того как фраза прозвучала, её размер меняют кнопки A− / A+. «👁 Показать собеседнику» выводит фразу на весь экран самым крупным шрифтом, который помещается; «⟳ Перевернуть» поворачивает её для человека напротив, «✕ Закрыть» или «Назад» — обратно. Удобно в шумной палате и для тех, кто плохо слышит.'],
+   ['Звонок близкому из «Помощь»','В ⚙️ → «🆘 Помощь: кому позвонить» укажите одного-двух близких (имя и номер). Тогда на красном экране «Помощь» появится крупная кнопка «📞 Позвонить: …». Она открывает набор номера (звонок подтверждается в телефоне), сигнал при этом замолкает. Номера хранятся только на этом телефоне и попадают в резервную копию.'],
+   ['Фото на плитках','В редакторе ✏️ выберите плитку и нажмите «📷 Выбрать фото» — подойдёт снимок из галереи или с камеры. Фото заменяет значок: так легче узнать близких людей и свои вещи. Фото уменьшается и хранится на телефоне, входит в резервную копию; «Убрать фото» возвращает значок.'],
+   ['Выбор удержанием и подписи внизу','В ⚙️ → «Управление и нажатия»: «Выбор удержанием» — плитки и большие кнопки срабатывают, только если их удержать около полсекунды (внизу кнопки заполняется жёлтая полоска); помогает при треморе и случайных касаниях, а прокрутка пальцем ничего не выбирает. «Подписи на нижней панели» — крупные подписи или только значки. Нажатая кнопка на мгновение «вдавливается» и подсвечивается.'],
+   ['Очистить строку','В «Азбуке» кнопка 🗑 рядом с ⌫ убирает всю собранную строку, а «Очистить» в рамке на экране 🎤 — всю фразу. Случайно убранное возвращает «↶ Вернуть».'],
    ['Открыто из Facebook или другого приложения','По ссылке из Facebook, Instagram, Messenger и других приложений страница часто открывается во встроенном браузере. У него своё хранилище: ваши настройки и фразы там не видны, а сделанные там изменения не попадут в установленное приложение. В этом случае вверху появляется жёлтая плашка: «Открыть в Chrome» открывает ту же страницу в Chrome (на Android), «Копировать ссылку» — чтобы вставить её в браузер самому. Удобнее всего запускать приложение с иконки на главном экране.'],
    ['Язык меню','В настройках можно задать язык меню и справки отдельно от языка фраз и озвучки: например, фразы и голос на украинском, а меню на русском. Подписи для самого человека (кнопки «Да», «Нет» и т. п.) следуют за языком фраз.'],
    ['Редактор плиток','Откройте нужный раздел (например, «Самочувствие» → «Мне» → «плохо») и нажмите ✏️: редактор откроется именно в этом разделе. Здесь можно добавить плитку («+ Добавить плитку в этот раздел»), изменить название, фразу или значок плитки, удалить ненужную. Другой раздел можно выбрать в списке. «Сбросить уровень» возвращает стандартный набор. Правки хранятся на этом устройстве. В лёгких уровнях плитка — часть фразы; формы по полу пишутся так: вып{ил~ила}.'],
@@ -473,12 +518,12 @@ ru:{title:'Говорим вместе',g_home:'Главный экран и п�
   m_ext_off:'Подходящих фраз нет в словаре. Онлайн-поиск можно включить: ⚙️ → «Онлайн-поиск фраз».',
   m_online:'Поискать в интернете',m_searching:'Ищу варианты…',m_online_res:'Варианты из интернета — нажмите, и вас спросят «…?»:',m_online_none:'Онлайн-поиск тоже ничего не предложил.',
   m_title:'🎤 Подсказка по сказанному',m_slotonl:'Найти онлайн',m_slotnone:'Онлайн ничего не нашёл',m_extra:'Похоже, это лишнее слово.',m_slotq:'Что имелось в виду вместо',m_keep:'✓ Оставить',m_rm:'✕ Убрать',m_chk:'Проверить слово',m_builds:'Нажать — варианты · удерживать — переставить',m_morew:'Ещё слова',m_typeit:'Вписать или исправить текст',m_asheard:'Услышанные слова:',m_all:'Вся фраза в рамку',m_fn:'Я, в, на, не…',m_build:'Нажмите слово — откроются варианты замены. Удерживайте слово и перетащите — изменится порядок:',m_buildsay:'Сказать',m_buildclr:'Очистить',m_freq:'Часто выбирали:',m_forget:'Забыть запомненные фразы',m_forgetq:'Забыть все фразы, запомненные по выбору из подсказок, и личный словарь произношения?',m_say:'Говорить',m_stop:'Остановить',m_listen:'Слушаю… говорите',m_heard:'Что услышано (можно исправить или вписать слова):',m_sugg:'Возможно, вы хотели сказать — нажмите на фразу:',m_none:'Подходящих фраз не найдено. Попробуйте сказать иначе или впишите слова.',m_nomic:'Нет доступа к микрофону. Разрешите его в настройках браузера.',m_nosr:'Распознавание речи в этом браузере недоступно. Впишите слова вручную.',m_net:'Для распознавания нужен интернет. Впишите слова вручную.',m_nosp:'Ничего не услышано. Попробуйте ещё раз.',m_err:'Не удалось распознать. Попробуйте ещё раз или впишите слова.',m_note:'Распознавание речи выполняет браузер Chrome: обычно нужен интернет, и запись голоса может обрабатываться на серверах Google. Подбор фраз по найденным словам работает без интернета. Нарушенную речь распознать трудно, поэтому слова можно вписать вручную (в том числе голосовым вводом клавиатуры).',f_edit:'Изменить списки на главном экране',f_clear:'🗑️ Убрать все',f_done:'Готово',f_cclear:'Убрать все фразы из этого списка на главном экране?',f_hint:'Нажмите на фразу, чтобы убрать её из блока.',e_name:'Название',e_phrase:'Фраза',ln_ru:'русский',ln_uk:'украинский',ln_en:'английский'},
-uk:{title:'Говоримо разом',g_home:'Головний екран і плитки',g_mic:'🎤 Підказка за сказаним',g_abc:'🔤 Абетка',g_net:'Інтернет (необов’язково)',
+uk:{title:'Говоримо разом',g_sos:'🆘 Допомога: кому подзвонити',s_sosnote:'На червоному екрані «Допомога» з’явиться велика кнопка дзвінка. Набір номера все одно підтверджується в телефоні. Номери зберігаються лише на цьому телефоні.',s_sosname:'Ім’я',s_sostel:'Номер телефону',sm_nosos:'не задано',s_barlbl:'Підписи на нижній панелі',bl_big:'Великі',bl_off:'Лише значки',s_holdsel:'Вибір утриманням: плитка й великі кнопки спрацьовують, лише якщо їх утримати близько пів секунди (проти тремору та випадкових дотиків)',sm_hold:'утримання',g_home:'Головний екран і плитки',g_mic:'🎤 Підказка за сказаним',g_abc:'🔤 Абетка',g_net:'Інтернет (необов’язково)',
   s_recent:'Нещодавно сказані: скільки останніх фраз, вимовлених через 🎤 і «Абетку», показувати на головному екрані',
   s_showauto:'«Говорить співрозмовник»: проговорювати розпізнане одразу',s_showemoji:'«Говорить співрозмовник»: показувати картинки-емодзі поруч зі знайомими словами',
   sm_on:'увімк.',sm_off:'вимк.',sm_guard:'захист',sm_simple:'спрощений вигляд',sm_auto:'проговорювати одразу',sm_abchide:'згортати літери',sm_words:'слова онлайн',sm_phr:'фрази онлайн',sm_diary:'щоденник',sm_recent:'нещодавні',
-  fn_g:['Я, ти, ми… (займенники)','В, на, з… (прийменники)','Не, так, це… (інші слова)'],m_typeRep:'✎ Набрати інше слово',m_typeIns:'＋ Вставити слово перед ним',m_typePh:'Почніть набирати слово',m_typeAsIs:'Як набрано',m_toFrame:'У рамку для правки',m_ctx:'Схоже, це слово не підходить за змістом.',iab_t:'Відкрито всередині Facebook або іншого застосунку: ваших налаштувань і фраз тут не видно.',iab_ios:'Відкрито всередині Facebook або іншого застосунку: ваших налаштувань і фраз тут не видно. Меню ⋯ → «Відкрити в браузері».',iab_open:'Відкрити в Chrome',iab_copy:'Копіювати посилання',iab_copied:'Посилання скопійовано',iab_x:'Сховати',kbSmall:'Дрібніше',kbBig:'Крупніше',rec_title:'Нещодавно сказані',listen:'Послухати',undo:'Повернути',qr_title:'Відповісти співрозмовнику:',show_tap:'Натисніть на слово, щоб почути його окремо й повільно.',
-  qr:['Повторіть, будь ласка','Говоріть повільніше','Я не розумію','Напишіть, будь ласка'],
+  fn_g:['Я, ти, ми… (займенники)','В, на, з… (прийменники)','Не, так, це… (інші слова)'],m_typeRep:'✎ Набрати інше слово',m_typeIns:'＋ Вставити слово перед ним',m_typePh:'Почніть набирати слово',m_typeAsIs:'Як набрано',m_toFrame:'У рамку для правки',m_ctx:'Схоже, це слово не підходить за змістом.',iab_t:'Відкрито всередині Facebook або іншого застосунку: ваших налаштувань і фраз тут не видно.',iab_ios:'Відкрито всередині Facebook або іншого застосунку: ваших налаштувань і фраз тут не видно. Меню ⋯ → «Відкрити в браузері».',iab_open:'Відкрити в Chrome',iab_copy:'Копіювати посилання',iab_copied:'Посилання скопійовано',iab_x:'Сховати',said_show:'Показати співрозмовнику',bs_flip:'⟳ Перевернути',bs_close:'✕ Закрити',sos_call:'Подзвонити',ed_photo:'Фото замість значка',ed_photo_add:'📷 Вибрати фото',ed_photo_del:'Прибрати фото',ed_photo_big:'Фото не вмістилося в пам’ять телефона. Спробуйте інше фото або видаліть зайві фото в плитках.',abc_clr:'Очистити весь рядок',kbSmall:'Дрібніше',kbBig:'Крупніше',rec_title:'Нещодавно сказані',listen:'Послухати',undo:'Повернути',qr_title:'Відповісти співрозмовнику:',show_tap:'Натисніть на слово, щоб почути його окремо й повільно.',
+  qr:['Повторіть, будь ласка','Говоріть повільніше','Я не розумію','Я не знаю','Напишіть, будь ласка'],
   freq:'Часто',yes:'Так',no:'Ні',back:'Назад',rep:'Повтор',help:'Допомога',pain:'Болить',sure:'Точно?',done:'Готово',cancel:'Скасувати',mods:['зараз','потім','ще','досить'],helpSay:'Допоможіть! Мені потрібна допомога!',helpTxt:'МЕНІ ПОТРІБНА ДОПОМОГА',
   built:'Ваша фраза',sayso:'Сказати так',cont:'Продовжте фразу — оберіть слово:',pick:'Оберіть тему:',ver:'Версія застосунку',
   aHome:'Додому',aLang:'Мова',aSet:'Налаштування',aEd:'Редактор',nomem:'Не вистачає пам’яті',testSay:'Це перевірка голосу',
@@ -534,6 +579,13 @@ uk:{title:'Говоримо разом',g_home:'Головний екран і �
    ['Менше втоми (⚙️)','«Говорити одразу» прибирає запитання «…?»: фраза звучить одразу після натискання на плитку чи підказку (у темах «Здоров’я» та «Ліки» і для фраз з інтернету запитання залишається). Блок «Часто» можна вимкнути, щоб плитки завжди стояли на своїх місцях.'],
    ['Щоденник спілкування','Відкривається з налаштувань. На телефоні зберігаються вимовлені фрази з датою й часом (останні 1000). Видно активність за 7 днів і найчастіші фрази; можна зберегти текстовий файл для логопеда. Щоденник можна вимкнути й очистити.'],
    ['Резервна копія','У налаштуваннях: «Зберегти копію даних» створює файл з усіма налаштуваннями, правками плиток і щоденником, «Завантажити копію даних» відновлює їх (наприклад, на новому телефоні). Зробіть копію перед очищенням даних браузера чи зміною телефона.'],
+   ['Біль: де і наскільки сильно','На середньому рівні «Болить» (і кнопка 🤕 унизу) показує місце: голова, серце, живіт, спина, горло, зуби, груди, рука, нога або «Інше». Потім можна вибрати силу болю: 🙂 трохи, 😐 помірно, 😣 сильно, 😫 дуже сильно — вийде, наприклад, «У мене сильно болить голова». Сказати без сили болю можна синьою кнопкою з фразою вгорі. На легких рівнях сила болю — останній крок у темі «Здоров’я».'],
+   ['«Не знаю»','На важкому й середньому рівнях є плитка 🤷 «Не знаю», на легких — «Я не знаю» та «Я не впевнений(а)» в темі «Спілкування та почуття», на вкладці «Говорить співрозмовник» — швидка відповідь «Я не знаю».'],
+   ['Показати фразу великою','Після того як фраза пролунала, її розмір змінюють кнопки A− / A+. «👁 Показати співрозмовнику» виводить фразу на весь екран найбільшим шрифтом, який вміщається; «⟳ Перевернути» повертає її для людини навпроти, «✕ Закрити» або «Назад» — назад. Зручно в галасливій палаті й для тих, хто погано чує.'],
+   ['Дзвінок близькій людині з «Допомога»','У ⚙️ → «🆘 Допомога: кому подзвонити» вкажіть одну-дві близькі людини (ім’я та номер). Тоді на червоному екрані «Допомога» з’явиться велика кнопка «📞 Подзвонити: …». Вона відкриває набір номера (дзвінок підтверджується в телефоні), сигнал при цьому замовкає. Номери зберігаються лише на цьому телефоні й потрапляють у резервну копію.'],
+   ['Фото на плитках','У редакторі ✏️ виберіть плитку й натисніть «📷 Вибрати фото» — підійде знімок із галереї або з камери. Фото замінює значок: так легше впізнати близьких людей і свої речі. Фото зменшується й зберігається на телефоні, входить у резервну копію; «Прибрати фото» повертає значок.'],
+   ['Вибір утриманням і підписи внизу','У ⚙️ → «Керування й натискання»: «Вибір утриманням» — плитки й великі кнопки спрацьовують, лише якщо їх утримати близько пів секунди (унизу кнопки заповнюється жовта смужка); допомагає при треморі й випадкових дотиках, а прокручування пальцем нічого не вибирає. «Підписи на нижній панелі» — великі підписи або лише значки. Натиснута кнопка на мить «вдавлюється» й підсвічується.'],
+   ['Очистити рядок','В «Абетці» кнопка 🗑 поруч із ⌫ прибирає весь зібраний рядок, а «Очистити» в рамці на екрані 🎤 — усю фразу. Випадково прибране повертає «↶ Повернути».'],
    ['Відкрито з Facebook або іншого застосунку','За посиланням із Facebook, Instagram, Messenger та інших застосунків сторінка часто відкривається у вбудованому браузері. У нього своє сховище: ваші налаштування й фрази там не видно, а зроблені там зміни не потраплять у встановлений застосунок. У такому разі вгорі з’являється жовта плашка: «Відкрити в Chrome» відкриває ту саму сторінку в Chrome (на Android), «Копіювати посилання» — щоб вставити його в браузер самостійно. Найзручніше запускати застосунок з іконки на головному екрані.'],
    ['Мова меню','У налаштуваннях можна задати мову меню й довідки окремо від мови фраз та озвучення: наприклад, фрази й голос українською, а меню російською. Підписи для самої людини (кнопки «Так», «Ні» тощо) йдуть за мовою фраз.'],
    ['Редактор плиток','Відкрийте потрібний розділ (наприклад, «Самопочуття» → «Мені» → «погано») і натисніть ✏️: редактор відкриється саме в цьому розділі. Тут можна додати плитку («+ Додати плитку в цей розділ»), змінити назву, фразу або значок плитки, видалити непотрібну. Інший розділ можна обрати у списку. «Скинути рівень» повертає стандартний набір. Правки зберігаються на цьому пристрої. У легких рівнях плитка — частина фрази; форми за статтю пишуться так: вип{ив~ила}.'],
@@ -560,12 +612,12 @@ uk:{title:'Говоримо разом',g_home:'Головний екран і �
   m_ext_off:'Відповідних фраз немає у словнику. Онлайн-пошук можна ввімкнути: ⚙️ → «Онлайн-пошук фраз».',
   m_online:'Пошукати в інтернеті',m_searching:'Шукаю варіанти…',m_online_res:'Варіанти з інтернету — натисніть, і вас запитають «…?»:',m_online_none:'Онлайн-пошук теж нічого не запропонував.',
   m_title:'🎤 Підказка за сказаним',m_slotonl:'Знайти онлайн',m_slotnone:'Онлайн нічого не знайшов',m_extra:'Схоже, це зайве слово.',m_slotq:'Що малося на увазі замість',m_keep:'✓ Залишити',m_rm:'✕ Прибрати',m_chk:'Перевірити слово',m_builds:'Натиснути — варіанти · утримувати — переставити',m_morew:'Ще слова',m_typeit:'Вписати або виправити текст',m_asheard:'Почуті слова:',m_all:'Уся фраза в рамку',m_fn:'Я, в, на, не…',m_build:'Натисніть слово — відкриються варіанти заміни. Утримуйте слово й перетягніть — зміниться порядок:',m_buildsay:'Сказати',m_buildclr:'Очистити',m_freq:'Часто обирали:',m_forget:'Забути запам’ятані фрази',m_forgetq:'Забути всі фрази, запам’ятані за вибором із підказок, і особистий словник вимови?',m_say:'Говорити',m_stop:'Зупинити',m_listen:'Слухаю… говоріть',m_heard:'Що почуто (можна виправити або вписати слова):',m_sugg:'Можливо, ви хотіли сказати — натисніть на фразу:',m_none:'Відповідних фраз не знайдено. Спробуйте сказати інакше або впишіть слова.',m_nomic:'Немає доступу до мікрофона. Дозвольте його в налаштуваннях браузера.',m_nosr:'Розпізнавання мовлення в цьому браузері недоступне. Впишіть слова вручну.',m_net:'Для розпізнавання потрібен інтернет. Впишіть слова вручну.',m_nosp:'Нічого не почуто. Спробуйте ще раз.',m_err:'Не вдалося розпізнати. Спробуйте ще раз або впишіть слова.',m_note:'Розпізнавання мовлення виконує браузер Chrome: зазвичай потрібен інтернет, а запис голосу може оброблятися на серверах Google. Добір фраз за знайденими словами працює без інтернету. Порушене мовлення розпізнати важко, тому слова можна вписати вручну (зокрема голосовим уведенням клавіатури).',f_edit:'Змінити списки на головному екрані',f_clear:'🗑️ Прибрати всі',f_done:'Готово',f_cclear:'Прибрати всі фрази з цього списку на головному екрані?',f_hint:'Натисніть на фразу, щоб прибрати її з блоку.',e_name:'Назва',e_phrase:'Фраза',ln_ru:'російською',ln_uk:'українською',ln_en:'англійською'},
-en:{title:'Let’s talk together',g_home:'Home screen and tiles',g_mic:'🎤 Suggestions from what was said',g_abc:'🔤 ABC',g_net:'Internet (optional)',
+en:{title:'Let’s talk together',g_sos:'🆘 Help: whom to call',s_sosnote:'A large call button appears on the red Help screen. The phone still asks you to confirm the call. Numbers are stored only on this phone.',s_sosname:'Name',s_sostel:'Phone number',sm_nosos:'not set',s_barlbl:'Bottom bar labels',bl_big:'Large',bl_off:'Icons only',s_holdsel:'Hold to select: tiles and large buttons work only when held for about half a second (against tremor and accidental touches)',sm_hold:'hold',g_home:'Home screen and tiles',g_mic:'🎤 Suggestions from what was said',g_abc:'🔤 ABC',g_net:'Internet (optional)',
   s_recent:'Recently said: how many of the last phrases spoken through 🎤 and ABC to show on the home screen',
   s_showauto:'“Someone speaks”: speak the recognized text right away',s_showemoji:'“Someone speaks”: show emoji pictures next to familiar words',
   sm_on:'on',sm_off:'off',sm_guard:'tap guard',sm_simple:'simplified view',sm_auto:'speak right away',sm_abchide:'collapse letters',sm_words:'words online',sm_phr:'phrases online',sm_diary:'diary',sm_recent:'recent',
-  fn_g:['I, you, we… (pronouns)','To, in, on… (prepositions)','Not, yes, this… (other words)'],m_typeRep:'✎ Type another word',m_typeIns:'＋ Insert a word before it',m_typePh:'Start typing a word',m_typeAsIs:'As typed',m_toFrame:'To the frame for editing',m_ctx:'This word does not seem to fit the meaning.',iab_t:'Opened inside Facebook or another app: your settings and phrases are not visible here.',iab_ios:'Opened inside Facebook or another app: your settings and phrases are not visible here. Menu ⋯ → “Open in browser”.',iab_open:'Open in Chrome',iab_copy:'Copy link',iab_copied:'Link copied',iab_x:'Hide',kbSmall:'Smaller',kbBig:'Larger',rec_title:'Recently said',listen:'Listen',undo:'Undo',qr_title:'Reply to the speaker:',show_tap:'Tap a word to hear it separately and slowly.',
-  qr:['Please repeat','Please speak more slowly','I don’t understand','Please write it down'],
+  fn_g:['I, you, we… (pronouns)','To, in, on… (prepositions)','Not, yes, this… (other words)'],m_typeRep:'✎ Type another word',m_typeIns:'＋ Insert a word before it',m_typePh:'Start typing a word',m_typeAsIs:'As typed',m_toFrame:'To the frame for editing',m_ctx:'This word does not seem to fit the meaning.',iab_t:'Opened inside Facebook or another app: your settings and phrases are not visible here.',iab_ios:'Opened inside Facebook or another app: your settings and phrases are not visible here. Menu ⋯ → “Open in browser”.',iab_open:'Open in Chrome',iab_copy:'Copy link',iab_copied:'Link copied',iab_x:'Hide',said_show:'Show to the other person',bs_flip:'⟳ Flip',bs_close:'✕ Close',sos_call:'Call',ed_photo:'Photo instead of an icon',ed_photo_add:'📷 Choose a photo',ed_photo_del:'Remove photo',ed_photo_big:'The photo did not fit in the phone’s storage. Try another photo or remove extra photos from tiles.',abc_clr:'Clear the whole line',kbSmall:'Smaller',kbBig:'Larger',rec_title:'Recently said',listen:'Listen',undo:'Undo',qr_title:'Reply to the speaker:',show_tap:'Tap a word to hear it separately and slowly.',
+  qr:['Please repeat','Please speak more slowly','I don’t understand','I don’t know','Please write it down'],
   freq:'Often',yes:'Yes',no:'No',back:'Back',rep:'Repeat',help:'Help',pain:'Pain',sure:'Sure?',done:'Done',cancel:'Cancel',mods:['now','later','more','enough'],helpSay:'Help! I need help!',helpTxt:'I NEED HELP',
   built:'Your phrase',sayso:'Say it',cont:'Continue the phrase — choose a word:',pick:'Choose a topic:',ver:'App version',
   aHome:'Home',aLang:'Language',aSet:'Settings',aEd:'Editor',nomem:'Not enough storage',testSay:'This is a voice test',
@@ -632,6 +684,13 @@ en:{title:'Let’s talk together',g_home:'Home screen and tiles',g_mic:'🎤 Sug
    ['Less fatigue (⚙️)','“Speak immediately” removes the “…?” question: the phrase is spoken right after tapping a tile or a suggestion (in Health and Medicines and for phrases from the internet the question stays). The “Often” block can be turned off so tiles always stay in place.'],
    ['Communication diary','Opens from Settings. The phone stores the spoken phrases with date and time (the last 1000). You can see activity over 7 days and the most frequent phrases, and save a text file for a speech therapist. The diary can be turned off and cleared.'],
    ['Backup','In Settings, “Save a data backup” creates a file with all settings, tile edits and the diary; “Load a data backup” restores them (for example, on a new phone). Make a backup before clearing browser data or changing phones.'],
+   ['Pain: where and how bad','At the medium level, “Hurts” (and the 🤕 button at the bottom) shows the place: head, heart, stomach, back, throat, teeth, chest, arm, leg or “Elsewhere”. Then you can choose how bad: 🙂 a little, 😐 moderately, 😣 a lot, 😫 very badly — for example, “My head hurts a lot”. The blue phrase button at the top says it without the strength. At the light levels the strength is the last step in the Health topic.'],
+   ['“Don’t know”','The severe and medium levels have a 🤷 “Don’t know” tile, the light levels have “I don’t know” and “I’m not sure” in “Talking and feelings”, and the “Someone speaks” tab has a quick “I don’t know” reply.'],
+   ['Show the phrase large','After a phrase is spoken, A− / A+ change its size. “👁 Show to the other person” fills the screen with the largest text that fits; “⟳ Flip” turns it for someone sitting opposite, “✕ Close” or “Back” returns. Useful in a noisy ward and for people who are hard of hearing.'],
+   ['Calling someone from Help','In ⚙️ → “🆘 Help: whom to call” enter one or two people (name and number). A large “📞 Call: …” button then appears on the red Help screen. It opens the dialer (the phone asks you to confirm the call) and the alarm goes quiet. Numbers are stored only on this phone and are included in the backup.'],
+   ['Photos on tiles','In the ✏️ editor choose a tile and tap “📷 Choose a photo” — from the gallery or the camera. The photo replaces the icon, which makes family members and personal things easier to recognize. The photo is made smaller, stored on the phone and included in the backup; “Remove photo” brings the icon back.'],
+   ['Hold to select and bottom labels','In ⚙️ → “Controls and taps”: “Hold to select” — tiles and large buttons work only when held for about half a second (a yellow bar fills along the bottom); it helps with tremor and accidental touches, and scrolling never selects anything. “Bottom bar labels” — large labels or icons only. A pressed button briefly “sinks” and lights up.'],
+   ['Clear the line','In ABC the 🗑 button next to ⌫ removes the whole line, and “Clear” in the 🎤 frame removes the whole phrase. “↶ Undo” brings back what was removed by accident.'],
    ['Opened from Facebook or another app','A link from Facebook, Instagram, Messenger and other apps often opens in their built-in browser. It has its own storage: your settings and phrases are not visible there, and changes made there do not reach the installed app. In that case a yellow bar appears at the top: “Open in Chrome” opens the same page in Chrome (on Android), “Copy link” lets you paste it into a browser yourself. It is easiest to start the app from its home screen icon.'],
    ['Menu language','Settings let you choose the menu and help language separately from the language of phrases and speech: for example, phrases and voice in Ukrainian and the menu in English. The labels meant for the person (“Yes”, “No”, etc.) follow the phrase language.'],
    ['Tile editor','Open the section you need (for example, “Feelings” → “I feel” → “cold”) and tap ✏️: the editor opens in that very section. You can add a tile (“+ Add a tile to this section”), change its name, phrase or icon, or delete one. Choose another section from the list. “Reset level” restores the standard set. Edits are kept on this device. English and Russian/Ukrainian phrases are stored separately in the mild levels, so edit them in the language you are using. In the mild levels a tile is a part of a phrase.'],
@@ -675,6 +734,10 @@ const DEFAULTS = {
   showEmoji: true,     // «Говорит собеседник»: эмодзи рядом со знакомыми словами
   recentN: 2,          // сколько «Недавно сказанных» фраз показывать на главном экране (0 — не показывать)
   readSize: 1,         // размер крупного текста: 0…3
+  saidSize: 1,         // размер фразы в окне «Сказано»: 0…3
+  barLbl: 'big',       // подписи нижней панели: 'big' — показаны, 'off' — только значки
+  holdSel: false,      // выбор удержанием (против тремора и случайных касаний)
+  sos: [{n:'',t:''},{n:'',t:''}],   // близкие для звонка с экрана «Помощь»
   abcMode: 'prefix',   // «Азбука»: prefix — только подходящие буквы, free — свободный набор
   hear: false, syll: false, quick: false, freq: true, vib: false, awake: false, log: true,
   ext: {prov:'off', url:'', model:'', ok:false}   // онлайн-поиск фраз; сам ключ хранится отдельно (aac.secret.ext)
@@ -691,6 +754,9 @@ if(settings.hand!=='left') settings.hand = 'right';
 if(settings.abcMode!=='free') settings.abcMode = 'prefix';
 if(settings.hearTab!=='show') settings.hearTab = 'sug';
 settings.recentN = [0,2,4,6].includes(+settings.recentN) ? +settings.recentN : 2;
+if(settings.barLbl!=='off') settings.barLbl = 'big';
+if(!Array.isArray(settings.sos)) settings.sos = [];
+settings.sos = [0,1].map(i=>({n:String((settings.sos[i]||{}).n||''),t:String((settings.sos[i]||{}).t||'')}));
 if(!settings.ext || typeof settings.ext !== 'object') settings.ext = {prov:'off', url:'', model:'', ok:false};
 if(!['off','anthropic','openai'].includes(settings.ext.prov)) settings.ext.prov = 'off';
 
@@ -713,9 +779,19 @@ const DEF_L1 = () => [
   {id:'bed_1',col:'#8A6D00',l:'Лечь|Лягти|Lie down',s:'Я хочу лечь|Я хочу лягти|I want to lie down',e:'🛏️'},
   {id:'cold_1',col:'#B83280',l:'Холодно|Холодно|Cold',s:'Мне холодно|Мені холодно|I am cold',e:'🥶'},
   {id:'hot_1',col:'#C27C0E',l:'Жарко|Жарко|Hot',s:'Мне жарко|Мені гаряче|I am hot',e:'🥵'},
-  {id:'bad_1',col:'#6B46C1',l:'Плохо|Погано|Unwell',s:'Мне плохо|Мені погано|I feel unwell',e:'🤢'}
+  {id:'bad_1',col:'#6B46C1',l:'Плохо|Погано|Unwell',s:'Мне плохо|Мені погано|I feel unwell',e:'🤢'},
+  {id:'dk_1',col:'#4A5568',l:'Не знаю|Не знаю|Don’t know',s:'Я не знаю|Я не знаю|I don’t know',e:'🤷'}
 ];
 
+// Место боли → сила боли. part: «болит голова|болить голова|head hurts» (en — без «My»)
+const PAIN_LV=[['немного','трохи','a little','Немного|Трохи|A little','🙂'],['умеренно','помірно','moderately','Умеренно|Помірно|Moderately','😐'],
+  ['сильно','сильно','a lot','Сильно|Сильно|A lot','😣'],['очень сильно','дуже сильно','very badly','Очень сильно|Дуже сильно|Very badly','😫']];
+function PB(l,part,e){
+  const [ru,uk,en]=part.split('|');
+  const n=L(l,'У меня '+ru+'|У мене '+uk+'|My '+en,e);
+  n.c=PAIN_LV.map(([r,k,g,lb,em])=>L(lb,'У меня '+r+' '+ru+'|У мене '+k+' '+uk+'|My '+en+' '+g,em));
+  return n;
+}
 // L2: Средняя степень — категориальная структура (ru|uk|en)
 const DEF_L2 = () => [
 {id:'drink',col:'#2B6CB0',l:'Пить|Пити|Drink',s:'Я хочу пить|Я хочу пити|I want to drink',e:'🥤',c:[
@@ -728,8 +804,13 @@ const DEF_L2 = () => [
  L('Туалет|Туалет|Toilet','Мне нужно в туалет|Мені потрібно в туалет|I need the toilet','🚽'),L('Умыться|Вмитися|Wash up','Я хочу умыться|Я хочу вмитися|I want to wash my face','🚿'),
  L('Душ|Душ|Shower','Я хочу в душ|Я хочу в душ|I want to take a shower','🛁')]},
 {id:'pain',col:'#B3261E',crit:1,l:'Болит|Болить|Hurts',s:'У меня что-то болит|У мене щось болить|Something hurts',e:'🤕',c:[
- L('Голова|Голова|Head','У меня болит голова|У мене болить голова|My head hurts','🧠'),L('Сердце|Серце|Heart','У меня болит сердце|У мене болить серце|My heart hurts','❤️'),
- L('Живот|Живіт|Stomach','У меня болит живот|У мене болить живіт|My stomach hurts','🤢'),L('Спина|Спина|Back','У меня болит спина|У мене болить спина|My back hurts','🧍')]},
+ PB('Голова|Голова|Head','болит голова|болить голова|head hurts','🧠'),PB('Сердце|Серце|Heart','болит сердце|болить серце|heart hurts','❤️'),
+ PB('Живот|Живіт|Stomach','болит живот|болить живіт|stomach hurts','🤢'),PB('Спина|Спина|Back','болит спина|болить спина|back hurts','🧍'),
+ PB('Горло|Горло|Throat','болит горло|болить горло|throat hurts','🗣️'),PB('Зубы|Зуби|Teeth','болят зубы|болять зуби|teeth hurt','🦷'),
+ PB('Грудь|Груди|Chest','болит в груди|болить у грудях|chest hurts','🫁'),PB('Рука|Рука|Arm','болит рука|болить рука|arm hurts','💪'),
+ PB('Нога|Нога|Leg','болит нога|болить нога|leg hurts','🦵'),
+ L('Другое|Інше|Elsewhere','У меня болит в другом месте|У мене болить в іншому місці|It hurts somewhere else','❓')]},
+{id:'dk',col:'#4A5568',l:'Не знаю|Не знаю|Don’t know',s:'Я не знаю|Я не знаю|I don’t know',e:'🤷'},
 {id:'ppl',col:'#2F855A',l:'Люди|Люди|People',s:'Я хочу поговорить|Я хочу поговорити|I want to talk',e:'👥',c:[
  L('Позвонить|Подзвонити|Call','Я хочу позвонить|Я хочу подзвонити|I want to make a call','📱'),L('Врач|Лікар|Doctor','Мне нужен врач|Мені потрібен лікар|I need a doctor','👩‍⚕️'),
  L('Тишина|Тиша|Quiet','Я хочу побыть в тишине|Я хочу побути в тиші|I want some quiet','🤫')]}
@@ -801,6 +882,21 @@ const CORPUS=`
 💪 У меня/болит/рука = У мене/болить/рука
 🗣️ У меня/болит/горло = У мене/болить/горло
 🦷 У меня/болит/зуб = У мене/болить/зуб
+🫁 У меня/болит/в груди = У мене/болить/у грудях
+🫁 У меня/болит/в груди/сильно = У мене/болить/у грудях/сильно
+🙂 У меня/болит/голова/немного = У мене/болить/голова/трохи
+😐 У меня/болит/голова/умеренно = У мене/болить/голова/помірно
+😫 У меня/болит/голова/очень сильно = У мене/болить/голова/дуже сильно
+🙂 У меня/болит/живот/немного = У мене/болить/живіт/трохи
+😣 У меня/болит/живот/сильно = У мене/болить/живіт/сильно
+😫 У меня/болит/живот/очень сильно = У мене/болить/живіт/дуже сильно
+🙂 У меня/болит/спина/немного = У мене/болить/спина/трохи
+😣 У меня/болит/спина/сильно = У мене/болить/спина/сильно
+😫 У меня/болит/спина/очень сильно = У мене/болить/спина/дуже сильно
+😣 У меня/болит/нога/сильно = У мене/болить/нога/сильно
+😣 У меня/болит/рука/сильно = У мене/болить/рука/сильно
+😣 У меня/болит/горло/сильно = У мене/болить/горло/сильно
+😣 У меня/болит/зуб/сильно = У мене/болить/зуб/сильно
 😵 У меня/кружится/голова = У мене/паморочиться/голова
 🖐️ У меня/онемела/рука = У мене/заніміла/рука
 🦶 У меня/онемела/нога = У мене/заніміла/нога
@@ -1043,6 +1139,8 @@ const CORPUS=`
 🙇 Прости/меня = Пробач/мені
 😢 Мне/грустно = Мені/сумно
 😨 Мне/страшно = Мені/страшно
+🤷 Я/не знаю = Я/не знаю
+🤔 Я/не увер{ен~ена} = Я/не впевнен{ий~а}
 😟 Я/волнуюсь = Я/хвилююся
 🤫 Мне нужен/покой = Мені потрібен/спокій
 🤫 Я хочу/побыть/в тишине = Я хочу/побути/в тиші
@@ -1244,6 +1342,21 @@ const CORPUS_EN=`
 💪 My/arm/hurts
 🗣️ My/throat/hurts
 🦷 My/tooth/hurts
+🫁 My/chest/hurts
+🫁 My/chest/hurts/badly
+🙂 My/head/hurts/a little
+😐 My/head/hurts/moderately
+😫 My/head/hurts/very badly
+🙂 My/stomach/hurts/a little
+😣 My/stomach/hurts/badly
+😫 My/stomach/hurts/very badly
+🙂 My/back/hurts/a little
+😣 My/back/hurts/badly
+😫 My/back/hurts/very badly
+😣 My/leg/hurts/badly
+😣 My/arm/hurts/badly
+😣 My/throat/hurts/badly
+😣 My/tooth/hurts/badly
 😵 My/head/is spinning
 🖐️ My/arm/is numb
 🦶 My/leg/is numb
@@ -1482,6 +1595,8 @@ const CORPUS_EN=`
 😊 It's good/that/you/came
 🎉 Happy/holiday/to you
 🙇 I'm/sorry
+🤷 I/don’t know
+🤔 I'm/not sure
 😢 I feel/sad
 😨 I feel/scared
 😟 I am/worried
@@ -1749,7 +1864,7 @@ function tile(n,top,fn){
     const stop=()=>{if(tm){clearTimeout(tm);tm=null}};
     b.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;stop();tm=setTimeout(()=>{tm=null;longUntil=Date.now()+500;showSyll(t(n.l))},600)});
     b.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>10||Math.abs(e.clientY-sy)>10)stop()});
-    ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));
+    ['pointerup','pointerleave','pointercancel','click'].forEach(ev=>b.addEventListener(ev,stop));
     b.addEventListener('contextmenu',e=>e.preventDefault());
   }
   return b;
@@ -1901,9 +2016,13 @@ function renderAbc(){
   if(abc.line.length||abcUndo){
     const r=h('div','row');
     // «Сказать так»: строка звучит и очищается для следующей фразы (повторить — кнопкой «Повтор»)
-    if(abc.line.length)r.append(h('button','ans neu sm','🔊 '+u('sayso'),()=>{const t2=abc.line.join(' ');abc.line.length=0;abcUndo=null;say(t2,false,{recent:1,e:'🔤'})}),
-      h('button','ans no sm','⌫',()=>{abcUndo=abc.line.pop();abcWordDone();render()}));
-    if(abcUndo)r.append(h('button','undo','↶ '+u('undo')+': '+abcUndo,()=>{abc.line.push(abcUndo);abcUndo=null;render()}));
+    if(abc.line.length){
+      r.append(h('button','ans neu sm','🔊 '+u('sayso'),()=>{const t2=abc.line.join(' ');abc.line.length=0;abcUndo=null;say(t2,false,{recent:1,e:'🔤'})}),
+        h('button','ans no sm','⌫',()=>{abcUndo=abc.line.pop();abcWordDone();render()}));
+      // 🗑 — убрать всю строку сразу (массив в abcUndo — «Вернуть» возвращает строку целиком)
+      if(abc.line.length>1){const cl=h('button','ans no sm','🗑',()=>{abcUndo=abc.line.splice(0);abcWordDone();render()});cl.setAttribute('aria-label',u('abc_clr'));r.append(cl)}
+    }
+    if(abcUndo)r.append(h('button','undo','↶ '+u('undo')+': '+(Array.isArray(abcUndo)?abcUndo.join(' '):abcUndo),()=>{Array.isArray(abcUndo)?abc.line.push(...abcUndo):abc.line.push(abcUndo);abcUndo=null;render()}));
     res.append(r);
   }
   // «Я, в, на, не…»: короткие служебные слова одним нажатием (как в рамке на экране 🎤); начатое слово при этом сбрасывается
@@ -2088,13 +2207,39 @@ function say(txt,silent,opt){
   ov.innerHTML='';ov.className='';ov.style.display='flex';clearInterval(tmr);tmr=null;
   const r=h('div','row');
   r.append(h('button','ans neu','🔊 '+u('rep'),()=>speak(last)),h('button','ans neu','🐢 '+u('slow'),()=>speak(last,SLOW)),h('button','ans yes',u('done'),()=>{closeOv();path=[];render()}));
-  ov.append(h('div','big',txt),r);
+  const big=h('div','said',txt);big.style.fontSize=saidSize();
+  const sr=h('div','srow');
+  const sz=d=>{settings.saidSize=Math.max(0,Math.min(3,(Number(settings.saidSize)||0)+d));saveSettings();big.style.fontSize=saidSize()};
+  sr.append(h('button',null,'A−',()=>sz(-1)),h('button',null,'A+',()=>sz(1)),h('button',null,'👁 '+u('said_show'),()=>bigShow(txt)));
+  ov.append(big,sr,r);
 }
+const SAID_PX=[30,40,52,64],SAID_VW=[8.5,11,14,17];
+function saidSize(){const i=Math.max(0,Math.min(3,Number(settings.saidSize)||0));return `min(${SAID_PX[i]}px,${SAID_VW[i]}vw)`}
+// Фраза на весь экран крупно — для собеседника (шумно, плохо слышит); «Перевернуть» — для сидящего напротив
+function bigShow(txt){
+  closeBigShow();
+  const d=h('div',null);d.id='bigShow';d.setAttribute('role','dialog');
+  const tx=h('div','bs-t',txt),r=h('div','row');
+  r.append(h('button',null,u('bs_flip'),()=>d.classList.toggle('flip')),h('button',null,u('bs_close'),closeBigShow));
+  d.append(tx,r);document.body.append(d);
+  // самый крупный шрифт, при котором фраза помещается целиком
+  let lo=16,hi=Math.max(40,Math.min(innerWidth,innerHeight)*0.6);
+  for(let k=0;k<14;k++){const m=(lo+hi)/2;tx.style.fontSize=m+'px';if(tx.scrollHeight>tx.clientHeight+1||tx.scrollWidth>tx.clientWidth+1)hi=m;else lo=m}
+  tx.style.fontSize=Math.floor(lo)+'px';
+}
+function closeBigShow(){const d=$('#bigShow');if(d){d.remove();return true}return false}
 function helpMe(){
   clearInterval(tmr);ov.innerHTML='';ov.className='red';ov.style.display='flex';cn=null;
   logPhrase('🆘 '+u('helpTxt'));
   const go=()=>speak(u('helpSay'),1,null,true);go();tmr=setInterval(go,6000);
-  ov.append(h('div','big','🆘'),h('div','big',u('helpTxt')),h('button','ans neu',u('cancel'),()=>{closeOv();render()}));
+  ov.append(h('div','big','🆘'),h('div','big',u('helpTxt')));
+  // Звонок близкому: открывает набор номера; сигнал при этом замолкает, чтобы не мешать разговору (красный экран остаётся)
+  (settings.sos||[]).filter(c=>c&&c.t).forEach(c=>{
+    const a=h('a','call','📞 '+u('sos_call')+(c.n?': '+c.n:''));a.href='tel:'+c.t;
+    a.addEventListener('click',()=>{clearInterval(tmr);tmr=null;try{speechSynthesis.cancel()}catch(_){}});
+    ov.append(a);
+  });
+  ov.append(h('button','ans neu',u('cancel'),()=>{closeOv();render()}));
 }
 
 /* ---------- Дневник общения ---------- */
@@ -2146,6 +2291,7 @@ function bar(k){
 }
 // Шаг назад: окно → панель вариантов → буква → слово → выход из экрана → раздел выше. false — отступать некуда
 function goBack(){
+  if(closeBigShow())return true;
   if(sos()||tmr){closeOv();render();return true}
   if(ov.style.display==='flex'){closeOv();if(hearOn||abc)render();return true}
   if(hearOn){
@@ -2166,12 +2312,34 @@ function goBack(){
   return false;
 }
 
+/* ---------- Отклик на нажатие и выбор удержанием ---------- */
+document.addEventListener('pointerdown',e=>{
+  const b=e.target.closest&&e.target.closest('button');if(!b)return;
+  b.classList.add('prs');
+  const off=()=>{setTimeout(()=>b.classList.remove('prs'),110);['pointerup','pointercancel','pointerleave'].forEach(t=>b.removeEventListener(t,off))};
+  ['pointerup','pointercancel','pointerleave'].forEach(t=>b.addEventListener(t,off));
+},true);
+// «Выбор удержанием»: плитки и большие кнопки срабатывают после удержания HOLD_MS, короткое касание игнорируется
+const HOLD_SEL='.tile,.ans,.sug,#bar button',HOLD_MS=500;
+let holdOK=null;
+const holdTarget=b=>settings.holdSel&&b&&!b.closest('.modal')&&!b.closest('#bigShow')&&b.matches(HOLD_SEL);
+document.addEventListener('pointerdown',e=>{
+  const b=e.target.closest&&e.target.closest('button');if(!holdTarget(b))return;
+  let sx=e.clientX,sy=e.clientY,tm=null;
+  b.style.setProperty('--hold',HOLD_MS+'ms');b.classList.add('holding');
+  const end=()=>{clearTimeout(tm);b.classList.remove('holding');['pointerup','pointercancel','pointerleave'].forEach(t=>b.removeEventListener(t,end));b.removeEventListener('pointermove',mv)};
+  const mv=ev=>{if(Math.abs(ev.clientX-sx)>12||Math.abs(ev.clientY-sy)>12)end()};   // палец поехал — это прокрутка, не выбор
+  ['pointerup','pointercancel','pointerleave'].forEach(t=>b.addEventListener(t,end));b.addEventListener('pointermove',mv);
+  tm=setTimeout(()=>{end();if(!b.isConnected)return;holdOK=b;try{b.click()}finally{holdOK=null}},HOLD_MS);
+},true);
+
 /* ---------- Защита от случайных нажатий, вибрация ---------- */
 let lastTap=0;
 document.addEventListener('click',e=>{
   armBack();
   const b=e.target.closest&&e.target.closest('button');
   if(!b||b.closest('.modal'))return;
+  if(holdTarget(b)&&b!==holdOK){e.stopPropagation();e.preventDefault();return}   // при «выборе удержанием» короткое касание не срабатывает
   const now=Date.now();
   if(now<longUntil){e.stopPropagation();e.preventDefault();return}      // клик после долгого нажатия
   const g=+settings.guard||0;
@@ -2244,6 +2412,7 @@ function applyUI(){
   document.body.classList.toggle('no-abc',settings.level==='L1');
   document.documentElement.setAttribute('data-size',settings.size);
   document.querySelectorAll('#bar button').forEach((b,i)=>{b.style.order=settings.hand==='left'?5-i:i});
+  document.body.classList.toggle('bar-nolbl',settings.barLbl==='off');
   setAwake();
 }
 
@@ -2277,7 +2446,8 @@ function settSum(g){
     case 'main':return selTxt('#setLang')+' · '+selTxt('#setSeg');
     case 'voice':return selTxt('#setVoice')+' · '+$('#setRate').value;
     case 'home':return selTxt('#setSize')+' · '+uh('freq')+': '+onOff('#setFreq')+' · '+uh('sm_recent')+': '+$('#setRecent').value;
-    case 'touch':return uh('sm_guard')+': '+selTxt('#setGuard')+' · '+selTxt('#setHand');
+    case 'touch':return uh('sm_guard')+': '+selTxt('#setGuard')+' · '+uh('sm_hold')+': '+onOff('#setHoldSel')+' · '+selTxt('#setHand');
+    case 'sos':{const ns=[0,1].map(i=>$('#setSosT'+i).value.trim()?($('#setSosN'+i).value.trim()||$('#setSosT'+i).value.trim()):'').filter(Boolean);return ns.length?'📞 '+ns.join(', '):uh('sm_nosos')}
     case 'mic':return uh('sm_simple')+': '+onOff('#setHearSimple')+' · '+uh('sm_auto')+': '+onOff('#setShowAuto');
     case 'abc':return uh('sm_abchide')+': '+onOff('#setAbcAutoHide');
     case 'net':return uh('sm_words')+': '+onOff('#setWordOnline')+' · '+uh('sm_phr')+': '+uh($('#setExtProv').value==='off'?'sm_off':'sm_on');
@@ -2350,7 +2520,7 @@ $('#settingsBtn').onclick = () => {
   $('#rateVal').textContent = settings.rate;
   $('#setPitch').value = settings.pitch;
   $('#pitchVal').textContent = settings.pitch;
-  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Log','log'],['WordOnline','wordOnline'],['AbcAutoHide','abcAutoHide'],['WordTap','wordTap'],['HearSimple','hearSimple'],['ShowAuto','showAuto'],['ShowEmoji','showEmoji']]
+  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Log','log'],['WordOnline','wordOnline'],['AbcAutoHide','abcAutoHide'],['WordTap','wordTap'],['HearSimple','hearSimple'],['ShowAuto','showAuto'],['ShowEmoji','showEmoji'],['HoldSel','holdSel']]
     .forEach(([id,k])=>{$('#set'+id).checked=!!settings[k]});
   $('#ver').textContent = uh('ver') + ': ' + APP_VERSION;
   const ex = settings.ext;
@@ -2358,6 +2528,7 @@ $('#settingsBtn').onclick = () => {
   $('#extNote').textContent = '';syncExtUi();
   $('#lexInfo').textContent = lexInfoText();$('#lexNote').textContent = '';
   populateVoices();
+  [0,1].forEach(i=>{$('#setSosN'+i).value=settings.sos[i].n;$('#setSosT'+i).value=settings.sos[i].t});
   settSet(hearOn?'mic':abc?'abc':'main');   // сразу раскрыта группа того экрана, откуда открыты настройки
   settModal.scrollTop = 0;
 };
@@ -2394,7 +2565,9 @@ $('#closeSettBtn').onclick = () => {
   settings.guard = +$('#setGuard').value;
   settings.hand = $('#setHand').value;
   settings.recentN = +$('#setRecent').value;
-  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Log','log'],['WordOnline','wordOnline'],['AbcAutoHide','abcAutoHide'],['WordTap','wordTap'],['HearSimple','hearSimple'],['ShowAuto','showAuto'],['ShowEmoji','showEmoji']]
+  settings.barLbl = $('#setBarLbl').value;
+  settings.sos = [0,1].map(i=>({n:$('#setSosN'+i).value.trim(),t:$('#setSosT'+i).value.replace(/[^\d+*#]/g,'')}));
+  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Log','log'],['WordOnline','wordOnline'],['AbcAutoHide','abcAutoHide'],['WordTap','wordTap'],['HearSimple','hearSimple'],['ShowAuto','showAuto'],['ShowEmoji','showEmoji'],['HoldSel','holdSel']]
     .forEach(([id,k])=>{settings[k]=$('#set'+id).checked});
   settings.rate = $('#setRate').value;
   settings.pitch = $('#setPitch').value;
@@ -3203,7 +3376,9 @@ function sayFrame(){
   recordPick(t2,'💬',(hearTxt+' '+hearAlt).trim());stopRec();hearDone();say(t2,false,{recent:1,e:'💬'});
 }
 // «↶ Вернуть»: случайно убранное слово возвращается на своё место
-const undoBtn=()=>h('button','mini ctl','↶ '+u('undo'),()=>{const x=hearUndo;hearUndo=null;if(!x)return;hearBuild.splice(Math.min(x.i,hearBuild.length),0,x.w);hearPulse=true;refreshHear()});
+const undoBtn=()=>h('button','mini ctl','↶ '+u('undo'),()=>{const x=hearUndo;hearUndo=null;if(!x)return;if(x.all)hearBuild=x.all.slice();else hearBuild.splice(Math.min(x.i,hearBuild.length),0,x.w);hearOpen=true;hearPulse=true;refreshHear()});
+// «Очистить» в рамке: слова можно вернуть кнопкой «↶ Вернуть»
+function clearFrame(){const all=hearBuild.slice();clearHear();if(all.length){hearUndo={all,w:all.join(' ')};refreshHear()}}
 function drawBuildSimple(box){
   const d=h('div','hbuild simple'+(hearPulse?' pulse':''));hearPulse=false;
   const sig=hearBuild.join('\u0001')+'|'+hearSlot+'|'+(hearFn?1:0),changed=sig!==hearSig;hearSig=sig;
@@ -3215,7 +3390,7 @@ function drawBuildSimple(box){
   const fnBtn=h('button','mini ctl fn',null,()=>{hearFn=!hearFn;refreshHear()});
   fnBtn.append(h('span','arr',hearFn?'▼':'▶'),h('span',null,u('m_fn')));fnBtn.setAttribute('aria-expanded',hearFn?'true':'false');
   const fr=h('div','row');
-  fr.append(fnBtn,h('button','mini ctl',u('m_buildclr'),clearHear));if(hearUndo)fr.append(undoBtn());
+  fr.append(fnBtn,h('button','mini ctl',u('m_buildclr'),clearFrame));if(hearUndo)fr.append(undoBtn());
   d.append(fr);
   if(hearFn)d.append(fnPanel(w=>{hearFn=false;addBuild(w)}));   // блок сворачивается после выбора: служебные слова редко идут подряд
   box.append(d);
@@ -3224,7 +3399,7 @@ function drawBuildSimple(box){
 function drawBuild(box){
   if(!hearBuild.length){
     hearSig='';
-    if(hearUndo){const ub=h('button','undo','↶ '+u('undo')+': '+hearUndo.w,()=>{const x=hearUndo;hearUndo=null;hearBuild.push(x.w);hearPulse=true;refreshHear()});box.append(ub)}
+    if(hearUndo){const ub=h('button','undo','↶ '+u('undo')+': '+hearUndo.w,()=>{const x=hearUndo;hearUndo=null;if(x.all)hearBuild=x.all.slice();else hearBuild.push(x.w);hearOpen=true;hearPulse=true;refreshHear()});box.append(ub)}
     return;
   }
   if(simpleHear())return drawBuildSimple(box);
@@ -3247,7 +3422,7 @@ function drawBuild(box){
     const fnBtn=h('button','mini ctl fn',null,()=>{hearFn=!hearFn;refreshHear()});
     fnBtn.append(h('span','arr',hearFn?'▼':'▶'),h('span',null,u('m_fn')));fnBtn.setAttribute('aria-expanded',hearFn?'true':'false');
     const fr=h('div','row');
-    fr.append(fnBtn,h('button','mini ctl',u('m_buildclr'),clearHear));if(hearUndo)fr.append(undoBtn());
+    fr.append(fnBtn,h('button','mini ctl',u('m_buildclr'),clearFrame));if(hearUndo)fr.append(undoBtn());
     d.append(fr);
     if(hearFn)d.append(fnPanel(w=>{hearFn=false;addBuild(w)}));   // блок сворачивается после выбора: служебные слова редко идут подряд
     const cw=h('div','hchips');d.append(cw);
@@ -3669,6 +3844,20 @@ function openEd(){
   edCtx=(!abc&&path.length)?path[path.length-1].id:'';
   sel='';ed.style.display='block';ed.scrollTop=0;drawEd();
 }
+// Фото → квадрат 192×192 (по центру), JPEG ≈10–20 КБ
+function photoData(file){
+  return new Promise((ok,no)=>{
+    const url=URL.createObjectURL(file),im=new Image();
+    im.onload=()=>{
+      const S=192,c=document.createElement('canvas');c.width=c.height=S;
+      const m=Math.min(im.naturalWidth,im.naturalHeight);if(!m){URL.revokeObjectURL(url);no();return}
+      c.getContext('2d').drawImage(im,(im.naturalWidth-m)/2,(im.naturalHeight-m)/2,m,m,0,0,S,S);
+      URL.revokeObjectURL(url);ok(c.toDataURL('image/jpeg',0.8));
+    };
+    im.onerror=()=>{URL.revokeObjectURL(url);no()};
+    im.src=url;
+  });
+}
 function closeEd(){
   ed.style.display='none';
   const ok=[];for(const n of path){if(find(n.id))ok.push(n);else break}   // убрать из пути удалённые разделы
@@ -3711,6 +3900,19 @@ function drawEd(){
     fl=LS.map(c=>fld(uh('e_name')+' ('+uh('ln_'+c)+')',pick(n.l,c)));
     fp=LS.map(c=>fld(uh('e_phrase')+' ('+uh('ln_'+c)+')',pick(n.s,c)));
     ie=fld(uh('e_em'),n.e||'');
+    // Фото вместо значка (близкие люди, свои вещи): уменьшается до 192×192 и хранится на телефоне
+    ed.append(h('label',null,uh('ed_photo')));
+    const pr=h('div','edpic');
+    if(n.img){const im=h('img');im.src=n.img;im.alt='';pr.append(im)}
+    const fi=h('input');fi.type='file';fi.accept='image/*';fi.hidden=true;
+    fi.onchange=()=>{const fl=fi.files&&fi.files[0];if(!fl)return;photoData(fl).then(d=>{
+      const old=n.img;n.img=d;
+      try{localStorage.setItem(tk(),JSON.stringify(tree))}catch(e){if(old)n.img=old;else delete n.img;alert(uh('ed_photo_big'));return}
+      drawEd();
+    }).catch(()=>alert(uh('ed_photo_big')))};
+    pr.append(fi,h('button',null,uh('ed_photo_add'),()=>fi.click()));
+    if(n.img)pr.append(h('button','d',uh('ed_photo_del'),()=>{delete n.img;save();drawEd()}));
+    ed.append(pr);
   }
   const r=h('div','row');
   if(f){
@@ -3774,6 +3976,7 @@ function applyI18n(){
   fill('#setSize',[['m',uh('sz_m')],['l',uh('sz_l')],['xl',uh('sz_xl')]],settings.size);
   fill('#setGuard',[['0',uh('gd_0')],['400',uh('gd_400')],['800',uh('gd_800')],['1500',uh('gd_1500')]],String(settings.guard));
   fill('#setHand',[['right',uh('hd_right')],['left',uh('hd_left')]],settings.hand);
+  fill('#setBarLbl',[['big',uh('bl_big')],['off',uh('bl_off')]],settings.barLbl);
   fill('#setRecent',[['0','0 — '+uh('sm_off')],['2','2'],['4','4'],['6','6']],String(settings.recentN));
   showLvNote();
   drawSettHeads();
