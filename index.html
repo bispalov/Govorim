@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#12181F">
-<link rel="manifest" href="/Govorim/manifest.json">
-<link rel="icon" href="/Govorim/icon-192.png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
 <title>Говоримо разом</title>
 <style>
 :root {
@@ -117,7 +117,9 @@ body.bar-nolbl #bar .i{font-size:clamp(26px,8vw,32px)}
 .modal ul{padding-left:22px}
 .modal li{margin:5px 0}
 .helphead{position:sticky;top:-16px;z-index:2;display:flex;gap:10px;align-items:center;justify-content:space-between;margin:-16px -16px 8px;padding:10px 16px;background:var(--bg);border-bottom:2px solid var(--border)}
-.helphead h2{margin:0;font-size:22px}
+.helphead h2{margin:0;font-size:22px;min-width:0}
+/* узкий экран и крупный шрифт: кнопка «Закрыть» уходит на следующую строку, а не за край */
+.helphead{flex-wrap:wrap}.helphead>button{margin-left:auto;flex:none}
 .modal .chk{display:flex;align-items:flex-start;gap:12px;font-weight:600;margin:14px 0}
 .modal input[type=checkbox]{width:26px;height:26px;flex:none;margin-top:1px}
 .modal button.wide{width:100%;margin:6px 0}
@@ -236,6 +238,15 @@ main .note,#stage .note{font-size:16px;font-weight:500;opacity:.8;line-height:1.
 .sg.open .sgh{background:color-mix(in srgb,var(--navy) 22%,var(--card-bg))}
 .sgb{display:none;padding:2px 14px 14px}
 .sg.open .sgb{display:block}
+/* «ℹ️ О приложении» */
+#aboutBox h3{font-size:21px;margin:8px 0 2px}
+#aboutBox .abv{font-size:16px;opacity:.8;margin:0 0 10px}
+#aboutBox p{font-size:17px;line-height:1.4;margin:8px 0}
+#aboutBox ul{margin:6px 0 10px;padding-left:22px;font-size:17px;line-height:1.4}
+#aboutBox li{margin:4px 0}
+#aboutBox a{display:flex;align-items:center;gap:10px;min-height:52px;padding:8px 12px;margin:8px 0;border:2px solid var(--border);border-radius:12px;color:var(--ink);background:transparent;text-decoration:none;font-size:17px;font-weight:700;overflow-wrap:anywhere}
+#aboutBox a small{display:block;font-weight:500;opacity:.75;font-size:14px}
+#aboutBox .ablic{font-size:15px;opacity:.85}
 .modal h4{font-size:17px;margin:18px 0 4px}
 /* «Говорит собеседник»: слова нажимаются, рядом со знакомыми словами — эмодзи */
 .showbox .w{cursor:pointer;border-radius:6px}
@@ -406,6 +417,9 @@ button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15
     <button class="wide" id="restoreBtn" data-i="b_load"></button>
     <input type="file" id="restoreFile" accept="application/json,.json" hidden>
   </div></div>
+  <div class="sg" data-g="about"><button class="sgh" type="button" data-t="g_about"></button><div class="sgb">
+    <div id="aboutBox"></div>
+  </div></div>
 
   <div class="row" style="margin-top:24px">
     <button id="closeSettBtn" style="width:100%" data-i="s_close"></button>
@@ -417,7 +431,10 @@ button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 61;   // держите в соответствии с V = 'govorim-v61' в sw.js
+const APP_VERSION = 62;   // держите в соответствии с V = 'govorim-v62' в sw.js
+// Логин автора на GitHub: ссылки «Автор» и «Исходный код» в ⚙️ → «ℹ️ О приложении» (работают и в копиях на других сайтах).
+// Если оставить пустым, логин берётся из адреса <логин>.github.io.
+const APP_AUTHOR_GH = 'bispalov';
 
 const $=s=>document.querySelector(s);
 const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(fn)e.onclick=fn;return e};
@@ -444,7 +461,7 @@ ru:{title:'Говорим вместе',g_sos:'🆘 Помощь: кому по�
   s_abchide:'Азбука: сворачивать панель с буквами после каждой нажатой буквы, чтобы было видно больше слов (вернуть её можно кнопкой «Показать буквы»; после выбора слова или удаления буквы она появляется сама)',
   t_sug:'Говорит человек',t_show:'Говорит собеседник',show_empty:'Нажмите «Говорить» и скажите фразу: она появится здесь крупным текстом и прозвучит голосом телефона.',show_ph:'Или впишите фразу и нажмите кнопку',show_btn:'Показать и проговорить',show_auto:'Проговаривать распознанное сразу',show_hist:'Последние пять фраз (нажмите, чтобы показать снова; 🗑 — удалить):',m_more:'Показать полностью',m_less:'Свернуть',
   m_show_note:'Говорит собеседник: фраза распознаётся, показывается крупным текстом и проговаривается голосом телефона. Это помогает, когда человек не узнаёт живую речь, но понимает синтезированный голос или читает. Фраза не обязана быть в словаре. Последние пять фраз хранятся на этом телефоне, пока вы их не удалите. Распознавание речи выполняет браузер (обычно нужен интернет, см. «Справка»); без интернета можно вписать фразу.',
-  g_main:'Основное',g_voice:'Озвучка',g_touch:'Управление и нажатия',g_ease:'Меньше усталости',g_data:'Данные',
+  g_main:'Основное',g_voice:'Озвучка',g_touch:'Управление и нажатия',g_ease:'Меньше усталости',g_data:'Данные',g_about:'ℹ️ О приложении',ab_desc:'Коммуникационная доска для людей с афазией и апраксией после инсульта и их близких.',ab_f:['Бесплатно, без рекламы и регистрации.','Работает без интернета (распознаванию речи 🎤 обычно нужна сеть).','Данные хранятся только на этом устройстве, приложение не записывает голос.'],ab_auth:'Автор',ab_src:'Исходный код и инструкции',ab_lic:'Лицензия MIT. Код написан ИИ-ассистентом Claude (Anthropic) по заданию и под руководством автора.',
   s_lang:'Язык фраз и озвучки',s_uilang:'Язык меню и справки',ui_auto:'Как у фраз и озвучки',
   s_size:'Размер плиток',sz_m:'Обычный',sz_l:'Крупный',sz_xl:'Очень крупный (по одной в ряд)',
   s_guard:'Защита от случайных нажатий (повторное касание быстрее этого времени игнорируется)',gd_0:'Выключена',gd_400:'0,4 с',gd_800:'0,8 с',gd_1500:'1,5 с',
@@ -464,7 +481,7 @@ ru:{title:'Говорим вместе',g_sos:'🆘 Помощь: кому по�
    ['Быстрый старт',['Выберите тему на главном экране (например, «Еда и питьё»).','Нажимайте плитки: фраза выбирается по шагам.','Приложение спросит, например, «Я хочу чай?». Нажмите «Да» — фраза прозвучит, «Нет» — отмена.','После озвучивания можно нажать «Повтор» или «Готово».']],
    ['Кнопки вверху',['🏠 — на главный экран.','Язык фраз и озвучки (украинский, русский, английский) выбирается в ⚙️ → «Основное». Подписи и фразы переключаются целиком, английские фразы строятся по правилам английского языка. Язык меню и справки можно задать отдельно там же.','⚙️ — настройки.','❓ — эта справка.','✏️ — редактор плиток.']],
    ['Нижняя панель',['✔ Да / ✖ Нет — быстрые ответы. Если открыт вопрос с фразой, отвечают на него; иначе просто произносят «Да» или «Нет».','↩ Назад — шаг назад: закрыть окно, стереть последнюю букву или слово, выйти из экрана. Так же работает системная кнопка «Назад» телефона; на главном экране её нужно нажать ещё раз, чтобы закрыть приложение.','🔊 Повтор — повторить последнее, что прозвучало из телефона.','🆘 Помощь — красный экран и громкий призыв «Помогите!», повторяется каждые 6 секунд. Остановить сигнал можно только кнопкой «Отмена» или «Назад»: случайные нажатия других кнопок его не прерывают.','🤕 Больно — сразу открывает тему «Здоровье».']],
-   ['Настройки (⚙️)','Настройки разбиты на группы: «Основное», «Озвучка», «Главный экран и плитки», «Управление и нажатия», «🎤 Подсказка по сказанному», «🔤 Азбука», «Интернет», «Данные». Нажмите на название группы, чтобы раскрыть её; открыта всегда одна группа, а под названием свёрнутой группы видны её главные значения. Если открыть настройки с экрана 🎤 или «Азбуки», сразу раскроется группа этого экрана.'],
+   ['Настройки (⚙️)','Настройки разбиты на группы: «Основное», «🆘 Помощь: кому позвонить», «Озвучка», «Главный экран и плитки», «Управление и нажатия», «🎤 Подсказка по сказанному», «🔤 Азбука», «Интернет», «Данные», «ℹ️ О приложении». Нажмите на название группы, чтобы раскрыть её; открыта всегда одна группа, а под названием свёрнутой группы видны её главные значения. Если открыть настройки с экрана 🎤 или «Азбуки», сразу раскроется группа этого экрана.'],
    ['Степень нарушения речи (⚙️)',['Названия уровней относятся к человеку с афазией, а не к сложности работы с приложением: чем тяжелее нарушение речи, тем проще интерфейс. Подберите уровень по тому, как человек говорит сейчас, и меняйте его по мере восстановления.','Тяжёлое — человеку очень трудно говорить. Несколько крупных плиток с самыми нужными словами: вода, еда, туалет, больно.','Среднее — человек произносит отдельные слова. Категории и уточнение внутри них.','Лёгкое 1 — человек начинает фразу, но не вспоминает окончание: тема → начало («Я хочу») → окончание («пить воду»).','Лёгкое 2 — фраза из трёх частей: «Я хочу» → «пить» → «чай».','Лёгкое 3 — речь почти сохранена: длинные фразы до пяти частей с уточнением (когда, где, зачем, почему), в том числе в прошедшем времени: «Я уже выпила утренние таблетки после еды».']],
    ['Как собирать фразу в лёгком режиме','Выберите тему и нажимайте плитки по очереди: вверху растёт собранная фраза со знаком «…». Если человек не может вспомнить последнее слово, нажмите «Сказать так»: прозвучит то, что уже собрано, и собеседник сможет подсказать продолжение. Когда у плитки нет продолжения, появится вопрос для подтверждения.'],
    ['Уточнения «сейчас / потом / ещё / хватит»','В окне подтверждения эти кнопки добавляют слово к фразе, например «Я хочу чай сейчас». Повторное нажатие убирает уточнение.'],
@@ -484,7 +501,7 @@ ru:{title:'Говорим вместе',g_sos:'🆘 Помощь: кому по�
    ['Управление и защита от нажатий (⚙️)','Размер плиток (обычный, крупный, по одной в ряд); защита от случайных нажатий (повторные касания быстрее выбранного времени игнорируются); нижняя панель для правой или левой руки; «слово одним нажатием» для списков слов на экранах 🎤 и «Азбука»; вибрация; «не гасить экран».'],
    ['Меньше усталости (⚙️)','«Говорить сразу» убирает вопрос «…?»: фраза звучит сразу после нажатия на плитку или подсказку (в темах «Здоровье» и «Лекарства» и для фраз из интернета вопрос остаётся). Блок «Часто» можно отключить, чтобы плитки всегда стояли на своих местах.'],
    ['Дневник общения','Открывается из настроек. На телефоне хранятся произнесённые фразы с датой и временем (последние 1000). Видны активность за 7 дней и самые частые фразы; можно сохранить текстовый файл для логопеда. Дневник можно выключить и очистить.'],
-   ['Резервная копия','В настройках: «Сохранить копию данных» создаёт файл со всеми настройками, правками плиток и дневником, «Загрузить копию данных» восстанавливает их (например, на новом телефоне). Сделайте копию перед очисткой данных браузера или сменой телефона.'],
+   ['Резервная копия',['В настройках: «Сохранить копию данных» создаёт файл со всеми настройками, правками плиток и дневником, «Загрузить копию данных» восстанавливает их (например, на новом телефоне). Сделайте копию перед очисткой данных браузера или сменой телефона.','Переустановка. «Говорим вместе» и «Снова слова» устанавливаются рядом как отдельные приложения. Если после удаления Chrome не предлагает установить приложение снова, очистите данные сайта: настройки Chrome → «Настройки сайтов» → «Все сайты» → bispalov.github.io → «Очистить и сбросить» (названия пунктов могут немного отличаться).','⚠️ Оба приложения находятся на одном адресе (bispalov.github.io), поэтому очистка удаляет данные обоих: настройки, плитки, фразы, дневник, словари. Сначала сохраните резервную копию в каждом приложении, а после установки загрузите её обратно.']],
    ['Боль: где и насколько сильно','На среднем уровне «Болит» (и кнопка 🤕 внизу) показывает место: голова, сердце, живот, спина, горло, зубы, грудь, рука, нога или «Другое». Затем можно выбрать силу боли: 🙂 немного, 😐 умеренно, 😣 сильно, 😫 очень сильно — получится, например, «У меня сильно болит голова». Сказать без силы боли можно синей кнопкой с фразой вверху. На лёгких уровнях сила боли — последний шаг в теме «Здоровье».'],
    ['«Не знаю»','На тяжёлом и среднем уровнях есть плитка 🤷 «Не знаю», на лёгких — «Я не знаю» и «Я не уверен(а)» в теме «Общение и чувства», на вкладке «Говорит собеседник» — быстрый ответ «Я не знаю».'],
    ['Показать фразу крупно','После того как фраза прозвучала, её размер меняют кнопки A− / A+. «👁 Показать собеседнику» выводит фразу на весь экран самым крупным шрифтом, который помещается; «⟳ Перевернуть» поворачивает её для человека напротив, «✕ Закрыть» или «Назад» — обратно. Удобно в шумной палате и для тех, кто плохо слышит.'],
@@ -495,6 +512,7 @@ ru:{title:'Говорим вместе',g_sos:'🆘 Помощь: кому по�
    ['Открыто из Facebook или другого приложения','По ссылке из Facebook, Instagram, Messenger и других приложений страница часто открывается во встроенном браузере. У него своё хранилище: ваши настройки и фразы там не видны, а сделанные там изменения не попадут в установленное приложение. В этом случае вверху появляется жёлтая плашка: «Открыть в Chrome» открывает ту же страницу в Chrome (на Android), «Копировать ссылку» — чтобы вставить её в браузер самому. Удобнее всего запускать приложение с иконки на главном экране.'],
    ['Язык меню','В настройках можно задать язык меню и справки отдельно от языка фраз и озвучки: например, фразы и голос на украинском, а меню на русском. Подписи для самого человека (кнопки «Да», «Нет» и т. п.) следуют за языком фраз.'],
    ['Редактор плиток','Откройте нужный раздел (например, «Самочувствие» → «Мне» → «плохо») и нажмите ✏️: редактор откроется именно в этом разделе. Здесь можно добавить плитку («+ Добавить плитку в этот раздел»), изменить название, фразу или значок плитки, удалить ненужную. Другой раздел можно выбрать в списке. «Сбросить уровень» возвращает стандартный набор. Правки хранятся на этом устройстве. В лёгких уровнях плитка — часть фразы; формы по полу пишутся так: вып{ил~ила}.'],
+   ['ℹ️ О приложении','В ⚙️ → «ℹ️ О приложении» (последняя группа): название и версия, кратко о приложении, ссылки на автора и на исходный код с инструкциями, лицензия.'],
    ['Установка и обновление',['В Chrome откройте меню ⋮ → «Установить приложение» (или «Добавить на главный экран»).','После первого запуска приложение работает без интернета.','Новая версия подгружается сама при открытии с интернетом. Номер версии виден внизу настроек.']],
    ['Советы по общению',['Давайте время: не торопите и не договаривайте за человека.','Задавайте вопросы, на которые можно ответить «да» или «нет».','Говорите короткими фразами, спокойно и не перебивая.','Хвалите попытки — важна сама попытка сказать, а не безошибочность.']]
   ]},
@@ -538,7 +556,7 @@ uk:{title:'Говоримо разом',g_sos:'🆘 Допомога: кому �
   s_abchide:'Абетка: згортати панель з літерами після кожної натиснутої літери, щоб було видно більше слів (повернути її можна кнопкою «Показати літери»; після вибору слова або видалення літери вона з’являється сама)',
   t_sug:'Говорить людина',t_show:'Говорить співрозмовник',show_empty:'Натисніть «Говорити» і скажіть фразу: вона з’явиться тут великим текстом і пролунає голосом телефона.',show_ph:'Або впишіть фразу й натисніть кнопку',show_btn:'Показати й проговорити',show_auto:'Проговорювати розпізнане одразу',show_hist:'Останні п’ять фраз (натисніть, щоб показати знову; 🗑 — видалити):',m_more:'Показати повністю',m_less:'Згорнути',
   m_show_note:'Говорить співрозмовник: фраза розпізнається, показується великим текстом і проговорюється голосом телефона. Це допомагає, коли людина не впізнає живе мовлення, але розуміє синтезований голос або читає. Фраза не мусить бути у словнику. Останні п’ять фраз зберігаються на цьому телефоні, доки ви їх не видалите. Розпізнавання мовлення виконує браузер (зазвичай потрібен інтернет, див. «Довідка»); без інтернету можна вписати фразу.',
-  g_main:'Основне',g_voice:'Озвучення',g_touch:'Керування й натискання',g_ease:'Менше втоми',g_data:'Дані',
+  g_main:'Основне',g_voice:'Озвучення',g_touch:'Керування й натискання',g_ease:'Менше втоми',g_data:'Дані',g_about:'ℹ️ Про застосунок',ab_desc:'Комунікаційна дошка для людей з афазією та апраксією після інсульту та їхніх близьких.',ab_f:['Безкоштовно, без реклами й реєстрації.','Працює без інтернету (розпізнаванню мовлення 🎤 зазвичай потрібна мережа).','Дані зберігаються лише на цьому пристрої, застосунок не записує голос.'],ab_auth:'Автор',ab_src:'Вихідний код та інструкції',ab_lic:'Ліцензія MIT. Код написав ШІ-асистент Claude (Anthropic) за завданням і під керівництвом автора.',
   s_lang:'Мова фраз та озвучення',s_uilang:'Мова меню та довідки',ui_auto:'Як у фраз та озвучення',
   s_size:'Розмір плиток',sz_m:'Звичайний',sz_l:'Великий',sz_xl:'Дуже великий (по одній у ряд)',
   s_guard:'Захист від випадкових натискань (повторне торкання швидше за цей час ігнорується)',gd_0:'Вимкнено',gd_400:'0,4 с',gd_800:'0,8 с',gd_1500:'1,5 с',
@@ -558,7 +576,7 @@ uk:{title:'Говоримо разом',g_sos:'🆘 Допомога: кому �
    ['Швидкий старт',['Оберіть тему на головному екрані (наприклад, «Їжа та напої»).','Натискайте плитки: фраза обирається по кроках.','Застосунок запитає, наприклад, «Я хочу чай?». Натисніть «Так» — фраза пролунає, «Ні» — скасування.','Після озвучення можна натиснути «Повтор» або «Готово».']],
    ['Кнопки вгорі',['🏠 — на головний екран.','Мова фраз та озвучення (українська, російська, англійська) обирається в ⚙️ → «Основне». Підписи й фрази перемикаються повністю, англійські фрази будуються за правилами англійської мови. Мову меню та довідки можна задати окремо там само.','⚙️ — налаштування.','❓ — ця довідка.','✏️ — редактор плиток.']],
    ['Нижня панель',['✔ Так / ✖ Ні — швидкі відповіді. Якщо відкрите запитання з фразою, відповідають на нього; інакше просто вимовляють «Так» або «Ні».','↩ Назад — крок назад: закрити вікно, стерти останню літеру або слово, вийти з екрана. Так само працює системна кнопка «Назад» телефона; на головному екрані її треба натиснути ще раз, щоб закрити застосунок.','🔊 Повтор — повторити останнє, що пролунало з телефона.','🆘 Допомога — червоний екран і гучне «Допоможіть!», повторюється кожні 6 секунд. Зупинити сигнал можна лише кнопкою «Скасувати» або «Назад»: випадкові натискання інших кнопок його не переривають.','🤕 Болить — одразу відкриває тему «Здоров’я».']],
-   ['Налаштування (⚙️)','Налаштування розбито на групи: «Основне», «Озвучення», «Головний екран і плитки», «Керування й натискання», «🎤 Підказка за сказаним», «🔤 Абетка», «Інтернет», «Дані». Натисніть на назву групи, щоб розгорнути її; відкрита завжди одна група, а під назвою згорнутої групи видно її головні значення. Якщо відкрити налаштування з екрана 🎤 або «Абетки», одразу розгорнеться група цього екрана.'],
+   ['Налаштування (⚙️)','Налаштування розбито на групи: «Основне», «🆘 Допомога: кому подзвонити», «Озвучення», «Головний екран і плитки», «Керування й натискання», «🎤 Підказка за сказаним», «🔤 Абетка», «Інтернет», «Дані», «ℹ️ Про застосунок». Натисніть на назву групи, щоб розгорнути її; відкрита завжди одна група, а під назвою згорнутої групи видно її головні значення. Якщо відкрити налаштування з екрана 🎤 або «Абетки», одразу розгорнеться група цього екрана.'],
    ['Ступінь порушення мовлення (⚙️)',['Назви рівнів стосуються людини з афазією, а не складності роботи із застосунком: що важче порушення мовлення, то простіший інтерфейс. Підберіть рівень за тим, як людина говорить зараз, і змінюйте його в міру відновлення.','Важке — людині дуже важко говорити. Кілька великих плиток із найпотрібнішими словами: вода, їжа, туалет, болить.','Середнє — людина вимовляє окремі слова. Категорії та уточнення всередині них.','Легке 1 — людина починає фразу, але не згадує закінчення: тема → початок («Я хочу») → закінчення («пити воду»).','Легке 2 — фраза з трьох частин: «Я хочу» → «пити» → «чай».','Легке 3 — мовлення майже збережене: довгі фрази до п’яти частин з уточненням (коли, де, навіщо, чому), зокрема в минулому часі: «Я вже випила ранкові таблетки після їжі».']],
    ['Як збирати фразу в легкому режимі','Оберіть тему й натискайте плитки по черзі: угорі росте зібрана фраза зі знаком «…». Якщо людина не може згадати останнє слово, натисніть «Сказати так»: пролунає те, що вже зібрано, і співрозмовник зможе підказати продовження. Коли в плитки немає продовження, з’явиться запитання для підтвердження.'],
    ['Уточнення «зараз / потім / ще / досить»','У вікні підтвердження ці кнопки додають слово до фрази, наприклад «Я хочу чай зараз». Повторне натискання прибирає уточнення.'],
@@ -578,7 +596,7 @@ uk:{title:'Говоримо разом',g_sos:'🆘 Допомога: кому �
    ['Керування й захист від натискань (⚙️)','Розмір плиток (звичайний, великий, по одній у ряд); захист від випадкових натискань (повторні торкання швидше за обраний час ігноруються); нижня панель для правої чи лівої руки; «слово одним натисканням» для списків слів на екранах 🎤 і «Абетка»; вібрація; «не гасити екран».'],
    ['Менше втоми (⚙️)','«Говорити одразу» прибирає запитання «…?»: фраза звучить одразу після натискання на плитку чи підказку (у темах «Здоров’я» та «Ліки» і для фраз з інтернету запитання залишається). Блок «Часто» можна вимкнути, щоб плитки завжди стояли на своїх місцях.'],
    ['Щоденник спілкування','Відкривається з налаштувань. На телефоні зберігаються вимовлені фрази з датою й часом (останні 1000). Видно активність за 7 днів і найчастіші фрази; можна зберегти текстовий файл для логопеда. Щоденник можна вимкнути й очистити.'],
-   ['Резервна копія','У налаштуваннях: «Зберегти копію даних» створює файл з усіма налаштуваннями, правками плиток і щоденником, «Завантажити копію даних» відновлює їх (наприклад, на новому телефоні). Зробіть копію перед очищенням даних браузера чи зміною телефона.'],
+   ['Резервна копія',['У налаштуваннях: «Зберегти копію даних» створює файл з усіма налаштуваннями, правками плиток і щоденником, «Завантажити копію даних» відновлює їх (наприклад, на новому телефоні). Зробіть копію перед очищенням даних браузера чи зміною телефона.','Переустановлення. «Говоримо разом» і «Знову слова» встановлюються поруч як окремі застосунки. Якщо після видалення Chrome не пропонує встановити застосунок знову, очистьте дані сайту: налаштування Chrome → «Налаштування сайтів» → «Усі сайти» → bispalov.github.io → «Очистити й скинути» (назви пунктів можуть трохи відрізнятися).','⚠️ Обидва застосунки розміщені на одній адресі (bispalov.github.io), тому очищення видаляє дані обох: налаштування, плитки, фрази, щоденник, словники. Спершу збережіть резервну копію в кожному застосунку, а після встановлення завантажте її назад.']],
    ['Біль: де і наскільки сильно','На середньому рівні «Болить» (і кнопка 🤕 унизу) показує місце: голова, серце, живіт, спина, горло, зуби, груди, рука, нога або «Інше». Потім можна вибрати силу болю: 🙂 трохи, 😐 помірно, 😣 сильно, 😫 дуже сильно — вийде, наприклад, «У мене сильно болить голова». Сказати без сили болю можна синьою кнопкою з фразою вгорі. На легких рівнях сила болю — останній крок у темі «Здоров’я».'],
    ['«Не знаю»','На важкому й середньому рівнях є плитка 🤷 «Не знаю», на легких — «Я не знаю» та «Я не впевнений(а)» в темі «Спілкування та почуття», на вкладці «Говорить співрозмовник» — швидка відповідь «Я не знаю».'],
    ['Показати фразу великою','Після того як фраза пролунала, її розмір змінюють кнопки A− / A+. «👁 Показати співрозмовнику» виводить фразу на весь екран найбільшим шрифтом, який вміщається; «⟳ Перевернути» повертає її для людини навпроти, «✕ Закрити» або «Назад» — назад. Зручно в галасливій палаті й для тих, хто погано чує.'],
@@ -589,6 +607,7 @@ uk:{title:'Говоримо разом',g_sos:'🆘 Допомога: кому �
    ['Відкрито з Facebook або іншого застосунку','За посиланням із Facebook, Instagram, Messenger та інших застосунків сторінка часто відкривається у вбудованому браузері. У нього своє сховище: ваші налаштування й фрази там не видно, а зроблені там зміни не потраплять у встановлений застосунок. У такому разі вгорі з’являється жовта плашка: «Відкрити в Chrome» відкриває ту саму сторінку в Chrome (на Android), «Копіювати посилання» — щоб вставити його в браузер самостійно. Найзручніше запускати застосунок з іконки на головному екрані.'],
    ['Мова меню','У налаштуваннях можна задати мову меню й довідки окремо від мови фраз та озвучення: наприклад, фрази й голос українською, а меню російською. Підписи для самої людини (кнопки «Так», «Ні» тощо) йдуть за мовою фраз.'],
    ['Редактор плиток','Відкрийте потрібний розділ (наприклад, «Самопочуття» → «Мені» → «погано») і натисніть ✏️: редактор відкриється саме в цьому розділі. Тут можна додати плитку («+ Додати плитку в цей розділ»), змінити назву, фразу або значок плитки, видалити непотрібну. Інший розділ можна обрати у списку. «Скинути рівень» повертає стандартний набір. Правки зберігаються на цьому пристрої. У легких рівнях плитка — частина фрази; форми за статтю пишуться так: вип{ив~ила}.'],
+   ['ℹ️ Про застосунок','У ⚙️ → «ℹ️ Про застосунок» (остання група): назва й версія, коротко про застосунок, посилання на автора й на вихідний код з інструкціями, ліцензія.'],
    ['Встановлення й оновлення',['У Chrome відкрийте меню ⋮ → «Установити застосунок» (або «Додати на головний екран»).','Після першого запуску застосунок працює без інтернету.','Нова версія підтягується сама під час відкриття з інтернетом. Номер версії видно внизу налаштувань.']],
    ['Поради щодо спілкування',['Давайте час: не поспішайте й не договорюйте за людину.','Ставте запитання, на які можна відповісти «так» або «ні».','Говоріть короткими фразами, спокійно й не перебиваючи.','Хваліть спроби — важлива сама спроба сказати, а не безпомилковість.']]
   ]},
@@ -632,7 +651,7 @@ en:{title:'Let’s talk together',g_sos:'🆘 Help: whom to call',s_sosnote:'A l
   s_abchide:'ABC: collapse the letter panel after every letter tapped so more words are visible (bring it back with the “Show letters” button; it reappears by itself after a word is chosen or a letter is deleted)',
   t_sug:'The person speaks',t_show:'Someone speaks to the person',show_empty:'Tap “Speak” and say a phrase: it appears here in large text and is spoken by the phone’s voice.',show_ph:'Or type a phrase and press the button',show_btn:'Show and speak',show_auto:'Speak the recognized text right away',show_hist:'Last five phrases (tap to show again; 🗑 deletes):',m_more:'Show all',m_less:'Collapse',
   m_show_note:'Someone speaks to the person: the phrase is recognized, shown in large text and spoken in the phone’s voice. This helps when the person does not recognize live speech but understands a synthesized voice or can read. The phrase need not be in the vocabulary. The last five phrases are kept on this phone until you delete them. Speech recognition is done by the browser (usually needs the internet, see Help); without the internet you can type the phrase.',
-  g_main:'General',g_voice:'Speech',g_touch:'Controls and taps',g_ease:'Less fatigue',g_data:'Data',
+  g_main:'General',g_voice:'Speech',g_touch:'Controls and taps',g_ease:'Less fatigue',g_data:'Data',g_about:'ℹ️ About',ab_desc:'A communication board for people with aphasia and apraxia after a stroke and their loved ones.',ab_f:['Free, no ads, no sign-up.','Works offline (speech recognition 🎤 usually needs the internet).','Data stays on this device only; the app never records the voice.'],ab_auth:'Author',ab_src:'Source code and instructions',ab_lic:'MIT license. The code was written by the AI assistant Claude (Anthropic) on the task and under the direction of the author.',
   s_lang:'Language of phrases and speech',s_uilang:'Menu and help language',ui_auto:'Same as phrases and speech',
   s_size:'Tile size',sz_m:'Normal',sz_l:'Large',sz_xl:'Extra large (one per row)',
   s_guard:'Accidental-tap protection (repeat taps faster than this are ignored)',gd_0:'Off',gd_400:'0.4 s',gd_800:'0.8 s',gd_1500:'1.5 s',
@@ -663,7 +682,7 @@ en:{title:'Let’s talk together',g_sos:'🆘 Help: whom to call',s_sosnote:'A l
    ['Quick start',['Choose a topic on the home screen (for example, “Food and drink”).','Tap tiles: the phrase is chosen step by step.','The app asks, for example, “I want tea?”. Tap “Yes” and the phrase is spoken; “No” cancels.','After it is spoken you can tap “Repeat” or “Done”.']],
    ['Buttons at the top',['🏠 — go to the home screen.','The language of phrases and speech (Ukrainian, Russian, English) is chosen in ⚙️ → “General”. Labels and phrases switch completely, and English phrases are built by English grammar. The menu and help language can be set separately in the same place.','⚙️ — settings.','❓ — this help.','✏️ — tile editor.']],
    ['Bottom bar',['✔ Yes / ✖ No — quick answers. If a phrase question is open they answer it; otherwise they just say “Yes” or “No”.','↩ Back — one step back: close a window, delete the last letter or word, leave a screen. The phone’s own Back button works the same way; on the home screen press it once more to close the app.','🔊 Repeat — repeat the last thing the phone said.','🆘 Help — red screen and a loud “Help!” repeated every 6 seconds. Only “Cancel” or “Back” stops it: accidental taps on other buttons do not interrupt it.','🤕 Pain — opens the Health topic at once.']],
-   ['Settings (⚙️)','Settings are split into groups: “General”, “Speech”, “Home screen and tiles”, “Controls and taps”, “🎤 Suggestions from what was said”, “🔤 ABC”, “Internet”, “Data”. Tap a group name to open it; only one group is open at a time, and a collapsed group shows its main values under the name. When Settings are opened from the 🎤 or ABC screen, that screen’s group opens right away.'],
+   ['Settings (⚙️)','Settings are split into groups: “General”, “🆘 Help: whom to call”, “Speech”, “Home screen and tiles”, “Controls and taps”, “🎤 Suggestions from what was said”, “🔤 ABC”, “Internet”, “Data”, “ℹ️ About”. Tap a group name to open it; only one group is open at a time, and a collapsed group shows its main values under the name. When Settings are opened from the 🎤 or ABC screen, that screen’s group opens right away.'],
    ['Degree of speech impairment (⚙️)',['The level names describe the person with aphasia, not how hard the app is to use: the more severe the impairment, the simpler the screen. Pick the level by how the person speaks now and change it as they recover.','Severe — speaking is very hard. A few large tiles with the most needed words: water, food, toilet, pain.','Moderate — the person says single words. Categories with details inside.','Mild 1 — the person starts a phrase but cannot recall the ending: topic → start (“I want”) → ending (“to drink water”).','Mild 2 — a phrase in three parts: “I want” → “to drink” → “tea”.','Mild 3 — speech is nearly preserved: long phrases of up to five parts with details (when, where, why), including the past tense: “I have already taken my morning pills after eating”.']],
    ['Building a phrase in the mild levels','Choose a topic and tap tiles one after another: the phrase grows at the top with “…”. If the person cannot recall the last word, tap “Say it”: what has been built so far is spoken and the other person can suggest the continuation. When a tile has no continuation, a confirmation question appears.'],
    ['Add-ons “now / later / more / enough”','In the confirmation window these buttons add a word to the phrase, for example “I want tea now”. Tap again to remove it.'],
@@ -683,7 +702,7 @@ en:{title:'Let’s talk together',g_sos:'🆘 Help: whom to call',s_sosnote:'A l
    ['Controls and tap protection (⚙️)','Tile size (normal, large, one per row); accidental-tap protection (repeat taps faster than the chosen time are ignored); bottom bar for the right or left hand; “one tap speaks a word” for word lists on the 🎤 and ABC screens; vibration; “keep screen on”.'],
    ['Less fatigue (⚙️)','“Speak immediately” removes the “…?” question: the phrase is spoken right after tapping a tile or a suggestion (in Health and Medicines and for phrases from the internet the question stays). The “Often” block can be turned off so tiles always stay in place.'],
    ['Communication diary','Opens from Settings. The phone stores the spoken phrases with date and time (the last 1000). You can see activity over 7 days and the most frequent phrases, and save a text file for a speech therapist. The diary can be turned off and cleared.'],
-   ['Backup','In Settings, “Save a data backup” creates a file with all settings, tile edits and the diary; “Load a data backup” restores them (for example, on a new phone). Make a backup before clearing browser data or changing phones.'],
+   ['Backup',['In Settings, “Save a data backup” creates a file with all settings, tile edits and the diary; “Load a data backup” restores them (for example, on a new phone). Make a backup before clearing browser data or changing phones.','Reinstalling. “Let’s talk together” and “Words Again” install side by side as separate apps. If Chrome does not offer to install the app again after you removed it, clear the site data: Chrome settings → “Site settings” → “All sites” → bispalov.github.io → “Clear & reset” (item names may differ slightly).','⚠️ Both apps live at the same address (bispalov.github.io), so clearing removes the data of both: settings, tiles, phrases, diary, word lists. First save a backup in each app, and load it back after installing.']],
    ['Pain: where and how bad','At the medium level, “Hurts” (and the 🤕 button at the bottom) shows the place: head, heart, stomach, back, throat, teeth, chest, arm, leg or “Elsewhere”. Then you can choose how bad: 🙂 a little, 😐 moderately, 😣 a lot, 😫 very badly — for example, “My head hurts a lot”. The blue phrase button at the top says it without the strength. At the light levels the strength is the last step in the Health topic.'],
    ['“Don’t know”','The severe and medium levels have a 🤷 “Don’t know” tile, the light levels have “I don’t know” and “I’m not sure” in “Talking and feelings”, and the “Someone speaks” tab has a quick “I don’t know” reply.'],
    ['Show the phrase large','After a phrase is spoken, A− / A+ change its size. “👁 Show to the other person” fills the screen with the largest text that fits; “⟳ Flip” turns it for someone sitting opposite, “✕ Close” or “Back” returns. Useful in a noisy ward and for people who are hard of hearing.'],
@@ -694,6 +713,7 @@ en:{title:'Let’s talk together',g_sos:'🆘 Help: whom to call',s_sosnote:'A l
    ['Opened from Facebook or another app','A link from Facebook, Instagram, Messenger and other apps often opens in their built-in browser. It has its own storage: your settings and phrases are not visible there, and changes made there do not reach the installed app. In that case a yellow bar appears at the top: “Open in Chrome” opens the same page in Chrome (on Android), “Copy link” lets you paste it into a browser yourself. It is easiest to start the app from its home screen icon.'],
    ['Menu language','Settings let you choose the menu and help language separately from the language of phrases and speech: for example, phrases and voice in Ukrainian and the menu in English. The labels meant for the person (“Yes”, “No”, etc.) follow the phrase language.'],
    ['Tile editor','Open the section you need (for example, “Feelings” → “I feel” → “cold”) and tap ✏️: the editor opens in that very section. You can add a tile (“+ Add a tile to this section”), change its name, phrase or icon, or delete one. Choose another section from the list. “Reset level” restores the standard set. Edits are kept on this device. English and Russian/Ukrainian phrases are stored separately in the mild levels, so edit them in the language you are using. In the mild levels a tile is a part of a phrase.'],
+   ['ℹ️ About','In ⚙️ → “ℹ️ About” (the last group): the name and version, a short description, links to the author and to the source code with instructions, the license.'],
    ['Install and updates',['In Chrome open the menu ⋮ → “Install app” (or “Add to Home screen”).','After the first launch the app works without the internet.','A new version loads by itself when the app is opened online. The version number is at the bottom of Settings.']],
    ['Tips for communicating',['Give time: do not rush or finish the person’s sentences.','Ask questions that can be answered with “yes” or “no”.','Speak in short phrases, calmly and without interrupting.','Praise attempts: the effort to speak matters more than being error-free.']]
   ]},
@@ -2452,6 +2472,7 @@ function settSum(g){
     case 'abc':return uh('sm_abchide')+': '+onOff('#setAbcAutoHide');
     case 'net':return uh('sm_words')+': '+onOff('#setWordOnline')+' · '+uh('sm_phr')+': '+uh($('#setExtProv').value==='off'?'sm_off':'sm_on');
     case 'data':return uh('sm_diary')+': '+onOff('#setLog');
+    case 'about':return uh('title')+' · '+uh('ver')+' '+APP_VERSION;
   }
   return '';
 }
@@ -3964,6 +3985,25 @@ function drawHelp(){
 }
 $('#helpBtn').onclick=()=>{drawHelp();helpEl.style.display='block';helpEl.scrollTop=0};
 
+/* ---------- «ℹ️ О приложении» (⚙️, последняя группа) ---------- */
+function authorGh(){
+  if(APP_AUTHOR_GH)return APP_AUTHOR_GH;
+  const m=/^([a-z0-9-]+)\.github\.io$/i.exec(location.hostname);return m?m[1]:'';
+}
+function aboutRender(){
+  const b=$('#aboutBox');if(!b)return;b.textContent='';
+  b.append(h('h3',null,uh('title')),h('div','abv',uh('ver')+': '+APP_VERSION),h('p',null,uh('ab_desc')));
+  const ul=h('ul');uh('ab_f').forEach(t=>ul.append(h('li',null,t)));b.append(ul);
+  const gh=authorGh();
+  const link=(href,ic,t,sub)=>{const a=h('a');a.href=href;a.target='_blank';a.rel='noopener';
+    const tt=h('span');tt.append(document.createTextNode(t));tt.append(h('small',null,sub));a.append(h('span',null,ic),tt);return a};
+  if(gh){
+    b.append(link('https://github.com/'+gh,'👤',uh('ab_auth')+': @'+gh,'github.com/'+gh));
+    b.append(link('https://github.com/'+gh+'/Govorim','📄',uh('ab_src'),'github.com/'+gh+'/Govorim'));
+  }
+  b.append(h('p','ablic',uh('ab_lic')));
+}
+
 /* ---------- Подписи интерфейса на выбранном языке ---------- */
 function fill(sel,opts,val){const el=$(sel);el.innerHTML='';opts.forEach(([v,txt])=>el.append(new Option(txt,v)));el.value=val}
 function applyI18n(){
@@ -3983,6 +4023,7 @@ function applyI18n(){
   fill('#setBarLbl',[['big',uh('bl_big')],['off',uh('bl_off')]],settings.barLbl);
   fill('#setRecent',[['0','0 — '+uh('sm_off')],['2','2'],['4','4'],['6','6']],String(settings.recentN));
   showLvNote();
+  aboutRender();
   drawSettHeads();
 }
 
@@ -4011,7 +4052,7 @@ if('serviceWorker' in navigator){
     reloaded=true;location.reload();
   });
   addEventListener('load',()=>{
-    navigator.serviceWorker.register('/Govorim/sw.js',{scope:'/Govorim/',updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'})   // папка приложения — там, где лежит index.html
       .then(reg=>{
         reg.update().catch(()=>{});
         document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{})});
