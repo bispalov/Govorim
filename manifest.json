@@ -7,8 +7,8 @@
   "scope": "/Govorim/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#EEF2F5",
-  "theme_color": "#16384F",
+  "background_color": "#12181F",
+  "theme_color": "#12181F",
   "icons": [
     {
       "src": "/Govorim/icon-192.png",

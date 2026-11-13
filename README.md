@@ -94,9 +94,11 @@
 
 Встановлений застосунок оновлюється лише за зміни версії кешу. За будь-якої зміни файлів:
 
-1. У `sw.js` збільште номер: `const V = 'govorim-v58'` → `'govorim-v59'`.
+1. У `sw.js` збільште номер: `const V = 'govorim-v59'` → `'govorim-v60'`.
 2. В `index.html` збільште `APP_VERSION` (він показується внизу налаштувань).
 3. Завантажте файли. Застосунок підхопить нову версію під час наступного відкриття з інтернетом і один раз перезавантажиться.
+
+Заставку під час запуску (темний фон `background_color`, колір рядка стану `theme_color`, іконка, назва) Android бере з `manifest.json`. Зміни в ньому встановлений застосунок отримує не одразу: Chrome перевіряє маніфест сам, зазвичай протягом доби після відкриття з інтернетом. Щоб побачити зміни відразу, видаліть застосунок із головного екрана й установіть знову (спершу збережіть копію даних).
 
 ### Як розширювати словник конструктора
 
@@ -286,9 +288,11 @@
 
 Установленное приложение обновляется только при смене версии кэша. При любом изменении файлов:
 
-1. В `sw.js` увеличьте номер: `const V = 'govorim-v58'` → `'govorim-v59'`.
+1. В `sw.js` увеличьте номер: `const V = 'govorim-v59'` → `'govorim-v60'`.
 2. В `index.html` увеличьте `APP_VERSION` (он показывается внизу настроек).
 3. Загрузите файлы. Приложение подхватит новую версию при следующем открытии с интернетом и один раз перезагрузится.
+
+Заставку при запуске (тёмный фон `background_color`, цвет строки состояния `theme_color`, иконка, название) Android берёт из `manifest.json`. Изменения в нём установленное приложение получает не сразу: Chrome проверяет манифест сам, обычно в течение суток после открытия с интернетом. Чтобы увидеть изменения сразу, удалите приложение с главного экрана и установите заново (сначала сохраните копию данных).
 
 ### Как расширять словарь конструктора
 
@@ -363,6 +367,7 @@
 - Partner-speech tab: tap a word to hear it slowly, emoji next to familiar words, quick replies (“Please repeat”, “I don’t understand”…).
 - Voice list is filtered by the current phrase language; in-app help and tile editor included.
 - When opened inside the Facebook, Instagram or Messenger built-in browser (separate storage, settings not visible), a yellow bar offers “Open in Chrome” (Android intent) and “Copy link”.
+- The launch splash screen is dark (`background_color` #12181F in `manifest.json`, the same as the dark theme).
 - Static files only; deploy to GitHub Pages under `/Govorim/`. Bump the cache version in `sw.js` and `APP_VERSION` in `index.html` on every update.
 
 This app is not a medical device and does not replace professional care.
