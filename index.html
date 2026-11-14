@@ -357,6 +357,7 @@ button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15
     <div class="row"><button id="testVoiceBtn" data-i="s_test"></button></div>
   </div></div>
   <div class="sg" data-g="home"><button class="sgh" type="button" data-t="g_home"></button><div class="sgb">
+    <label class="chk"><input type="checkbox" id="setResume"><span data-i="s_resume"></span></label>
     <label data-i="s_size"></label>
     <select id="setSize"></select>
     <label class="chk"><input type="checkbox" id="setQuick"><span data-i="s_quick"></span></label>
@@ -431,7 +432,7 @@ button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 62;   // держите в соответствии с V = 'govorim-v62' в sw.js
+const APP_VERSION = 63;   // держите в соответствии с V = 'govorim-v63' в sw.js
 // Логин автора на GitHub: ссылки «Автор» и «Исходный код» в ⚙️ → «ℹ️ О приложении» (работают и в копиях на других сайтах).
 // Если оставить пустым, логин берётся из адреса <логин>.github.io.
 const APP_AUTHOR_GH = 'bispalov';
@@ -441,7 +442,7 @@ const h=(tag,cls,txt,fn)=>{const e=document.createElement(tag);if(cls)e.classNam
 
 /* ---------- Интернационализация ---------- */
 const U={
-ru:{title:'Говорим вместе',g_sos:'🆘 Помощь: кому позвонить',s_sosnote:'На красном экране «Помощь» появится крупная кнопка звонка. Набор номера всё равно подтверждается в телефоне. Номера хранятся только на этом телефоне.',s_sosname:'Имя',s_sostel:'Номер телефона',sm_nosos:'не задано',s_barlbl:'Подписи на нижней панели',bl_big:'Крупные',bl_off:'Только значки',s_holdsel:'Выбор удержанием: плитка и большие кнопки срабатывают, только если их удержать около полсекунды (против тремора и случайных касаний)',sm_hold:'удержание',g_home:'Главный экран и плитки',g_mic:'🎤 Подсказка по сказанному',g_abc:'🔤 Азбука',g_net:'Интернет (необязательно)',
+ru:{title:'Говорим вместе',g_sos:'🆘 Помощь: кому позвонить',s_sosnote:'На красном экране «Помощь» появится крупная кнопка звонка. Набор номера всё равно подтверждается в телефоне. Номера хранятся только на этом телефоне.',s_sosname:'Имя',s_sostel:'Номер телефона',sm_nosos:'не задано',s_barlbl:'Подписи на нижней панели',bl_big:'Крупные',bl_off:'Только значки',s_holdsel:'Выбор удержанием: плитка и большие кнопки срабатывают, только если их удержать около полсекунды (против тремора и случайных касаний)',sm_hold:'удержание',g_home:'Главный экран и плитки',s_resume:'При запуске открывать экран, на котором закончили (например, 🎤 «Говорит собеседник» или «Азбуку»)',sm_resume:'запуск с последнего экрана',g_mic:'🎤 Подсказка по сказанному',g_abc:'🔤 Азбука',g_net:'Интернет (необязательно)',
   s_recent:'Недавно сказанные: сколько последних фраз, произнесённых через 🎤 и «Азбуку», показывать на главном экране',
   s_showauto:'«Говорит собеседник»: проговаривать распознанное сразу',s_showemoji:'«Говорит собеседник»: показывать картинки-эмодзи рядом со знакомыми словами',
   sm_on:'вкл.',sm_off:'выкл.',sm_guard:'защита',sm_simple:'упрощённый вид',sm_auto:'проговаривать сразу',sm_abchide:'сворачивать буквы',sm_words:'слова онлайн',sm_phr:'фразы онлайн',sm_diary:'дневник',sm_recent:'недавние',
@@ -512,6 +513,7 @@ ru:{title:'Говорим вместе',g_sos:'🆘 Помощь: кому по�
    ['Открыто из Facebook или другого приложения','По ссылке из Facebook, Instagram, Messenger и других приложений страница часто открывается во встроенном браузере. У него своё хранилище: ваши настройки и фразы там не видны, а сделанные там изменения не попадут в установленное приложение. В этом случае вверху появляется жёлтая плашка: «Открыть в Chrome» открывает ту же страницу в Chrome (на Android), «Копировать ссылку» — чтобы вставить её в браузер самому. Удобнее всего запускать приложение с иконки на главном экране.'],
    ['Язык меню','В настройках можно задать язык меню и справки отдельно от языка фраз и озвучки: например, фразы и голос на украинском, а меню на русском. Подписи для самого человека (кнопки «Да», «Нет» и т. п.) следуют за языком фраз.'],
    ['Редактор плиток','Откройте нужный раздел (например, «Самочувствие» → «Мне» → «плохо») и нажмите ✏️: редактор откроется именно в этом разделе. Здесь можно добавить плитку («+ Добавить плитку в этот раздел»), изменить название, фразу или значок плитки, удалить ненужную. Другой раздел можно выбрать в списке. «Сбросить уровень» возвращает стандартный набор. Правки хранятся на этом устройстве. В лёгких уровнях плитка — часть фразы; формы по полу пишутся так: вып{ил~ила}.'],
+   ['Запуск с последнего экрана','Если включить в ⚙️ → «Главный экран и плитки» пункт «При запуске открывать экран, на котором закончили», приложение откроется там, где его закрыли: на 🎤 (на той же вкладке, например «Говорит собеседник»), в «Азбуке» или в разделе плиток. Микрофон сам не включается. Если пункт выключен, приложение всегда открывается на главном экране.'],
    ['ℹ️ О приложении','В ⚙️ → «ℹ️ О приложении» (последняя группа): название и версия, кратко о приложении, ссылки на автора и на исходный код с инструкциями, лицензия.'],
    ['Установка и обновление',['В Chrome откройте меню ⋮ → «Установить приложение» (или «Добавить на главный экран»).','После первого запуска приложение работает без интернета.','Новая версия подгружается сама при открытии с интернетом. Номер версии виден внизу настроек.']],
    ['Советы по общению',['Давайте время: не торопите и не договаривайте за человека.','Задавайте вопросы, на которые можно ответить «да» или «нет».','Говорите короткими фразами, спокойно и не перебивая.','Хвалите попытки — важна сама попытка сказать, а не безошибочность.']]
@@ -536,7 +538,7 @@ ru:{title:'Говорим вместе',g_sos:'🆘 Помощь: кому по�
   m_ext_off:'Подходящих фраз нет в словаре. Онлайн-поиск можно включить: ⚙️ → «Онлайн-поиск фраз».',
   m_online:'Поискать в интернете',m_searching:'Ищу варианты…',m_online_res:'Варианты из интернета — нажмите, и вас спросят «…?»:',m_online_none:'Онлайн-поиск тоже ничего не предложил.',
   m_title:'🎤 Подсказка по сказанному',m_slotonl:'Найти онлайн',m_slotnone:'Онлайн ничего не нашёл',m_extra:'Похоже, это лишнее слово.',m_slotq:'Что имелось в виду вместо',m_keep:'✓ Оставить',m_rm:'✕ Убрать',m_chk:'Проверить слово',m_builds:'Нажать — варианты · удерживать — переставить',m_morew:'Ещё слова',m_typeit:'Вписать или исправить текст',m_asheard:'Услышанные слова:',m_all:'Вся фраза в рамку',m_fn:'Я, в, на, не…',m_build:'Нажмите слово — откроются варианты замены. Удерживайте слово и перетащите — изменится порядок:',m_buildsay:'Сказать',m_buildclr:'Очистить',m_freq:'Часто выбирали:',m_forget:'Забыть запомненные фразы',m_forgetq:'Забыть все фразы, запомненные по выбору из подсказок, и личный словарь произношения?',m_say:'Говорить',m_stop:'Остановить',m_listen:'Слушаю… говорите',m_heard:'Что услышано (можно исправить или вписать слова):',m_sugg:'Возможно, вы хотели сказать — нажмите на фразу:',m_none:'Подходящих фраз не найдено. Попробуйте сказать иначе или впишите слова.',m_nomic:'Нет доступа к микрофону. Разрешите его в настройках браузера.',m_nosr:'Распознавание речи в этом браузере недоступно. Впишите слова вручную.',m_net:'Для распознавания нужен интернет. Впишите слова вручную.',m_nosp:'Ничего не услышано. Попробуйте ещё раз.',m_err:'Не удалось распознать. Попробуйте ещё раз или впишите слова.',m_note:'Распознавание речи выполняет браузер Chrome: обычно нужен интернет, и запись голоса может обрабатываться на серверах Google. Подбор фраз по найденным словам работает без интернета. Нарушенную речь распознать трудно, поэтому слова можно вписать вручную (в том числе голосовым вводом клавиатуры).',f_edit:'Изменить списки на главном экране',f_clear:'🗑️ Убрать все',f_done:'Готово',f_cclear:'Убрать все фразы из этого списка на главном экране?',f_hint:'Нажмите на фразу, чтобы убрать её из блока.',e_name:'Название',e_phrase:'Фраза',ln_ru:'русский',ln_uk:'украинский',ln_en:'английский'},
-uk:{title:'Говоримо разом',g_sos:'🆘 Допомога: кому подзвонити',s_sosnote:'На червоному екрані «Допомога» з’явиться велика кнопка дзвінка. Набір номера все одно підтверджується в телефоні. Номери зберігаються лише на цьому телефоні.',s_sosname:'Ім’я',s_sostel:'Номер телефону',sm_nosos:'не задано',s_barlbl:'Підписи на нижній панелі',bl_big:'Великі',bl_off:'Лише значки',s_holdsel:'Вибір утриманням: плитка й великі кнопки спрацьовують, лише якщо їх утримати близько пів секунди (проти тремору та випадкових дотиків)',sm_hold:'утримання',g_home:'Головний екран і плитки',g_mic:'🎤 Підказка за сказаним',g_abc:'🔤 Абетка',g_net:'Інтернет (необов’язково)',
+uk:{title:'Говоримо разом',g_sos:'🆘 Допомога: кому подзвонити',s_sosnote:'На червоному екрані «Допомога» з’явиться велика кнопка дзвінка. Набір номера все одно підтверджується в телефоні. Номери зберігаються лише на цьому телефоні.',s_sosname:'Ім’я',s_sostel:'Номер телефону',sm_nosos:'не задано',s_barlbl:'Підписи на нижній панелі',bl_big:'Великі',bl_off:'Лише значки',s_holdsel:'Вибір утриманням: плитка й великі кнопки спрацьовують, лише якщо їх утримати близько пів секунди (проти тремору та випадкових дотиків)',sm_hold:'утримання',g_home:'Головний екран і плитки',s_resume:'Під час запуску відкривати екран, на якому закінчили (наприклад, 🎤 «Говорить співрозмовник» або «Абетку»)',sm_resume:'запуск з останнього екрана',g_mic:'🎤 Підказка за сказаним',g_abc:'🔤 Абетка',g_net:'Інтернет (необов’язково)',
   s_recent:'Нещодавно сказані: скільки останніх фраз, вимовлених через 🎤 і «Абетку», показувати на головному екрані',
   s_showauto:'«Говорить співрозмовник»: проговорювати розпізнане одразу',s_showemoji:'«Говорить співрозмовник»: показувати картинки-емодзі поруч зі знайомими словами',
   sm_on:'увімк.',sm_off:'вимк.',sm_guard:'захист',sm_simple:'спрощений вигляд',sm_auto:'проговорювати одразу',sm_abchide:'згортати літери',sm_words:'слова онлайн',sm_phr:'фрази онлайн',sm_diary:'щоденник',sm_recent:'нещодавні',
@@ -607,6 +609,7 @@ uk:{title:'Говоримо разом',g_sos:'🆘 Допомога: кому �
    ['Відкрито з Facebook або іншого застосунку','За посиланням із Facebook, Instagram, Messenger та інших застосунків сторінка часто відкривається у вбудованому браузері. У нього своє сховище: ваші налаштування й фрази там не видно, а зроблені там зміни не потраплять у встановлений застосунок. У такому разі вгорі з’являється жовта плашка: «Відкрити в Chrome» відкриває ту саму сторінку в Chrome (на Android), «Копіювати посилання» — щоб вставити його в браузер самостійно. Найзручніше запускати застосунок з іконки на головному екрані.'],
    ['Мова меню','У налаштуваннях можна задати мову меню й довідки окремо від мови фраз та озвучення: наприклад, фрази й голос українською, а меню російською. Підписи для самої людини (кнопки «Так», «Ні» тощо) йдуть за мовою фраз.'],
    ['Редактор плиток','Відкрийте потрібний розділ (наприклад, «Самопочуття» → «Мені» → «погано») і натисніть ✏️: редактор відкриється саме в цьому розділі. Тут можна додати плитку («+ Додати плитку в цей розділ»), змінити назву, фразу або значок плитки, видалити непотрібну. Інший розділ можна обрати у списку. «Скинути рівень» повертає стандартний набір. Правки зберігаються на цьому пристрої. У легких рівнях плитка — частина фрази; форми за статтю пишуться так: вип{ив~ила}.'],
+   ['Запуск з останнього екрана','Якщо ввімкнути в ⚙️ → «Головний екран і плитки» пункт «Під час запуску відкривати екран, на якому закінчили», застосунок відкриється там, де його закрили: на 🎤 (на тій самій вкладці, наприклад «Говорить співрозмовник»), в «Абетці» або в розділі плиток. Мікрофон сам не вмикається. Якщо пункт вимкнено, застосунок завжди відкривається на головному екрані.'],
    ['ℹ️ Про застосунок','У ⚙️ → «ℹ️ Про застосунок» (остання група): назва й версія, коротко про застосунок, посилання на автора й на вихідний код з інструкціями, ліцензія.'],
    ['Встановлення й оновлення',['У Chrome відкрийте меню ⋮ → «Установити застосунок» (або «Додати на головний екран»).','Після першого запуску застосунок працює без інтернету.','Нова версія підтягується сама під час відкриття з інтернетом. Номер версії видно внизу налаштувань.']],
    ['Поради щодо спілкування',['Давайте час: не поспішайте й не договорюйте за людину.','Ставте запитання, на які можна відповісти «так» або «ні».','Говоріть короткими фразами, спокійно й не перебиваючи.','Хваліть спроби — важлива сама спроба сказати, а не безпомилковість.']]
@@ -631,7 +634,7 @@ uk:{title:'Говоримо разом',g_sos:'🆘 Допомога: кому �
   m_ext_off:'Відповідних фраз немає у словнику. Онлайн-пошук можна ввімкнути: ⚙️ → «Онлайн-пошук фраз».',
   m_online:'Пошукати в інтернеті',m_searching:'Шукаю варіанти…',m_online_res:'Варіанти з інтернету — натисніть, і вас запитають «…?»:',m_online_none:'Онлайн-пошук теж нічого не запропонував.',
   m_title:'🎤 Підказка за сказаним',m_slotonl:'Знайти онлайн',m_slotnone:'Онлайн нічого не знайшов',m_extra:'Схоже, це зайве слово.',m_slotq:'Що малося на увазі замість',m_keep:'✓ Залишити',m_rm:'✕ Прибрати',m_chk:'Перевірити слово',m_builds:'Натиснути — варіанти · утримувати — переставити',m_morew:'Ще слова',m_typeit:'Вписати або виправити текст',m_asheard:'Почуті слова:',m_all:'Уся фраза в рамку',m_fn:'Я, в, на, не…',m_build:'Натисніть слово — відкриються варіанти заміни. Утримуйте слово й перетягніть — зміниться порядок:',m_buildsay:'Сказати',m_buildclr:'Очистити',m_freq:'Часто обирали:',m_forget:'Забути запам’ятані фрази',m_forgetq:'Забути всі фрази, запам’ятані за вибором із підказок, і особистий словник вимови?',m_say:'Говорити',m_stop:'Зупинити',m_listen:'Слухаю… говоріть',m_heard:'Що почуто (можна виправити або вписати слова):',m_sugg:'Можливо, ви хотіли сказати — натисніть на фразу:',m_none:'Відповідних фраз не знайдено. Спробуйте сказати інакше або впишіть слова.',m_nomic:'Немає доступу до мікрофона. Дозвольте його в налаштуваннях браузера.',m_nosr:'Розпізнавання мовлення в цьому браузері недоступне. Впишіть слова вручну.',m_net:'Для розпізнавання потрібен інтернет. Впишіть слова вручну.',m_nosp:'Нічого не почуто. Спробуйте ще раз.',m_err:'Не вдалося розпізнати. Спробуйте ще раз або впишіть слова.',m_note:'Розпізнавання мовлення виконує браузер Chrome: зазвичай потрібен інтернет, а запис голосу може оброблятися на серверах Google. Добір фраз за знайденими словами працює без інтернету. Порушене мовлення розпізнати важко, тому слова можна вписати вручну (зокрема голосовим уведенням клавіатури).',f_edit:'Змінити списки на головному екрані',f_clear:'🗑️ Прибрати всі',f_done:'Готово',f_cclear:'Прибрати всі фрази з цього списку на головному екрані?',f_hint:'Натисніть на фразу, щоб прибрати її з блоку.',e_name:'Назва',e_phrase:'Фраза',ln_ru:'російською',ln_uk:'українською',ln_en:'англійською'},
-en:{title:'Let’s talk together',g_sos:'🆘 Help: whom to call',s_sosnote:'A large call button appears on the red Help screen. The phone still asks you to confirm the call. Numbers are stored only on this phone.',s_sosname:'Name',s_sostel:'Phone number',sm_nosos:'not set',s_barlbl:'Bottom bar labels',bl_big:'Large',bl_off:'Icons only',s_holdsel:'Hold to select: tiles and large buttons work only when held for about half a second (against tremor and accidental touches)',sm_hold:'hold',g_home:'Home screen and tiles',g_mic:'🎤 Suggestions from what was said',g_abc:'🔤 ABC',g_net:'Internet (optional)',
+en:{title:'Let’s talk together',g_sos:'🆘 Help: whom to call',s_sosnote:'A large call button appears on the red Help screen. The phone still asks you to confirm the call. Numbers are stored only on this phone.',s_sosname:'Name',s_sostel:'Phone number',sm_nosos:'not set',s_barlbl:'Bottom bar labels',bl_big:'Large',bl_off:'Icons only',s_holdsel:'Hold to select: tiles and large buttons work only when held for about half a second (against tremor and accidental touches)',sm_hold:'hold',g_home:'Home screen and tiles',s_resume:'On start, open the screen you finished on (for example, 🎤 “Someone speaks to the person” or ABC)',sm_resume:'start on last screen',g_mic:'🎤 Suggestions from what was said',g_abc:'🔤 ABC',g_net:'Internet (optional)',
   s_recent:'Recently said: how many of the last phrases spoken through 🎤 and ABC to show on the home screen',
   s_showauto:'“Someone speaks”: speak the recognized text right away',s_showemoji:'“Someone speaks”: show emoji pictures next to familiar words',
   sm_on:'on',sm_off:'off',sm_guard:'tap guard',sm_simple:'simplified view',sm_auto:'speak right away',sm_abchide:'collapse letters',sm_words:'words online',sm_phr:'phrases online',sm_diary:'diary',sm_recent:'recent',
@@ -713,6 +716,7 @@ en:{title:'Let’s talk together',g_sos:'🆘 Help: whom to call',s_sosnote:'A l
    ['Opened from Facebook or another app','A link from Facebook, Instagram, Messenger and other apps often opens in their built-in browser. It has its own storage: your settings and phrases are not visible there, and changes made there do not reach the installed app. In that case a yellow bar appears at the top: “Open in Chrome” opens the same page in Chrome (on Android), “Copy link” lets you paste it into a browser yourself. It is easiest to start the app from its home screen icon.'],
    ['Menu language','Settings let you choose the menu and help language separately from the language of phrases and speech: for example, phrases and voice in Ukrainian and the menu in English. The labels meant for the person (“Yes”, “No”, etc.) follow the phrase language.'],
    ['Tile editor','Open the section you need (for example, “Feelings” → “I feel” → “cold”) and tap ✏️: the editor opens in that very section. You can add a tile (“+ Add a tile to this section”), change its name, phrase or icon, or delete one. Choose another section from the list. “Reset level” restores the standard set. Edits are kept on this device. English and Russian/Ukrainian phrases are stored separately in the mild levels, so edit them in the language you are using. In the mild levels a tile is a part of a phrase.'],
+   ['Start on the last screen','If you turn on “On start, open the screen you finished on” in ⚙️ → “Home screen and tiles”, the app opens where it was closed: on 🎤 (on the same tab, for example “Someone speaks to the person”), in ABC or in a tile section. The microphone does not switch on by itself. If the option is off, the app always opens on the home screen.'],
    ['ℹ️ About','In ⚙️ → “ℹ️ About” (the last group): the name and version, a short description, links to the author and to the source code with instructions, the license.'],
    ['Install and updates',['In Chrome open the menu ⋮ → “Install app” (or “Add to Home screen”).','After the first launch the app works without the internet.','A new version loads by itself when the app is opened online. The version number is at the bottom of Settings.']],
    ['Tips for communicating',['Give time: do not rush or finish the person’s sentences.','Ask questions that can be answered with “yes” or “no”.','Speak in short phrases, calmly and without interrupting.','Praise attempts: the effort to speak matters more than being error-free.']]
@@ -749,6 +753,7 @@ const DEFAULTS = {
   wordTap: false,      // 🎤: нажатие на слово — сказать, долгое нажатие — добавить во фразу
   abcAutoHide: false,  // «Азбука»: сворачивать панель с буквами после каждой нажатой буквы
   abcKbSmall: false,   // «Азбука»: уменьшенные кнопки букв (кнопка «Мельче» / «Крупнее» на панели)
+  resume: false,       // при запуске открывать экран, на котором закончили (🎤 с его вкладкой, «Азбука» или раздел плиток)
   hearTab: 'sug',      // вкладка экрана 🎤: sug — подсказки по речи человека, show — показать речь собеседника
   showAuto: true,      // проговаривать распознанное автоматически
   showEmoji: true,     // «Говорит собеседник»: эмодзи рядом со знакомыми словами
@@ -1890,8 +1895,35 @@ function tile(n,top,fn){
   return b;
 }
 
+/* ---------- Последний экран (настройка «При запуске открывать экран, на котором закончили») ----------
+   Запоминается всегда (одна короткая запись при смене экрана), открывается при запуске, только если настройка включена.
+   🎤 открывается на той вкладке, что была (settings.hearTab); «Азбука» — с пустой строкой; раздел плиток — по id узлов. */
+let lastScrSaved='';
+function rememberScreen(){
+  let v;
+  if(hearOn)v={v:'hear'};
+  else if(abc)v={v:'abc'};
+  else if(path.length&&path.every(n=>n&&n.id!=null))v={v:'path',ids:path.map(n=>n.id),lv:settings.level};
+  else v={v:'home'};
+  const j=JSON.stringify(v);if(j===lastScrSaved)return;
+  lastScrSaved=j;try{localStorage.setItem('aac.lastScr',j)}catch(e){}
+}
+function resumeScreen(){
+  if(!settings.resume)return false;
+  const v=ld('aac.lastScr',null);if(!v||typeof v!=='object')return false;
+  if(v.v==='hear'){openHear();return true}
+  if(v.v==='abc'&&settings.level!=='L1'){abcOpen();return true}
+  if(v.v==='path'&&v.lv===settings.level&&Array.isArray(v.ids)){
+    let list=tree,p=[];
+    for(const id of v.ids){const n=(list||[]).find(x=>x.id===id);if(!n)break;p.push(n);list=n.c}
+    if(p.length){path=p;render();return true}
+  }
+  return false;
+}
+
 function render(){
   armed=null;
+  rememberScreen();
   document.body.classList.toggle('at-home',!path.length&&!abc&&!hearOn);   // на главном экране кнопки 🎤 и «Азбука» крупные
   if(path.length||abc||hearOn)freqEdit=false;
   if(hearOn){renderHearScreen();return}
@@ -2465,7 +2497,7 @@ function settSum(g){
   switch(g){
     case 'main':return selTxt('#setLang')+' · '+selTxt('#setSeg');
     case 'voice':return selTxt('#setVoice')+' · '+$('#setRate').value;
-    case 'home':return selTxt('#setSize')+' · '+uh('freq')+': '+onOff('#setFreq')+' · '+uh('sm_recent')+': '+$('#setRecent').value;
+    case 'home':return ($('#setResume').checked?uh('sm_resume')+' · ':'')+selTxt('#setSize')+' · '+uh('freq')+': '+onOff('#setFreq')+' · '+uh('sm_recent')+': '+$('#setRecent').value;
     case 'touch':return uh('sm_guard')+': '+selTxt('#setGuard')+' · '+uh('sm_hold')+': '+onOff('#setHoldSel')+' · '+selTxt('#setHand');
     case 'sos':{const ns=[0,1].map(i=>$('#setSosT'+i).value.trim()?($('#setSosN'+i).value.trim()||$('#setSosT'+i).value.trim()):'').filter(Boolean);return ns.length?'📞 '+ns.join(', '):uh('sm_nosos')}
     case 'mic':return uh('sm_simple')+': '+onOff('#setHearSimple')+' · '+uh('sm_auto')+': '+onOff('#setShowAuto');
@@ -2541,7 +2573,7 @@ $('#settingsBtn').onclick = () => {
   $('#rateVal').textContent = settings.rate;
   $('#setPitch').value = settings.pitch;
   $('#pitchVal').textContent = settings.pitch;
-  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Log','log'],['WordOnline','wordOnline'],['AbcAutoHide','abcAutoHide'],['WordTap','wordTap'],['HearSimple','hearSimple'],['ShowAuto','showAuto'],['ShowEmoji','showEmoji'],['HoldSel','holdSel']]
+  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Resume','resume'],['Log','log'],['WordOnline','wordOnline'],['AbcAutoHide','abcAutoHide'],['WordTap','wordTap'],['HearSimple','hearSimple'],['ShowAuto','showAuto'],['ShowEmoji','showEmoji'],['HoldSel','holdSel']]
     .forEach(([id,k])=>{$('#set'+id).checked=!!settings[k]});
   $('#ver').textContent = uh('ver') + ': ' + APP_VERSION;
   const ex = settings.ext;
@@ -2588,7 +2620,7 @@ $('#closeSettBtn').onclick = () => {
   settings.recentN = +$('#setRecent').value;
   settings.barLbl = $('#setBarLbl').value;
   settings.sos = [0,1].map(i=>({n:$('#setSosN'+i).value.trim(),t:$('#setSosT'+i).value.replace(/[^\d+*#]/g,'')}));
-  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Log','log'],['WordOnline','wordOnline'],['AbcAutoHide','abcAutoHide'],['WordTap','wordTap'],['HearSimple','hearSimple'],['ShowAuto','showAuto'],['ShowEmoji','showEmoji'],['HoldSel','holdSel']]
+  [['Hear','hear'],['Syll','syll'],['Vib','vib'],['Awake','awake'],['Quick','quick'],['Freq','freq'],['Resume','resume'],['Log','log'],['WordOnline','wordOnline'],['AbcAutoHide','abcAutoHide'],['WordTap','wordTap'],['HearSimple','hearSimple'],['ShowAuto','showAuto'],['ShowEmoji','showEmoji'],['HoldSel','holdSel']]
     .forEach(([id,k])=>{settings[k]=$('#set'+id).checked});
   settings.rate = $('#setRate').value;
   settings.pitch = $('#setPitch').value;
@@ -4032,7 +4064,7 @@ document.documentElement.lang=lang;
 labels();
 applyUI();
 applyI18n();
-render();
+if(!resumeScreen())render();
 
 loadBundledLex(lang);
 // Просим браузер не удалять данные приложения при нехватке места
