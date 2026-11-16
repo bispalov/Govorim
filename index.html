@@ -133,6 +133,9 @@ body.bar-nolbl #bar .i{font-size:clamp(26px,8vw,32px)}
 #tourBox .tbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 #tourBox .tbtns button{flex:1 1 0;min-width:min-content;min-height:52px;border-radius:12px;border:2px solid var(--border);background:var(--bg);color:var(--ink);font-size:18px;font-weight:800;padding:4px 12px}
 #tourBox .tbtns button.go{background:#1F7A4D;border-color:#1F7A4D;color:#fff}
+#tourBox.compact>:not(.tbtns){display:none}
+#tourBox.compact .tbtns{margin-top:0}
+#tourBox.compact{padding:8px 10px}
 .modal li{margin:5px 0}
 .helphead{position:sticky;top:-16px;z-index:2;display:flex;gap:10px;align-items:center;justify-content:space-between;margin:-16px -16px 8px;padding:10px 16px;background:var(--bg);border-bottom:2px solid var(--border)}
 .helphead h2{margin:0;font-size:22px;min-width:0}
@@ -461,7 +464,7 @@ button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 67;   // держите в соответствии с V = 'govorim-v67' в sw.js
+const APP_VERSION = 68;   // держите в соответствии с V = 'govorim-v68' в sw.js
 // Логин автора на GitHub: ссылки «Автор» и «Исходный код» в ⚙️ → «ℹ️ О приложении» (работают и в копиях на других сайтах).
 // Если оставить пустым, логин берётся из адреса <логин>.github.io.
 const APP_AUTHOR_GH = 'bispalov';
@@ -510,7 +513,7 @@ ru:{title:'Говорим вместе',g_sos:'👥 Близкие: звонок
    ['Для чего приложение','Приложение помогает общаться с человеком, у которого после инсульта нарушена речь (афазия). Вместо того чтобы подбирать слова, достаточно нажимать на крупные плитки — телефон произнесёт фразу вслух. Всё работает без интернета.'],
    ['Быстрый старт',['Выберите тему на главном экране (например, «Еда и питьё»).','Нажимайте плитки: фраза выбирается по шагам.','Приложение спросит, например, «Я хочу чай?». Нажмите «Да» — фраза прозвучит, «Нет» — отмена.','После озвучивания можно нажать «Повтор» или «Готово».']],
    ['Кнопки вверху',['🏠 — на главный экран.','Язык фраз и озвучки (украинский, русский, английский) выбирается в ⚙️ → «Основное». Подписи и фразы переключаются целиком, английские фразы строятся по правилам английского языка. Язык меню и справки можно задать отдельно там же.','⚙️ — настройки.','❓ — справка. На главном экране — вся справка (оглавлением: нажмите на заголовок пункта), в 🎤, «Азбуке» и разделе плиток — только об этом режиме, внизу кнопка «📖 Вся справка». Вверху справки — «🎓 Обучение» этого экрана.','✏️ — редактор плиток.']],
-   ['🎓 Обучение',['Приложение может само показать, что где нажимать: подсвечивает кнопку, коротко пишет и произносит, что она делает. Где это безопасно, оно ждёт, пока вы сами нажмёте подсвеченную кнопку; «Помощь», «Да/Нет» и «Больно» во время обучения не срабатывают, микрофон не включается.','При первом входе на экран (главный, плитки, 🎤 обе вкладки, «Азбука») приложение предлагает: «Показать, как здесь пользоваться?». Ответ запоминается.','Повторить в любой момент: ❓ → «🎓 Обучение». Закончить — «✕ Закончить» или «Назад».','В ⚙️ → «Основное»: «Предлагать обучение при первом входе на экран» и «🔄 Начать обучение заново».']],
+   ['🎓 Обучение',['Приложение может само показать, что где нажимать: подсвечивает кнопку, коротко пишет и произносит, что она делает. Где это безопасно, оно ждёт, пока вы сами нажмёте подсвеченную кнопку; «Помощь», «Да/Нет» и «Больно» во время обучения не срабатывают, микрофон не включается.','При первом входе на экран (главный, плитки, 🎤 обе вкладки, «Азбука») приложение предлагает: «Показать, как здесь пользоваться?». Ответ запоминается.','Где кнопки на экране безопасны (буквы, слова, текст собеседника), их можно нажимать и во время обучения — окно с текстом тогда сжимается до кнопок «Дальше» и «Закончить». Повторить в любой момент: ❓ → «🎓 Обучение». Закончить — «✕ Закончить» или «Назад».','В ⚙️ → «Основное»: «Предлагать обучение при первом входе на экран» и «🔄 Начать обучение заново».']],
    ['Нижняя панель',['✔ Да / ✖ Нет — быстрые ответы. Если открыт вопрос с фразой, отвечают на него; иначе просто произносят «Да» или «Нет».','↩ Назад — шаг назад: закрыть окно, стереть последнюю букву или слово, выйти из экрана. Так же работает системная кнопка «Назад» телефона; на главном экране её нужно нажать ещё раз, чтобы закрыть приложение.','🔊 Повтор — повторить последнее, что прозвучало из телефона.','🆘 Помощь — красный экран и громкий призыв «Помогите!», повторяется каждые 6 секунд. Остановить сигнал можно только кнопкой «Отмена» или «Назад»: случайные нажатия других кнопок его не прерывают.','🤕 Больно — сразу открывает тему «Здоровье».']],
    ['Настройки (⚙️)','Настройки разбиты на группы: «Основное», «👥 Близкие: звонок и сообщение», «Озвучка», «Главный экран и плитки», «Управление и нажатия», «🎤 Подсказка по сказанному», «🔤 Азбука», «Интернет», «Данные», «ℹ️ О приложении». Нажмите на название группы, чтобы раскрыть её; открыта всегда одна группа, а под названием свёрнутой группы видны её главные значения. Если открыть настройки с экрана 🎤 или «Азбуки», сразу раскроется группа этого экрана. В «Основном» — «Предлагать обучение при первом входе на экран» и «🔄 Начать обучение заново».'],
    ['Степень нарушения речи (⚙️)',['Названия уровней относятся к человеку с афазией, а не к сложности работы с приложением: чем тяжелее нарушение речи, тем проще интерфейс. Подберите уровень по тому, как человек говорит сейчас, и меняйте его по мере восстановления.','Тяжёлое — человеку очень трудно говорить. Несколько крупных плиток с самыми нужными словами: вода, еда, туалет, больно.','Среднее — человек произносит отдельные слова. Категории и уточнение внутри них.','Лёгкое 1 — человек начинает фразу, но не вспоминает окончание: тема → начало («Я хочу») → окончание («пить воду»).','Лёгкое 2 — фраза из трёх частей: «Я хочу» → «пить» → «чай».','Лёгкое 3 — речь почти сохранена: длинные фразы до пяти частей с уточнением (когда, где, зачем, почему), в том числе в прошедшем времени: «Я уже выпила утренние таблетки после еды».']],
@@ -609,7 +612,7 @@ uk:{title:'Говоримо разом',g_sos:'👥 Близькі: дзвіно
    ['Для чого застосунок','Застосунок допомагає спілкуватися з людиною, у якої після інсульту порушене мовлення (афазія). Замість того щоб добирати слова, достатньо натискати великі плитки — телефон вимовить фразу вголос. Усе працює без інтернету.'],
    ['Швидкий старт',['Оберіть тему на головному екрані (наприклад, «Їжа та напої»).','Натискайте плитки: фраза обирається по кроках.','Застосунок запитає, наприклад, «Я хочу чай?». Натисніть «Так» — фраза пролунає, «Ні» — скасування.','Після озвучення можна натиснути «Повтор» або «Готово».']],
    ['Кнопки вгорі',['🏠 — на головний екран.','Мова фраз та озвучення (українська, російська, англійська) обирається в ⚙️ → «Основне». Підписи й фрази перемикаються повністю, англійські фрази будуються за правилами англійської мови. Мову меню та довідки можна задати окремо там само.','⚙️ — налаштування.','❓ — довідка. На головному екрані — уся довідка (змістом: натисніть на заголовок пункту), у 🎤, «Абетці» та розділі плиток — лише про цей режим, унизу кнопка «📖 Уся довідка». Угорі довідки — «🎓 Навчання» цього екрана.','✏️ — редактор плиток.']],
-   ['🎓 Навчання',['Застосунок може сам показати, що де натискати: підсвічує кнопку, коротко пише й вимовляє, що вона робить. Де це безпечно, він чекає, поки ви самі натиснете підсвічену кнопку; «Допомога», «Так/Ні» і «Болить» під час навчання не спрацьовують, мікрофон не вмикається.','Під час першого входу на екран (головний, плитки, 🎤 обидві вкладки, «Абетка») застосунок пропонує: «Показати, як тут користуватися?». Відповідь запам’ятовується.','Повторити будь-коли: ❓ → «🎓 Навчання». Завершити — «✕ Завершити» або «Назад».','У ⚙️ → «Основне»: «Пропонувати навчання під час першого входу на екран» і «🔄 Почати навчання заново».']],
+   ['🎓 Навчання',['Застосунок може сам показати, що де натискати: підсвічує кнопку, коротко пише й вимовляє, що вона робить. Де це безпечно, він чекає, поки ви самі натиснете підсвічену кнопку; «Допомога», «Так/Ні» і «Болить» під час навчання не спрацьовують, мікрофон не вмикається.','Під час першого входу на екран (головний, плитки, 🎤 обидві вкладки, «Абетка») застосунок пропонує: «Показати, як тут користуватися?». Відповідь запам’ятовується.','Де кнопки на екрані безпечні (літери, слова, текст співрозмовника), їх можна натискати й під час навчання — вікно з текстом тоді стискається до кнопок «Далі» і «Завершити». Повторити будь-коли: ❓ → «🎓 Навчання». Завершити — «✕ Завершити» або «Назад».','У ⚙️ → «Основне»: «Пропонувати навчання під час першого входу на екран» і «🔄 Почати навчання заново».']],
    ['Нижня панель',['✔ Так / ✖ Ні — швидкі відповіді. Якщо відкрите запитання з фразою, відповідають на нього; інакше просто вимовляють «Так» або «Ні».','↩ Назад — крок назад: закрити вікно, стерти останню літеру або слово, вийти з екрана. Так само працює системна кнопка «Назад» телефона; на головному екрані її треба натиснути ще раз, щоб закрити застосунок.','🔊 Повтор — повторити останнє, що пролунало з телефона.','🆘 Допомога — червоний екран і гучне «Допоможіть!», повторюється кожні 6 секунд. Зупинити сигнал можна лише кнопкою «Скасувати» або «Назад»: випадкові натискання інших кнопок його не переривають.','🤕 Болить — одразу відкриває тему «Здоров’я».']],
    ['Налаштування (⚙️)','Налаштування розбито на групи: «Основне», «👥 Близькі: дзвінок і повідомлення», «Озвучення», «Головний екран і плитки», «Керування й натискання», «🎤 Підказка за сказаним», «🔤 Абетка», «Інтернет», «Дані», «ℹ️ Про застосунок». Натисніть на назву групи, щоб розгорнути її; відкрита завжди одна група, а під назвою згорнутої групи видно її головні значення. Якщо відкрити налаштування з екрана 🎤 або «Абетки», одразу розгорнеться група цього екрана. В «Основному» — «Пропонувати навчання під час першого входу на екран» і «🔄 Почати навчання заново».'],
    ['Ступінь порушення мовлення (⚙️)',['Назви рівнів стосуються людини з афазією, а не складності роботи із застосунком: що важче порушення мовлення, то простіший інтерфейс. Підберіть рівень за тим, як людина говорить зараз, і змінюйте його в міру відновлення.','Важке — людині дуже важко говорити. Кілька великих плиток із найпотрібнішими словами: вода, їжа, туалет, болить.','Середнє — людина вимовляє окремі слова. Категорії та уточнення всередині них.','Легке 1 — людина починає фразу, але не згадує закінчення: тема → початок («Я хочу») → закінчення («пити воду»).','Легке 2 — фраза з трьох частин: «Я хочу» → «пити» → «чай».','Легке 3 — мовлення майже збережене: довгі фрази до п’яти частин з уточненням (коли, де, навіщо, чому), зокрема в минулому часі: «Я вже випила ранкові таблетки після їжі».']],
@@ -719,7 +722,7 @@ en:{title:'Let’s talk together',g_sos:'👥 Loved ones: call and message',s_so
    ['What this app is for','The app helps people communicate with someone whose speech has been affected by a stroke (aphasia). Instead of searching for words, they just tap large tiles and the phone says the phrase aloud. Everything works without the internet.'],
    ['Quick start',['Choose a topic on the home screen (for example, “Food and drink”).','Tap tiles: the phrase is chosen step by step.','The app asks, for example, “I want tea?”. Tap “Yes” and the phrase is spoken; “No” cancels.','After it is spoken you can tap “Repeat” or “Done”.']],
    ['Buttons at the top',['🏠 — go to the home screen.','The language of phrases and speech (Ukrainian, Russian, English) is chosen in ⚙️ → “General”. Labels and phrases switch completely, and English phrases are built by English grammar. The menu and help language can be set separately in the same place.','⚙️ — settings.','❓ — help. On the home screen it shows the full help (as a list of headings: tap one to read it); in 🎤, ABC and tile sections — only help about that mode, with a “📖 Full help” button at the bottom. At the top of help: “🎓 Tutorial” for this screen.','✏️ — tile editor.']],
-   ['🎓 Tutorial',['The app can show what to tap: it highlights a button and briefly writes and says what it does. Where it is safe, it waits for you to tap the highlighted button yourself; Help, Yes/No and Pain do nothing during the tutorial, and the microphone does not switch on.','The first time a screen is opened (home, tiles, both 🎤 tabs, ABC) the app asks: “Show how to use this screen?”. The answer is remembered.','Repeat any time: ❓ → “🎓 Tutorial”. To stop: “✕ Stop” or Back.','In ⚙️ → “General”: “Offer a tutorial the first time a screen is opened” and “🔄 Restart the tutorial”.']],
+   ['🎓 Tutorial',['The app can show what to tap: it highlights a button and briefly writes and says what it does. Where it is safe, it waits for you to tap the highlighted button yourself; Help, Yes/No and Pain do nothing during the tutorial, and the microphone does not switch on.','The first time a screen is opened (home, tiles, both 🎤 tabs, ABC) the app asks: “Show how to use this screen?”. The answer is remembered.','Where buttons on the screen are safe (letters, words, the other person’s text), you can tap them during the tutorial too — the text window then shrinks to the Next and Stop buttons. Repeat any time: ❓ → “🎓 Tutorial”. To stop: “✕ Stop” or Back.','In ⚙️ → “General”: “Offer a tutorial the first time a screen is opened” and “🔄 Restart the tutorial”.']],
    ['Bottom bar',['✔ Yes / ✖ No — quick answers. If a phrase question is open they answer it; otherwise they just say “Yes” or “No”.','↩ Back — one step back: close a window, delete the last letter or word, leave a screen. The phone’s own Back button works the same way; on the home screen press it once more to close the app.','🔊 Repeat — repeat the last thing the phone said.','🆘 Help — red screen and a loud “Help!” repeated every 6 seconds. Only “Cancel” or “Back” stops it: accidental taps on other buttons do not interrupt it.','🤕 Pain — opens the Health topic at once.']],
    ['Settings (⚙️)','Settings are split into groups: “General”, “👥 Loved ones: call and message”, “Speech”, “Home screen and tiles”, “Controls and taps”, “🎤 Suggestions from what was said”, “🔤 ABC”, “Internet”, “Data”, “ℹ️ About”. Tap a group name to open it; only one group is open at a time, and a collapsed group shows its main values under the name. When Settings are opened from the 🎤 or ABC screen, that screen’s group opens right away. “General” has “Offer a tutorial the first time a screen is opened” and “🔄 Restart the tutorial”.'],
    ['Degree of speech impairment (⚙️)',['The level names describe the person with aphasia, not how hard the app is to use: the more severe the impairment, the simpler the screen. Pick the level by how the person speaks now and change it as they recover.','Severe — speaking is very hard. A few large tiles with the most needed words: water, food, toilet, pain.','Moderate — the person says single words. Categories with details inside.','Mild 1 — the person starts a phrase but cannot recall the ending: topic → start (“I want”) → ending (“to drink water”).','Mild 2 — a phrase in three parts: “I want” → “to drink” → “tea”.','Mild 3 — speech is nearly preserved: long phrases of up to five parts with details (when, where, why), including the past tense: “I have already taken my morning pills after eating”.']],
@@ -3503,7 +3506,7 @@ function drawTyper(bx,i,g){
   inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();const f=res.querySelector('button');if(f)f.click()}};
   bx.append(inp,res);upd();
   // фокус в поле; после появления экранной клавиатуры поле — вверху видимой части, чтобы найденные слова были под ним
-  requestAnimationFrame(()=>{try{inp.focus({preventScroll:true})}catch(_){}setTimeout(()=>{try{inp.scrollIntoView({block:'start',behavior:'smooth'})}catch(_){}},300)});
+  requestAnimationFrame(()=>{try{inp.focus({preventScroll:true})}catch(_){}setTimeout(()=>{if(TOUR)return;try{inp.scrollIntoView({block:'start',behavior:'smooth'})}catch(_){}},300)});
 }
 // Готовая подсказка → в рамку: почти верную фразу можно поправить, а не собирать заново
 function toFrame(text){
@@ -3511,7 +3514,7 @@ function toFrame(text){
   stopRec();hearBuild=ws;hearSlot=-1;hearTyp=null;hearUndo=null;hearOpen=true;hearFn=false;hearPulse=true;
   try{if(settings.vib&&navigator.vibrate)navigator.vibrate([35,70,35])}catch(e){}
   refreshHear();
-  if(!simpleHear()){const m=$('#main');if(m)m.scrollTop=0}
+  if(!simpleHear()&&!TOUR){const m=$('#main');if(m)m.scrollTop=0}
 }
 let hearSig='';   // подпись состояния фразы: если она изменилась, в упрощённом виде прокручиваем к началу блока, чтобы был виден результат
 // «Очистить»: сбрасывает весь экран — фразу, услышанный текст, подсказки, онлайн-результаты и поле ввода
@@ -3523,7 +3526,7 @@ function hearDone(){
   const st=$('#hearSt');if(st)st.textContent='';
   refreshHear();
 }
-function clearHear(){hearDone();const m=$('#main');if(m)m.scrollTop=0}
+function clearHear(){hearDone();const m=$('#main');if(m&&!TOUR)m.scrollTop=0}
 // «Сказать» в рамке: фразу собрал сам человек — она звучит сразу, затем экран очищается (повторить — «Повтор»)
 function sayFrame(){
   const t2=hearBuild.join(' ').trim();if(!t2)return;
@@ -3548,7 +3551,7 @@ function drawBuildSimple(box){
   d.append(fr);
   if(hearFn)d.append(fnPanel(w=>{hearFn=false;addBuild(w)}));   // блок сворачивается после выбора: служебные слова редко идут подряд
   box.append(d);
-  if(changed)requestAnimationFrame(()=>{try{d.scrollIntoView({block:'start',behavior:'smooth'})}catch(e){d.scrollIntoView()}});
+  if(changed)requestAnimationFrame(()=>{if(TOUR)return;try{d.scrollIntoView({block:'start',behavior:'smooth'})}catch(e){d.scrollIntoView()}});
 }
 function drawBuild(box){
   if(!hearBuild.length){
@@ -3878,7 +3881,7 @@ function showShow(text,speakNow){
   const inp=$('#showIn');if(inp)inp.value=text;
   renderShow();
   const bx=$('#showText');
-  if(bx&&text)requestAnimationFrame(()=>bx.scrollIntoView({block:'start'}));   // прокрутить к началу крупного текста
+  if(bx&&text)requestAnimationFrame(()=>{if(!TOUR)bx.scrollIntoView({block:'start'})});   // прокрутить к началу крупного текста
   if(text&&speakNow)showSay(1);
 }
 function showListen(){
@@ -3943,6 +3946,7 @@ function drawShowTab(body){
 }
 // Прокрутить экран минимально, чтобы элемент был виден целиком (верх экрана при этом по возможности не уходит)
 function fullyVisible(el){
+  if(TOUR)return;   // во время обучения экран прокручивает только обучение
   const m=$('#main');if(!m||!el)return;
   const r=el.getBoundingClientRect(),mr=m.getBoundingClientRect();
   if(r.bottom>mr.bottom)m.scrollTop+=Math.min(r.bottom-mr.bottom+8,Math.max(0,r.top-mr.top-8));
@@ -4316,22 +4320,22 @@ const TOUR_STEPS={
     {t:'t_back',el:()=>barB('back')}],
   hear:[
     {t:'u_mic',el:()=>$('#micGo')},
-    {t:'u_q',el:()=>$('.hchips .chip.q')},
-    {t:'u_frame',el:()=>$('.hbuild')},
-    {t:'u_sug',el:()=>$('#hearSug .hwrap')},
+    {t:'u_q',el:()=>$('.hchips .chip.q'),tap:1},
+    {t:'u_frame',el:()=>$('.hbuild'),tap:1},
+    {t:'u_sug',el:()=>$('#hearSug .hwrap'),tap:1},
     {t:'u_say',el:()=>$('.hbuild .ans.yes')}],
   show:[
     {t:'s_mic',el:()=>$('#showMic')},
-    {t:'s_text',el:()=>showText.trim()?$('#showText'):null},
-    {t:'s_qr',el:()=>$('#main .qr')},
-    {t:'s_full',el:()=>$('#showFull')},
+    {t:'s_text',el:()=>showText.trim()?$('#showText'):null,tap:1},
+    {t:'s_qr',el:()=>$('#main .qr'),tap:1},
+    {t:'s_full',el:()=>$('#showFull'),tap:1},
     {t:'s_clip',el:()=>$('#showClip')}],
   abc:[
-    {t:'a_kb',el:()=>$('.kb .letters')},
-    {t:'a_words',el:()=>$('.abcres .grid')},
-    {t:'a_fn',el:()=>$('.abcres .fnbtn')},
-    {t:'a_say',el:()=>$$('.abcres .row .ans')},
-    {t:'a_kbh',el:()=>$('.kb .kbh')}]
+    {t:'a_kb',el:()=>$('.kb .letters'),tap:1},
+    {t:'a_words',el:()=>$('.abcres .grid'),tap:1},
+    {t:'a_fn',el:()=>$('.abcres .fnbtn'),tap:1},
+    {t:'a_say',el:()=>$$('.abcres .row .ans'),tap:1},
+    {t:'a_kbh',el:()=>$('.kb .kbh'),tap:1}]
 };
 const tourVis=e=>{if(!e||!e.isConnected||e.closest('[hidden]'))return false;const cs=getComputedStyle(e);if(cs.display==='none'||cs.visibility==='hidden')return false;const r=e.getBoundingClientRect();return r.width>0&&r.height>0};
 function tourEls(st){let v=st.el();v=(Array.isArray(v)?v:[v]).filter(tourVis);return v}
@@ -4351,6 +4355,11 @@ function tourBlocker(e){
   // ↩ «Назад» на нижней панели закрывает обучение (и больше ничего не делает)
   if(e.target.closest&&e.target.closest('#bar button[data-k=back]')){e.preventDefault();e.stopImmediatePropagation();if(e.type==='click')tourEnd();return}
   const st=TOUR.cur;
+  if(st&&!TOUR.waitNow&&st.tap&&TOUR.els.some(x=>x.contains(e.target))){
+    // безопасная область, шаг без ожидания: нажатие работает, а окно сжимается до кнопок — не закрывает то, что человек пробует
+    if(!TOUR.compact){TOUR.compact=true;const b=$('#tourBox');if(b)b.classList.add('compact')}
+    return;
+  }
   if(st&&TOUR.waitNow&&TOUR.els.some(x=>x.contains(e.target))){
     if(e.type==='click'){
       const b=e.target.closest&&e.target.closest('button');
@@ -4361,9 +4370,43 @@ function tourBlocker(e){
   }
   e.preventDefault();e.stopImmediatePropagation();
 }
+// Прокрутить контейнер так, чтобы подсвеченная область стояла под шапкой и под ней поместилось окно
+function tourScrollable(els){
+  const sc=els[0].closest('#main')||els[0].closest('#ov');
+  const fixed=els.some(e=>e.closest('#bar')||e.closest('header'));   // панель букв .kb прилипает к низу, но двигается вместе с прокруткой
+  return sc&&!fixed?sc:null;
+}
+function tourFit(els,box,force){
+  const sc=tourScrollable(els);if(!sc)return;
+  // сначала внутренние прокручиваемые блоки (рамка 🎤 с ограниченной высотой и т. п.)
+  for(let a=els[0].parentElement;a&&a!==sc;a=a.parentElement){
+    const cs=getComputedStyle(a);
+    if(/(auto|scroll)/.test(cs.overflowY)&&a.scrollHeight>a.clientHeight+1){
+      const er=els[0].getBoundingClientRect(),ar=a.getBoundingClientRect();
+      if(er.bottom>ar.bottom)a.scrollTop+=Math.min(er.bottom-ar.bottom+4,er.top-ar.top);
+      else if(er.top<ar.top)a.scrollTop-=ar.top-er.top+4;
+    }
+  }
+  const rc=tourRect(els),{lo,hi}=tourArea(),bh=box.offsetHeight;
+  if(force||rc.top<lo+8||rc.bottom+12+bh>hi)sc.scrollTop+=rc.top-(lo+8);
+}
+function tourUserScroll(){if(TOUR)TOUR.userScroll=true}
 function tourFrame(){
   if(!TOUR)return;
   const hole=$('#tourHole'),box=$('#tourBox');
+  // вёрстка перерисовалась (render) — найти элементы шага заново
+  if(TOUR.cur&&TOUR.els.length&&!TOUR.els.every(e=>e.isConnected)){const ne=tourEls(TOUR.cur);if(ne.length)TOUR.els=ne}
+  if(hole&&box&&TOUR.cur&&TOUR.els.length&&!TOUR.userScroll){
+    const els=TOUR.els.filter(e=>e.isConnected),sc=els.length&&tourScrollable(els);
+    if(sc){
+      const r=tourRect(els),{lo,hi}=tourArea(),sig=Math.round(r.height)+'|'+sc.scrollHeight+'|'+box.offsetHeight;
+      const tall=r.height>hi-lo-8;
+      // ушла за край: невысокая — целиком; высокая — её верх (её выравниваем по верху один раз, без качания)
+      const away=tall?(r.top<lo-1||r.top>hi-40):(r.top<lo-1||r.bottom>hi+1);
+      if(sig!==TOUR.fitSig){TOUR.fitSig=sig;tourFit(els,box)}             // изменилась вёрстка — подогнать
+      else if(away&&Math.abs(r.top-(lo+8))>2){const before=sc.scrollTop;tourFit(els,box,true);if(sc.scrollTop===before)TOUR.fitSig=sig+'|stuck'}
+    }
+  }
   if(hole&&box){
     if(TOUR.scr==='offer'||!TOUR.els.length){hole.style.cssText='left:50%;top:50%;width:0;height:0';box.style.top=Math.max(8,(innerHeight-box.offsetHeight)/2)+'px'}
     else{
@@ -4414,6 +4457,7 @@ function tourOpen(scr){
   tourEnd();
   TOUR={scr,i:-1,els:[],cur:null,waitNow:false};
   addEventListener('pointerdown',tourBlocker,true);addEventListener('click',tourBlocker,true);
+  addEventListener('touchmove',tourUserScroll,{capture:true,passive:true});addEventListener('wheel',tourUserScroll,{capture:true,passive:true});
   TOUR.raf=requestAnimationFrame(tourFrame);
 }
 // Предложение при первом входе на экран
@@ -4442,18 +4486,13 @@ function tourNext(){
   let more=false;for(let j=i+1;j<TOUR.steps.length;j++)if(tourEls(TOUR.steps[j]).length||(TOUR.steps[j].t==='t_ask'||TOUR.steps[j].t==='t_said')){more=true;break}
   const holdNote=TOUR.waitNow&&settings.holdSel&&els.some(e=>e.matches&&e.matches(HOLD_SEL)||e.querySelector&&e.querySelector(HOLD_SEL));
   const text=tt(st.t)+(TOUR.waitNow?' '+tt(holdNote?'hold':'try'):'');
-  const box=tourUI();box.innerHTML='';
+  const box=tourUI();box.innerHTML='';box.classList.remove('compact');
   box.append(h('div','tsub','🎓 '+tt('scr_'+TOUR.scr)+' · '+(i+1)+'/'+TOUR.steps.length),h('div',null,text));
   const r=h('div','tbtns');
   r.append(h('button','go',more?tt('next'):tt('done'),()=>tourNext()),h('button',null,tt('stop'),()=>tourEnd()));
   box.append(r);
-  // прокрутить так, чтобы элемент стоял под шапкой и под ним поместилось окно
-  const sc=els[0].closest('#main')||els[0].closest('#ov');
-  const fixed=els.some(e=>e.closest('#bar')||e.closest('header')||e.closest('.kb'));
-  if(sc&&!fixed){
-    const rc=tourRect(els),{lo,hi}=tourArea(),bh=box.offsetHeight;
-    if(rc.top<lo+8||rc.bottom+12+bh>hi)sc.scrollTop+=rc.top-(lo+8);
-  }
+  TOUR.compact=false;TOUR.userScroll=false;TOUR.fitSig='';
+  tourFit(els,box);   // прокрутить так, чтобы элемент стоял под шапкой и под ним поместилось окно (дальше — на каждом кадре)
   tourSpeak(text);
 }
 function tourEnd(){
@@ -4462,6 +4501,7 @@ function tourEnd(){
   if(TOUR.talking){try{speechSynthesis.cancel()}catch(_){}}
   TOUR.tok=-1;
   removeEventListener('pointerdown',tourBlocker,true);removeEventListener('click',tourBlocker,true);
+  removeEventListener('touchmove',tourUserScroll,{capture:true});removeEventListener('wheel',tourUserScroll,{capture:true});
   TOUR=null;
   const a=$('#tourHole'),b=$('#tourBox');if(a)a.remove();if(b)b.remove();
 }
