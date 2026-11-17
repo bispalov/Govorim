@@ -65,6 +65,10 @@ body.at-home .hb .lbl{display:inline}
 
 #stage{flex:1;position:relative;min-height:0}
 main{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px}
+/* Жест «потянуть вниз — перезагрузить» в Chrome отключён: человек случайно тянул экран от верхнего края, страница
+   перезагружалась и собранное терялось. Прокрутка областей, дойдя до края, не передаётся странице. */
+html,body{overscroll-behavior-y:none}
+main,#ov,.modal,#tourBox,.hbuild{overscroll-behavior:contain}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,140px),1fr));gap:10px}
 .sec{margin:8px 2px 4px;font-size:18px;opacity:.8;font-weight:700}
 
@@ -464,7 +468,7 @@ button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 70;   // держите в соответствии с V = 'govorim-v70' в sw.js
+const APP_VERSION = 71;   // держите в соответствии с V = 'govorim-v71' в sw.js
 // Логин автора на GitHub: ссылки «Автор» и «Исходный код» в ⚙️ → «ℹ️ О приложении» (работают и в копиях на других сайтах).
 // Если оставить пустым, логин берётся из адреса <логин>.github.io.
 const APP_AUTHOR_GH = 'bispalov';
