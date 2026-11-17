@@ -489,7 +489,7 @@ button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 73;   // держите в соответствии с V = 'govorim-v73' в sw.js
+const APP_VERSION = 74;   // держите в соответствии с V = 'govorim-v74' в sw.js
 // Логин автора на GitHub: ссылки «Автор» и «Исходный код» в ⚙️ → «ℹ️ О приложении» (работают и в копиях на других сайтах).
 // Если оставить пустым, логин берётся из адреса <логин>.github.io.
 const APP_AUTHOR_GH = 'bispalov';
@@ -570,7 +570,7 @@ ru:{title:'Говорим вместе',g_sos:'👥 Близкие: звонок
    ['Очистить строку','В «Азбуке» кнопка 🗑 рядом с ⌫ убирает всю собранную строку, а «Очистить» в рамке на экране 🎤 — всю фразу. Случайно убранное возвращает «↶ Вернуть».'],
    ['Открыто из Facebook или другого приложения','По ссылке из Facebook, Instagram, Messenger и других приложений страница часто открывается во встроенном браузере. У него своё хранилище: ваши настройки и фразы там не видны, а сделанные там изменения не попадут в установленное приложение. В этом случае вверху появляется жёлтая плашка: «Открыть в Chrome» открывает ту же страницу в Chrome (на Android), «Копировать ссылку» — чтобы вставить её в браузер самому. Удобнее всего запускать приложение с иконки на главном экране.'],
    ['Язык меню','В настройках можно задать язык меню и справки отдельно от языка фраз и озвучки: например, фразы и голос на украинском, а меню на русском. Подписи для самого человека (кнопки «Да», «Нет» и т. п.) следуют за языком фраз.'],
-   ['Редактор плиток','Откройте нужный раздел (например, «Самочувствие» → «Мне» → «плохо») и нажмите ✏️: редактор откроется именно в этом разделе. Здесь можно добавить плитку («+ Добавить плитку в этот раздел»), изменить название, фразу или значок плитки, удалить ненужную. Другой раздел можно выбрать в списке. «Сбросить уровень» возвращает стандартный набор. Правки хранятся на этом устройстве. В лёгких уровнях плитка — часть фразы; формы по полу пишутся так: вып{ил~ила}.'],
+   ['Редактор плиток','Откройте нужный раздел (например, «Самочувствие» → «Мне» → «плохо») и нажмите ✏️: редактор откроется именно в этом разделе. Здесь можно добавить плитку («+ Добавить плитку в этот раздел»), изменить название, фразу или значок плитки, удалить ненужную. Другой раздел можно выбрать в списке. Набранное сохраняется само — при выборе фото, переходе к другой плитке и закрытии редактора. «Сбросить уровень» возвращает стандартный набор. Правки хранятся на этом устройстве. В лёгких уровнях плитка — часть фразы; формы по полу пишутся так: вып{ил~ила}.'],
    ['Запуск с последнего экрана','Если включить в ⚙️ → «Главный экран и плитки» пункт «При запуске открывать экран, на котором закончили», приложение откроется там, где его закрыли: на 🎤 (на той же вкладке, например «Говорит собеседник»), в «Азбуке» или в разделе плиток. Микрофон сам не включается. Если пункт выключен, приложение всегда открывается на главном экране.'],
    ['✉️ Сообщение близкому (WhatsApp)',['Если близкого нет рядом, фразу можно отправить ему сообщением. В ⚙️ → «👥 Близкие: звонок и сообщение» укажите одного-двух близких (имя и номер с кодом страны, например +380…) и выберите «Сообщение близким: WhatsApp».','Соберите фразу как обычно (плитки, 🎤, «Азбука»). В окне «Сказано» под фразой появится зелёная кнопка «✉️ WhatsApp: Имя». Она откроет переписку с этим человеком с готовым текстом — остаётся нажать «Отправить» в самом WhatsApp. Близкому не нужно это приложение: сообщение придёт в обычный WhatsApp.','На красном экране «Помощь» есть такая же кнопка — она отправит «Помогите! Мне нужна помощь!», сигнал при этом замолкает.','Вместо WhatsApp можно выбрать SMS или «Выбрать приложение (меню «Поделиться»)» — тогда получателя выбирают в Viber, Telegram и т. п. Отправленные сообщения записываются в дневник (если он включён).']],
    ['📋 Ответ близкого из мессенджера',['Если близкий ответил в WhatsApp или Telegram, его сообщение можно показать крупно и озвучить. В мессенджере нажмите на сообщение и выберите «Копировать» (в WhatsApp этот пункт может быть в меню ⋮). Затем откройте приложение: 🎤 → «Говорит собеседник» → «📋 Показать скопированное».','Можно ещё проще: включите в ⚙️ → «🎤 Подсказка по сказанному» пункт «…сразу показывать текст, скопированный в мессенджере». Тогда, если вкладка «Говорит собеседник» открыта, новый скопированный текст появится сам, как только вы переключитесь в приложение. Один и тот же текст второй раз сам не показывается; кнопка показывает его всегда.','Chrome один раз спросит разрешение на доступ к буферу обмена — разрешите. Скопированное не записывается в дневник. Если сам текст не появляется, пользуйтесь кнопкой: на некоторых телефонах Chrome разрешает читать буфер обмена только по нажатию.']],
@@ -669,7 +669,7 @@ uk:{title:'Говоримо разом',g_sos:'👥 Близькі: дзвіно
    ['Очистити рядок','В «Абетці» кнопка 🗑 поруч із ⌫ прибирає весь зібраний рядок, а «Очистити» в рамці на екрані 🎤 — усю фразу. Випадково прибране повертає «↶ Повернути».'],
    ['Відкрито з Facebook або іншого застосунку','За посиланням із Facebook, Instagram, Messenger та інших застосунків сторінка часто відкривається у вбудованому браузері. У нього своє сховище: ваші налаштування й фрази там не видно, а зроблені там зміни не потраплять у встановлений застосунок. У такому разі вгорі з’являється жовта плашка: «Відкрити в Chrome» відкриває ту саму сторінку в Chrome (на Android), «Копіювати посилання» — щоб вставити його в браузер самостійно. Найзручніше запускати застосунок з іконки на головному екрані.'],
    ['Мова меню','У налаштуваннях можна задати мову меню й довідки окремо від мови фраз та озвучення: наприклад, фрази й голос українською, а меню російською. Підписи для самої людини (кнопки «Так», «Ні» тощо) йдуть за мовою фраз.'],
-   ['Редактор плиток','Відкрийте потрібний розділ (наприклад, «Самопочуття» → «Мені» → «погано») і натисніть ✏️: редактор відкриється саме в цьому розділі. Тут можна додати плитку («+ Додати плитку в цей розділ»), змінити назву, фразу або значок плитки, видалити непотрібну. Інший розділ можна обрати у списку. «Скинути рівень» повертає стандартний набір. Правки зберігаються на цьому пристрої. У легких рівнях плитка — частина фрази; форми за статтю пишуться так: вип{ив~ила}.'],
+   ['Редактор плиток','Відкрийте потрібний розділ (наприклад, «Самопочуття» → «Мені» → «погано») і натисніть ✏️: редактор відкриється саме в цьому розділі. Тут можна додати плитку («+ Додати плитку в цей розділ»), змінити назву, фразу або значок плитки, видалити непотрібну. Інший розділ можна обрати у списку. Набране зберігається саме — під час вибору фото, переходу до іншої плитки і закриття редактора. «Скинути рівень» повертає стандартний набір. Правки зберігаються на цьому пристрої. У легких рівнях плитка — частина фрази; форми за статтю пишуться так: вип{ив~ила}.'],
    ['Запуск з останнього екрана','Якщо ввімкнути в ⚙️ → «Головний екран і плитки» пункт «Під час запуску відкривати екран, на якому закінчили», застосунок відкриється там, де його закрили: на 🎤 (на тій самій вкладці, наприклад «Говорить співрозмовник»), в «Абетці» або в розділі плиток. Мікрофон сам не вмикається. Якщо пункт вимкнено, застосунок завжди відкривається на головному екрані.'],
    ['✉️ Повідомлення близькій людині (WhatsApp)',['Якщо близької людини немає поруч, фразу можна надіслати їй повідомленням. У ⚙️ → «👥 Близькі: дзвінок і повідомлення» вкажіть одну-дві близькі людини (ім’я та номер з кодом країни, наприклад +380…) і виберіть «Повідомлення близьким: WhatsApp».','Зберіть фразу як зазвичай (плитки, 🎤, «Абетка»). У вікні «Сказано» під фразою з’явиться зелена кнопка «✉️ WhatsApp: Ім’я». Вона відкриє листування з цією людиною з готовим текстом — лишається натиснути «Надіслати» в самому WhatsApp. Близькій людині не потрібен цей застосунок: повідомлення прийде у звичайний WhatsApp.','На червоному екрані «Допомога» є така сама кнопка — вона надішле «Допоможіть! Мені потрібна допомога!», сигнал при цьому замовкає.','Замість WhatsApp можна вибрати SMS або «Вибрати застосунок (меню «Поділитися»)» — тоді отримувача вибирають у Viber, Telegram тощо. Надіслані повідомлення записуються в щоденник (якщо його ввімкнено).']],
    ['📋 Відповідь близької людини з месенджера',['Якщо близька людина відповіла у WhatsApp чи Telegram, її повідомлення можна показати крупно й озвучити. У месенджері натисніть на повідомлення й виберіть «Копіювати» (у WhatsApp цей пункт може бути в меню ⋮). Потім відкрийте застосунок: 🎤 → «Говорить співрозмовник» → «📋 Показати скопійоване».','Можна ще простіше: увімкніть у ⚙️ → «🎤 Підказка за сказаним» пункт «…одразу показувати текст, скопійований у месенджері». Тоді, якщо вкладка «Говорить співрозмовник» відкрита, новий скопійований текст з’явиться сам, щойно ви перемкнетеся в застосунок. Той самий текст удруге сам не показується; кнопка показує його завжди.','Chrome один раз спитає дозвіл на доступ до буфера обміну — дозвольте. Скопійоване не записується в щоденник. Якщо текст сам не з’являється, користуйтеся кнопкою: на деяких телефонах Chrome дозволяє читати буфер обміну лише за натисканням.']],
@@ -779,7 +779,7 @@ en:{title:'Let’s talk together',g_sos:'👥 Loved ones: call and message',s_so
    ['Clear the line','In ABC the 🗑 button next to ⌫ removes the whole line, and “Clear” in the 🎤 frame removes the whole phrase. “↶ Undo” brings back what was removed by accident.'],
    ['Opened from Facebook or another app','A link from Facebook, Instagram, Messenger and other apps often opens in their built-in browser. It has its own storage: your settings and phrases are not visible there, and changes made there do not reach the installed app. In that case a yellow bar appears at the top: “Open in Chrome” opens the same page in Chrome (on Android), “Copy link” lets you paste it into a browser yourself. It is easiest to start the app from its home screen icon.'],
    ['Menu language','Settings let you choose the menu and help language separately from the language of phrases and speech: for example, phrases and voice in Ukrainian and the menu in English. The labels meant for the person (“Yes”, “No”, etc.) follow the phrase language.'],
-   ['Tile editor','Open the section you need (for example, “Feelings” → “I feel” → “cold”) and tap ✏️: the editor opens in that very section. You can add a tile (“+ Add a tile to this section”), change its name, phrase or icon, or delete one. Choose another section from the list. “Reset level” restores the standard set. Edits are kept on this device. English and Russian/Ukrainian phrases are stored separately in the mild levels, so edit them in the language you are using. In the mild levels a tile is a part of a phrase.'],
+   ['Tile editor','Open the section you need (for example, “Feelings” → “I feel” → “cold”) and tap ✏️: the editor opens in that very section. You can add a tile (“+ Add a tile to this section”), change its name, phrase or icon, or delete one. Choose another section from the list. What you type is kept by itself — when you choose a photo, switch to another tile or close the editor. “Reset level” restores the standard set. Edits are kept on this device. English and Russian/Ukrainian phrases are stored separately in the mild levels, so edit them in the language you are using. In the mild levels a tile is a part of a phrase.'],
    ['Start on the last screen','If you turn on “On start, open the screen you finished on” in ⚙️ → “Home screen and tiles”, the app opens where it was closed: on 🎤 (on the same tab, for example “The other person speaks”), in ABC or in a tile section. The microphone does not switch on by itself. If the option is off, the app always opens on the home screen.'],
    ['✉️ Message to a loved one (WhatsApp)',['If your loved one is not nearby, you can send them the phrase as a message. In ⚙️ → “👥 Loved ones: call and message” enter one or two people (name and number with the country code, for example +44…) and choose “Message to loved ones: WhatsApp”.','Build the phrase as usual (tiles, 🎤, ABC). A green “✉️ WhatsApp: Name” button appears under the phrase in the “Said” window. It opens a chat with this person with the text filled in — then tap Send in WhatsApp itself. The loved one does not need this app: the message arrives in ordinary WhatsApp.','The red Help screen has the same button — it sends “Help! I need help!”, and the alarm goes quiet.','Instead of WhatsApp you can choose SMS or “Choose an app (Share menu)” — then the recipient is picked in Viber, Telegram, etc. Sent messages are written to the diary (if it is on).']],
    ['📋 A reply from a messenger',['If your loved one replied in WhatsApp or Telegram, the message can be shown large and read aloud. In the messenger, tap the message and choose Copy (in WhatsApp it may be in the ⋮ menu). Then open the app: 🎤 → “The other person speaks” → “📋 Show copied text”.','Even simpler: in ⚙️ → “🎤 Suggestions from what was said” turn on “…show text copied in a messenger right away”. Then, while the “The other person speaks” tab is open, new copied text appears by itself as soon as you switch to the app. The same text is not shown again by itself; the button always shows it.','Chrome asks once for clipboard access — allow it. Copied text is not written to the diary. If the text does not appear by itself, use the button: on some phones Chrome lets a site read the clipboard only on a tap.']],
@@ -4174,6 +4174,10 @@ $('#restoreFile').onchange=e=>{
 /* ---------- Модальное окно РЕДАКТОРА ---------- */
 const ed=$('#ed');
 let edCtx='';                                   // раздел, в котором открыт редактор
+// Набранное в полях плитки переносится в неё перед любой перерисовкой редактора (фото, смена раздела/плитки,
+// новая плитка, закрытие) — иначе drawEd() заново заполняет поля из старых данных и набранное теряется.
+let edApply=null;
+function edKeep(){if(edApply&&edApply())save()}
 $('#gear').onclick = () => openEd();
 const find=id=>{let r=null;const w=(l)=>l.forEach(n=>{if(n.id===id)r={n,l};if(n.c)w(n.c)});w(tree);return r};
 // Редактор открывается в разделе, который сейчас открыт на экране
@@ -4198,6 +4202,7 @@ function photoData(file){
   });
 }
 function closeEd(){
+  edKeep();edApply=null;
   ed.style.display='none';
   const ok=[];for(const n of path){if(find(n.id))ok.push(n);else break}   // убрать из пути удалённые разделы
   path=ok;closeOv();render();
@@ -4212,7 +4217,7 @@ function drawEd(){
   if(edCtx&&!find(edCtx))edCtx='';
   const cs=h('select');cs.append(new Option(uh('e_main'),''));
   const w=(l,d)=>l.forEach(n=>{cs.append(new Option('· '.repeat(d)+t(n.l)+' '+(n.e||''),n.id));if(n.c)w(n.c,d+1)});w(tree,0);
-  cs.value=edCtx;cs.onchange=()=>{edCtx=cs.value;sel='';drawEd()};
+  cs.value=edCtx;cs.onchange=()=>{edKeep();edCtx=cs.value;sel='';drawEd()};
   ed.append(h('label',null,uh('e_sec')),cs);
   const cf=edCtx&&find(edCtx);
   const kids=cf?(cf.n.c||[]):tree;
@@ -4225,7 +4230,7 @@ function drawEd(){
   const ts=h('select');ts.append(new Option(uh('e_pick'),''));
   kids.forEach(n=>ts.append(new Option(t(n.l)+' '+(n.e||''),n.id)));
   ts.value=sel;if(ts.value!==sel){sel='';ts.value=''}
-  ts.onchange=()=>{sel=ts.value;drawEd()};
+  ts.onchange=()=>{edKeep();sel=ts.value;drawEd()};
   ed.append(h('label',null,uh('e_tiles')),ts);
 
   const f=sel&&find(sel);
@@ -4234,23 +4239,26 @@ function drawEd(){
   const pick=(str,c)=>{const p=String(str||'').split('|');return p[one?0:LI_IDX[c]]||''};
   const join=vals=>one?vals[0]:LS.map((c,i)=>vals[i]).join('|');
   let fl=[],fp=[],ie;
+  edApply=null;
   if(f){
     const n=f.n;
     fl=LS.map(c=>fld(uh('e_name')+' ('+uh('ln_'+c)+')',pick(n.l,c)));
     fp=LS.map(c=>fld(uh('e_phrase')+' ('+uh('ln_'+c)+')',pick(n.s,c)));
     ie=fld(uh('e_em'),n.e||'');
+    edApply=()=>{const L=join(fl.map(i=>i.value)),S=join(fp.map(i=>i.value)),E=ie.value;
+      if(n.l===L&&n.s===S&&(n.e||'')===E)return false;n.l=L;n.s=S;n.e=E;return true};
     // Фото вместо значка (близкие люди, свои вещи): уменьшается до 192×192 и хранится на телефоне
     ed.append(h('label',null,uh('ed_photo')));
     const pr=h('div','edpic');
     if(n.img){const im=h('img');im.src=n.img;im.alt='';pr.append(im)}
     const fi=h('input');fi.type='file';fi.accept='image/*';fi.hidden=true;
     fi.onchange=()=>{const fl=fi.files&&fi.files[0];if(!fl)return;photoData(fl).then(d=>{
-      const old=n.img;n.img=d;
+      edKeep();const old=n.img;n.img=d;
       try{localStorage.setItem(tk(),JSON.stringify(tree))}catch(e){if(old)n.img=old;else delete n.img;alert(uh('ed_photo_big'));return}
       drawEd();
     }).catch(()=>alert(uh('ed_photo_big')))};
     pr.append(fi,h('button',null,uh('ed_photo_add'),()=>fi.click()));
-    if(n.img)pr.append(h('button','d',uh('ed_photo_del'),()=>{delete n.img;save();drawEd()}));
+    if(n.img)pr.append(h('button','d',uh('ed_photo_del'),()=>{edKeep();delete n.img;save();drawEd()}));
     ed.append(pr);
   }
   const r=h('div','row');
@@ -4261,6 +4269,7 @@ function drawEd(){
   ed.append(r);
   const ra=h('div','row');
   ra.append(h('button',null,uh('e_add'),()=>{
+    edKeep();
     const mk=(ru,uk,en)=>{const v={ru,uk,en};return edLangs().map(c=>v[c]).join('|')};
     const n={id:'n'+Date.now(),l:mk('Новая','Нова','New'),s:isB()?mk('слово','слово','word'):mk('Я хочу','Я хочу','I want'),e:'💬'};
     if(kids.some(k=>k.tp))n.tp=1;               // тема верхнего уровня или тема внутри группы
