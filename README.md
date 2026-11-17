@@ -31,6 +31,7 @@
 - **Підказка за сказаним** (зелена кнопка 🎤 у шапці): людина вимовляє фразу, застосунок знаходить у ній знайомі слова (враховує форми слів і невеликі спотворення) й пропонує готові фрази; після вибору застосунок запитує «…?» (кнопка «Послухати» вимовляє фразу заздалегідь) і вимовляє фразу після «Так», щоб підказка за спотвореним мовленням не пролунала помилково.
 - **Варіанти за звучанням**: торкніться слова в рамці 🎤 — серед варіантів є слова, схожі за звучанням, із заміненими, пропущеними чи переставленими звуками (порівнюються приголосні з парними звуками б/п, д/т, г/к, з/с, ж/ш, в/ф, р/л і перестановками). З завантаженим частотним словником варіантів більше. Після «у … є …» не пропонується їжа; у вбудованому словнику є часті слова про людей (подруга, сестра, онуки, сусідка…).
 - **Нічого не губиться під час перезапуску**: зібраний рядок «Абетки» й рамка 🎤 зберігаються й після оновлення застосунку чи вивантаження з пам’яті (окремо для кожної мови) і очищаються, коли фраза пролунала. Налаштування зберігаються одразу, «Закрити» лише закриває вікно.
+- **Розмір плиток** (⚙️ → «Головний екран і плитки»): маленький (3–4 в ряд), звичайний (по дві), великий (по дві, вищі), дуже великий (по одній). Підписи й значки підлаштовуються під ширину плитки, тож і з великим системним шрифтом плитки йдуть у кілька колонок.
 - **Говорить співрозмовник** (друга вкладка на екрані 🎤): для випадків, коли людина не впізнає живе мовлення або чує інші слова, але розуміє синтезований голос чи читає. Співрозмовник говорить, фраза розпізнається, показується великим текстом (розмір змінюється кнопками A− / A+) і проговорюється голосом телефона; слово, що проговорюється, підсвічується, якщо голос це підтримує. Фраза не мусить бути у словнику; її можна й вписати вручну (працює без інтернету). Натискання на слово вимовляє його окремо й повільно, поруч зі знайомими словами показуються емодзі, є швидкі відповіді («Повторіть», «Говоріть повільніше», «Я не розумію», «Я не знаю», «Напишіть»), кнопка «👁 На весь екран» показує фразу найбільшим шрифтом. Останні п’ять фраз зберігаються на телефоні, доки ви їх не видалите значком 🗑.
 - Вбудована довідка (кнопка ❓), редактор плиток (✏️), який відкривається в тому розділі, де ви перебуваєте, щоденник спілкування й резервна копія даних.
 - **✉️ Повідомлення близькій людині** (⚙️ → «👥 Близькі: дзвінок і повідомлення», за замовчуванням вимкнено): у вікні «Сказано» і на червоному екрані «Допомога» з’являється кнопка «✉️ WhatsApp: Ім’я» — відкриває листування з цією людиною з готовим текстом, лишається натиснути «Надіслати» у WhatsApp. Близькій людині застосунок не потрібен. Також можна вибрати SMS або меню «Поділитися» (Viber, Telegram…). Номер — з кодом країни (+380…).
@@ -123,7 +124,7 @@
 
 Встановлений застосунок оновлюється лише за зміни версії кешу. За будь-якої зміни файлів:
 
-1. У `sw.js` збільште номер: `const V = 'govorim-v72'` → `'govorim-v73'`.
+1. У `sw.js` збільште номер: `const V = 'govorim-v73'` → `'govorim-v74'`.
 2. В `index.html` збільште `APP_VERSION` (він показується внизу налаштувань).
 3. Завантажте файли. Застосунок підхопить нову версію під час наступного відкриття з інтернетом і один раз перезавантажиться.
 
@@ -195,7 +196,7 @@
 |---|---|
 | Сначала услышать, потом выбрать | Первое нажатие на плитку произносит слово и подсвечивает плитку, второе выбирает её. |
 | Разбор по слогам | Долгое нажатие на плитку показывает слово по слогам и произносит его медленно; нажатие на слог произносит слог. Деление на слоги примерное. Использовать по рекомендации логопеда. |
-| Размер плиток | Обычный, крупный, очень крупный (по одной в ряд). |
+| Размер плиток | Маленький (3–4 в ряд), обычный (по две в ряд), крупный (по две, выше), очень крупный (по одной в ряд). Подписи и значки подстраиваются под ширину плитки, поэтому и при крупном системном шрифте плитки идут в несколько колонок. |
 | Защита от случайных нажатий | Повторные касания быстрее 0,4 / 0,8 / 1,5 с игнорируются. |
 | Нижняя панель | Для правой руки или зеркально для левой. |
 | Говорить сразу | Фраза плитки или подсказки звучит без вопроса «…?». В темах «Здоровье» и «Лекарства» и для фраз из интернета вопрос сохраняется. |
@@ -347,7 +348,7 @@
 
 Установленное приложение обновляется только при смене версии кэша. При любом изменении файлов:
 
-1. В `sw.js` увеличьте номер: `const V = 'govorim-v72'` → `'govorim-v73'`.
+1. В `sw.js` увеличьте номер: `const V = 'govorim-v73'` → `'govorim-v74'`.
 2. В `index.html` увеличьте `APP_VERSION` (он показывается внизу настроек).
 3. Загрузите файлы. Приложение подхватит новую версию при следующем открытии с интернетом и один раз перезагрузится.
 
@@ -416,6 +417,7 @@
 - "Suggestions from what was said" (🎤): the person speaks, the browser recognizes it (usually online in Chrome), and the app offers ready phrases containing the recognized words; typing the words manually works offline.
 - Sound-alike options: tap a word in the 🎤 frame — the options include words that sound similar, with sounds replaced, dropped or swapped (consonants compared with voiced/voiceless pairs, r/l and transpositions); more of them with a downloaded word list. Common words about people (friend, sister, neighbour…) are built in.
 - Nothing is lost on restart: the ABC line and the 🎤 frame survive an app update or being unloaded from memory (per language) and are cleared once the phrase is spoken. Settings are saved immediately; “Close” only closes the window.
+- Tile size (⚙️ → “Home screen and tiles”): small (3–4 per row), normal (two), large (two, taller), extra large (one). Labels and icons scale with the tile width, so tiles stay in several columns even with a large system font.
 - Building a phrase from words: dictionary and online-found words are tapped one by one and gathered in a frame at the top (tap a word to remove it); "Say it" speaks the whole phrase and it is remembered among the frequent ones. "Whole phrase to the frame" moves all heard words (including pronouns and prepositions) into the frame, where they can be removed or supplemented, including with short function words ("I, to, the, not…"). The frame is pinned at the top and collapsed to one line by default; the word order is changed by pressing and holding a word and dragging it. Optionally, settings enable the mode "one tap speaks a word at once, without an extra window, a long press adds it to the phrase". Only phrases built in the frame and spoken as a whole are remembered as frequent.
 - Badly distorted words: the heard phrase is matched against known ones by word order and count — an unknown word becomes a "hole", close-to-real words serve as anchors. Words not in the dictionary are marked "?" in the frame; tapping opens 3–4 options (by template match, neighboring words and sound) or "Keep" / "Remove"; after a choice, options for the next "?" word open right away. The choice is remembered in a personal pronunciation dictionary so next time that fragment is corrected automatically. All on-device and free. If online word search (Wiktionary) or phrase search (AI) is on, the options panel gets a "Search online" button; the AI receives the phrase with a mask like "I want [?] toilet" and picks only that word. A request is sent only when you tap it.
 - Simplified "I’m speaking" view (setting): after recognition all words go straight into the phrase — just fix them and press "Say it". The description and text field are hidden, dictionary and online words are under "More words", and three ready phrases are shown. After every change to the phrase the screen scrolls to the start of the block.

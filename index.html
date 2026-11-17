@@ -73,8 +73,9 @@ main,#ov,.modal,#tourBox,.hbuild{overscroll-behavior:contain}
 .sec{margin:8px 2px 4px;font-size:18px;opacity:.8;font-weight:700}
 
 .tile{min-width:0;min-height:120px;border-radius:18px;border:3px solid var(--c);background:color-mix(in srgb, var(--c) 20%, var(--card-bg));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 6px;font-size:clamp(15px,4.8vw,22px);font-weight:700;text-align:center;overflow-wrap:break-word;color:var(--ink)}
-.tile .em{font-size:clamp(40px,12vw,52px);line-height:1}
-.tile img,.big img{width:clamp(64px,22vw,96px);height:clamp(64px,22vw,96px);object-fit:cover;border-radius:14px}
+.tile .em{line-height:1}
+.tile img{object-fit:cover;border-radius:14px}
+.big img{width:clamp(64px,22vw,96px);height:clamp(64px,22vw,96px);object-fit:cover;border-radius:14px}
 
 .say{width:100%;min-height:64px;margin-bottom:10px;border-radius:16px;background:var(--navy);color:#fff;font-size:clamp(18px,5.4vw,22px);padding:10px;text-align:left;overflow-wrap:anywhere}
 
@@ -216,10 +217,30 @@ body.bar-nolbl #bar .i{font-size:clamp(26px,8vw,32px)}
 .showbox .hl{background:#F2B705;color:#1B1B1B;border-radius:6px;padding:0 3px}
 .hrow{width:100%;text-align:left;min-height:48px;padding:8px 12px;margin:4px 0;border-radius:12px;background:var(--card-bg);border:2px solid var(--border);color:var(--ink);font-size:18px;font-weight:600;overflow-wrap:anywhere}
 .mini{min-height:44px;min-width:44px;padding:0 12px;border-radius:12px;background:var(--card-bg);border:2px solid var(--border);color:var(--ink);font-size:18px;font-weight:700}
-[data-size="l"] .grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr))}
-[data-size="l"] .tile{min-height:170px;font-size:clamp(18px,5.6vw,26px)}
-[data-size="xl"] .grid{grid-template-columns:1fr}
-[data-size="xl"] .tile{min-height:150px;font-size:clamp(22px,7vw,30px)}
+/* Размер плиток (v73). Колонки при ширине 277/313/360/412 px: s 3/3/4/4, m 2, l 2 (выше), xl 1; на планшете больше.
+   Шрифт, значок и фото считаются от ширины самой плитки (cqi): при крупном системном шрифте экран «сужается»
+   (360 → 277 px), и раньше все размеры давали одну колонку. cqi задаются детям плитки — у самой .tile они ссылались бы на предка. */
+.tile{container-type:inline-size}
+.tile>span:not(.em){hyphens:auto;overflow-wrap:anywhere;max-width:100%;line-height:1.15}
+.tg{grid-template-columns:repeat(auto-fill,minmax(min(100%,max(118px,31vw)),1fr))}
+.tg .tile>span:not(.em){font-size:clamp(14px,12.5cqi,24px)}
+.tg .tile .em{font-size:clamp(30px,30cqi,56px)}
+.tg .tile img{width:clamp(48px,56cqi,110px);height:clamp(48px,56cqi,110px)}
+[data-size="s"] .tg{grid-template-columns:repeat(auto-fill,minmax(min(100%,max(76px,20vw)),1fr));gap:8px}
+[data-size="s"] .tg .tile{min-height:88px;padding:6px 4px;gap:4px;border-radius:14px}
+[data-size="s"] .tg .tile>span:not(.em){font-size:clamp(12px,14.5cqi,18px)}
+[data-size="s"] .tg .tile .em{font-size:clamp(24px,36cqi,44px)}
+[data-size="s"] .tg .tile img{width:clamp(36px,60cqi,80px);height:clamp(36px,60cqi,80px);border-radius:10px}
+[data-size="l"] .tg{grid-template-columns:repeat(auto-fill,minmax(min(100%,max(118px,40vw)),1fr))}
+[data-size="l"] .tg .tile{min-height:170px}
+[data-size="l"] .tg .tile>span:not(.em){font-size:clamp(17px,14.5cqi,30px)}
+[data-size="l"] .tg .tile .em{font-size:clamp(40px,38cqi,76px)}
+[data-size="l"] .tg .tile img{width:clamp(64px,66cqi,150px);height:clamp(64px,66cqi,150px)}
+[data-size="xl"] .tg{grid-template-columns:1fr}
+[data-size="xl"] .tg .tile{min-height:150px}
+[data-size="xl"] .tg .tile>span:not(.em){font-size:clamp(22px,9.5cqi,36px)}
+[data-size="xl"] .tg .tile .em{font-size:clamp(44px,20cqi,84px)}
+[data-size="xl"] .tg .tile img{width:clamp(80px,34cqi,170px);height:clamp(80px,34cqi,170px)}
 .letters{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:8px}
 .lt{min-height:62px;border-radius:14px;background:var(--card-bg);border:2px solid var(--navy);color:var(--ink);font-size:26px;font-weight:800}
 .wd{min-height:64px;padding:6px 10px;border-radius:14px;background:var(--card-bg);border:3px solid var(--accent);color:var(--ink);font-size:clamp(20px,6vw,26px);font-weight:700;overflow-wrap:anywhere}
@@ -468,7 +489,7 @@ button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 72;   // держите в соответствии с V = 'govorim-v72' в sw.js
+const APP_VERSION = 73;   // держите в соответствии с V = 'govorim-v73' в sw.js
 // Логин автора на GitHub: ссылки «Автор» и «Исходный код» в ⚙️ → «ℹ️ О приложении» (работают и в копиях на других сайтах).
 // Если оставить пустым, логин берётся из адреса <логин>.github.io.
 const APP_AUTHOR_GH = 'bispalov';
@@ -500,7 +521,7 @@ ru:{title:'Говорим вместе',g_sos:'👥 Близкие: звонок
   m_show_note:'Говорит собеседник: фраза распознаётся, показывается крупным текстом и проговаривается голосом телефона. Это помогает, когда человек не узнаёт живую речь, но понимает синтезированный голос или читает. Фраза не обязана быть в словаре. Последние пять фраз хранятся на этом телефоне, пока вы их не удалите. Распознавание речи выполняет браузер (обычно нужен интернет, см. «Справка»); без интернета можно вписать фразу.',
   g_main:'Основное',g_voice:'Озвучка',g_touch:'Управление и нажатия',g_ease:'Меньше усталости',g_data:'Данные',g_about:'ℹ️ О приложении',s_tour:'🎓 Предлагать обучение при первом входе на экран',s_tour_reset:'🔄 Начать обучение заново',s_tour_done:'Готово: обучение снова будет предложено на каждом экране.',hlp_all:'Вся справка',hlp_toc:'Нажмите на заголовок, чтобы прочитать пункт. В режимах (🎤, «Азбука», плитки) кнопка ❓ открывает справку только об этом режиме.',hlp_open:'Раскрыть все пункты',hlp_close:'Свернуть все пункты',ab_desc:'Коммуникационная доска для людей с афазией и апраксией после инсульта и их близких.',ab_f:['Бесплатно, без рекламы и регистрации.','Работает без интернета (распознаванию речи 🎤 обычно нужна сеть).','Данные хранятся только на этом устройстве, приложение не записывает голос.'],ab_auth:'Автор',ab_src:'Исходный код и инструкции',ab_lic:'Лицензия MIT. Код написан ИИ-ассистентом Claude (Anthropic) по заданию и под руководством автора.',
   s_lang:'Язык фраз и озвучки',s_uilang:'Язык меню и справки',ui_auto:'Как у фраз и озвучки',
-  s_size:'Размер плиток',sz_m:'Обычный',sz_l:'Крупный',sz_xl:'Очень крупный (по одной в ряд)',
+  s_size:'Размер плиток',sz_s:'Маленький (3–4 в ряд)',sz_m:'Обычный (по две в ряд)',sz_l:'Крупный (по две, выше)',sz_xl:'Очень крупный (по одной в ряд)',
   s_guard:'Защита от случайных нажатий (повторное касание быстрее этого времени игнорируется)',gd_0:'Выключена',gd_400:'0,4 с',gd_800:'0,8 с',gd_1500:'1,5 с',
   s_hand:'Нижняя панель кнопок',hd_right:'Для правой руки (как сейчас)',hd_left:'Для левой руки (зеркально)',
   s_hear:'Сначала услышать, потом выбрать: первое нажатие на плитку произносит слово, второе выбирает её',
@@ -599,7 +620,7 @@ uk:{title:'Говоримо разом',g_sos:'👥 Близькі: дзвіно
   m_show_note:'Говорить співрозмовник: фраза розпізнається, показується великим текстом і проговорюється голосом телефона. Це допомагає, коли людина не впізнає живе мовлення, але розуміє синтезований голос або читає. Фраза не мусить бути у словнику. Останні п’ять фраз зберігаються на цьому телефоні, доки ви їх не видалите. Розпізнавання мовлення виконує браузер (зазвичай потрібен інтернет, див. «Довідка»); без інтернету можна вписати фразу.',
   g_main:'Основне',g_voice:'Озвучення',g_touch:'Керування й натискання',g_ease:'Менше втоми',g_data:'Дані',g_about:'ℹ️ Про застосунок',s_tour:'🎓 Пропонувати навчання під час першого входу на екран',s_tour_reset:'🔄 Почати навчання заново',s_tour_done:'Готово: навчання знову буде запропоновано на кожному екрані.',hlp_all:'Уся довідка',hlp_toc:'Натисніть на заголовок, щоб прочитати пункт. У режимах (🎤, «Абетка», плитки) кнопка ❓ відкриває довідку лише про цей режим.',hlp_open:'Розгорнути всі пункти',hlp_close:'Згорнути всі пункти',ab_desc:'Комунікаційна дошка для людей з афазією та апраксією після інсульту та їхніх близьких.',ab_f:['Безкоштовно, без реклами й реєстрації.','Працює без інтернету (розпізнаванню мовлення 🎤 зазвичай потрібна мережа).','Дані зберігаються лише на цьому пристрої, застосунок не записує голос.'],ab_auth:'Автор',ab_src:'Вихідний код та інструкції',ab_lic:'Ліцензія MIT. Код написав ШІ-асистент Claude (Anthropic) за завданням і під керівництвом автора.',
   s_lang:'Мова фраз та озвучення',s_uilang:'Мова меню та довідки',ui_auto:'Як у фраз та озвучення',
-  s_size:'Розмір плиток',sz_m:'Звичайний',sz_l:'Великий',sz_xl:'Дуже великий (по одній у ряд)',
+  s_size:'Розмір плиток',sz_s:'Маленький (3–4 в ряд)',sz_m:'Звичайний (по дві в ряд)',sz_l:'Великий (по дві, вищі)',sz_xl:'Дуже великий (по одній у ряд)',
   s_guard:'Захист від випадкових натискань (повторне торкання швидше за цей час ігнорується)',gd_0:'Вимкнено',gd_400:'0,4 с',gd_800:'0,8 с',gd_1500:'1,5 с',
   s_hand:'Нижня панель кнопок',hd_right:'Для правої руки (як зараз)',hd_left:'Для лівої руки (дзеркально)',
   s_hear:'Спершу почути, потім обрати: перше натискання на плитку вимовляє слово, друге обирає її',
@@ -698,7 +719,7 @@ en:{title:'Let’s talk together',g_sos:'👥 Loved ones: call and message',s_so
   m_show_note:'The other person speaks: the phrase is recognized, shown in large text and spoken in the phone’s voice. This helps when the person does not recognize live speech but understands a synthesized voice or can read. The phrase need not be in the vocabulary. The last five phrases are kept on this phone until you delete them. Speech recognition is done by the browser (usually needs the internet, see Help); without the internet you can type the phrase.',
   g_main:'General',g_voice:'Speech',g_touch:'Controls and taps',g_ease:'Less fatigue',g_data:'Data',g_about:'ℹ️ About',s_tour:'🎓 Offer a tutorial the first time a screen is opened',s_tour_reset:'🔄 Restart the tutorial',s_tour_done:'Done: the tutorial will be offered again on every screen.',hlp_all:'Full help',hlp_toc:'Tap a heading to read the item. Inside a mode (🎤, ABC, tiles) the ❓ button opens help about that mode only.',hlp_open:'Expand all items',hlp_close:'Collapse all items',ab_desc:'A communication board for people with aphasia and apraxia after a stroke and their loved ones.',ab_f:['Free, no ads, no sign-up.','Works offline (speech recognition 🎤 usually needs the internet).','Data stays on this device only; the app never records the voice.'],ab_auth:'Author',ab_src:'Source code and instructions',ab_lic:'MIT license. The code was written by the AI assistant Claude (Anthropic) on the task and under the direction of the author.',
   s_lang:'Language of phrases and speech',s_uilang:'Menu and help language',ui_auto:'Same as phrases and speech',
-  s_size:'Tile size',sz_m:'Normal',sz_l:'Large',sz_xl:'Extra large (one per row)',
+  s_size:'Tile size',sz_s:'Small (3–4 per row)',sz_m:'Normal (two per row)',sz_l:'Large (two per row, taller)',sz_xl:'Extra large (one per row)',
   s_guard:'Accidental-tap protection (repeat taps faster than this are ignored)',gd_0:'Off',gd_400:'0.4 s',gd_800:'0.8 s',gd_1500:'1.5 s',
   s_hand:'Bottom button bar',hd_right:'For the right hand (as is)',hd_left:'For the left hand (mirrored)',
   s_hear:'Hear first, then choose: the first tap on a tile says the word, the second tap selects it',
@@ -790,7 +811,7 @@ const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){retu
 const DEFAULTS = {
   theme: 'dark', level: 'L2', rate: 0.85, pitch: 1.0, voices: {}, gender: 'f',
   uiLang: 'auto',   // язык меню и справки: auto = как у фраз
-  size: 'm',        // размер плиток: m / l / xl
+  size: 'm',        // размер плиток: s / m / l / xl
   guard: 0,         // защита от случайных нажатий, мс
   hand: 'right',    // положение нижней панели: right / left
   wordOnline: false,   // бесплатный онлайн-поиск слов (Викисловарь, Datamuse)
@@ -820,7 +841,7 @@ if(settings.gender!=='m') settings.gender = 'f';
 if(!settings.voices || typeof settings.voices !== 'object') settings.voices = {};
 if(!['L1','L2','L3','L4','L5'].includes(settings.level)) settings.level = 'L2';
 if(!['auto','ru','uk','en'].includes(settings.uiLang)) settings.uiLang = 'auto';
-if(!['m','l','xl'].includes(settings.size)) settings.size = 'm';
+if(!['s','m','l','xl'].includes(settings.size)) settings.size = 'm';
 if(![0,400,800,1500].includes(+settings.guard)) settings.guard = 0;
 settings.guard = +settings.guard;
 if(settings.hand!=='left') settings.hand = 'right';
@@ -2027,7 +2048,7 @@ function render(){
     const delMode=(tl,fn)=>{tl=tl.cloneNode(true);tl.classList.add('del');tl.onclick=fn;return tl};   // режим удаления: касание убирает фразу из списка
     if(fr.length){
       head(u('freq'),()=>{fr.forEach(x=>delete use[x.n.id]);saveUse()});
-      const g=h('div','grid');
+      const g=h('div','grid tg');
       fr.forEach(x=>{
         let tl=B?tile({l:phr(x.chain),e:x.n.e},x.top,()=>ask(synth(x.chain))):tile(x.n,x.top,()=>ask(x.n));
         if(freqEdit)tl=delMode(tl,()=>{delete use[x.n.id];saveUse();render()});
@@ -2038,7 +2059,7 @@ function render(){
     // Недавно сказанные через 🎤 и «Азбуку»: новые первыми, нажатие — тот же вопрос «…?»
     if(rc.length){
       head(u('rec_title'),()=>{rc.forEach(x=>delRecent(x.s))});
-      const g=h('div','grid');
+      const g=h('div','grid tg');
       rc.forEach(x=>{
         let tl=tile({l:x.s,e:x.e},{col:'#5A5A8A'},()=>ask({id:'r:'+x.s,l:x.s,s:x.s,e:x.e,crit:x.c?1:0,recent:1}));
         if(freqEdit)tl=delMode(tl,()=>{delRecent(x.s);render()});
@@ -2050,7 +2071,7 @@ function render(){
     if(B)m.append(h('div','sec',u('pick')));
   }
 
-  const g=h('div','grid');
+  const g=h('div','grid tg');
   (c?(c.c||[]):tree).forEach(n=>g.append(tile(n,path[0]||n,()=>{
     if(n.c&&n.c.length){path.push(n);render()}
     else{const ch=[...path,n];ask(B&&parts(ch).length?synth(ch):n)}
@@ -4680,7 +4701,7 @@ function applyI18n(){
   fill('#setUiLang',[['auto',uh('ui_auto')],['ru','Русский'],['uk','Українська'],['en','English']],settings.uiLang);
   fill('#setTheme',[['dark',uh('th_dark')],['light',uh('th_light')]],settings.theme);
   fill('#setExtProv',[['off',uh('ext_off')],['anthropic',uh('ext_anthropic')],['openai',uh('ext_openai')]],settings.ext.prov);
-  fill('#setSize',[['m',uh('sz_m')],['l',uh('sz_l')],['xl',uh('sz_xl')]],settings.size);
+  fill('#setSize',[['s',uh('sz_s')],['m',uh('sz_m')],['l',uh('sz_l')],['xl',uh('sz_xl')]],settings.size);
   fill('#setGuard',[['0',uh('gd_0')],['400',uh('gd_400')],['800',uh('gd_800')],['1500',uh('gd_1500')]],String(settings.guard));
   fill('#setHand',[['right',uh('hd_right')],['left',uh('hd_left')]],settings.hand);
   fill('#setMsg',[['off',uh('msg_off')],['wa','WhatsApp'],['sms','SMS'],['share',uh('msg_sharel')]].filter(x=>x[0]!=='share'||navigator.share),settings.msg);
