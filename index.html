@@ -489,7 +489,7 @@ button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 74;   // держите в соответствии с V = 'govorim-v74' в sw.js
+const APP_VERSION = 75;   // держите в соответствии с V = 'govorim-v75' в sw.js
 // Логин автора на GitHub: ссылки «Автор» и «Исходный код» в ⚙️ → «ℹ️ О приложении» (работают и в копиях на других сайтах).
 // Если оставить пустым, логин берётся из адреса <логин>.github.io.
 const APP_AUTHOR_GH = 'bispalov';
@@ -3186,16 +3186,21 @@ function sndSim(g,w){
 const VW_MAP={ы:'и',я:'а',ю:'у',ё:'о',е:'э',є:'э',ї:'і',y:'i'};
 const sndVw=w=>[...w.replace(/[^аеёиоуыэюяієїaeiouy]/g,'')].map(c=>VW_MAP[c]||c).join('');
 let sndVocC=null;
+// v75: «свои» слова (из фраз приложения, о людях, выученные) отмечены отдельно — в большом частотном словаре
+// (lex/*.txt, 20–30 тыс. слов) почти к любому искажённому слову находятся десятки похожих по звуку случайных слов
+// («прогуны» → «боулинг», «прикинь»…), и нужное «подруги» уходило за пределы списка.
 function sndVocab(){
   const lx=getLex(),key=lang+'|'+pickVer+'|'+(lx?lx.words.length:0)+'|'+IDX.length;
   if(sndVocC&&sndVocC.k===key)return sndVocC.v;
   const v=new Set(corpus().set);
   (PEOPLE_W[lang]||'').split(' ').forEach(w=>w&&v.add(w));
   getLearned(lang).forEach(w=>v.add(w));
+  const own=new Set(v);
   if(lx)lx.words.slice(0,30000).forEach(w=>v.add(w));
   const arr=[...v].filter(w=>w.length>=3&&!isStopW(w));
-  sndVocC={k:key,v:arr};return arr;
+  sndVocC={k:key,v:arr,own};return arr;
 }
+const sndOwn=w=>!!(sndVocC&&sndVocC.own.has(w));
 let sndC={k:'',r:[]};
 function soundCands(g,n){
   g=norm(g).trim();if(g.length<3)return [];
@@ -3206,9 +3211,9 @@ function soundCands(g,n){
     if(w===g||Math.abs(w.length-g.length)>3)continue;
     const s=sndSim(g,w);if(s<0.62)continue;
     const r=lx&&lx.rank.has(w)?lx.rank.get(w):50000;                 // при равенстве — более частое слово
-    out.push([w,s-Math.min(r,50000)/2e6]);
+    out.push([w,s-Math.min(r,50000)/2e6,sndOwn(w)]);
   }
-  out.sort((a,b)=>b[1]-a[1]);
+  out.sort((a,b)=>(b[2]-a[2])||(b[1]-a[1]));                         // сначала свои слова, потом из большого словаря
   sndC={k,r:out.slice(0,12)};
   return sndC.r.slice(0,n||6);
 }
@@ -3241,7 +3246,7 @@ function slotCands(i){
   lexRepairs(g,true).forEach(w=>pool.add(w));
   toks(hearAlt).filter(w=>knownW(w)&&phon(g,w)>=0.4).forEach(w=>pool.add(w));
   const pw=pronMap().get(g);if(pw)pool.add(pw);
-  const SND=new Map(soundCands(g,6));SND.forEach((v,w)=>pool.add(w));
+  const SC=soundCands(g,6),SND=new Map(SC.map(x=>[x[0],x[1]])),SOWN=new Set(SC.filter(x=>x[2]).map(x=>x[0]));SND.forEach((v,w)=>pool.add(w));
   const out=[];
   pool.forEach(c=>{
     if(!c||c===g)return;
@@ -3249,14 +3254,14 @@ function slotCands(i){
     const N=Math.min(1,(Math.log1p(n1)+Math.log1p(n2))/Math.log(6)),ph=phon(g,c),a=A.get(c)||0;
     let sc=0.3*a+0.5*N+0.2*ph+(isStopW(c)&&N>0&&(g.length<=3||isStopW(g))?0.1:0)+(ph>=0.7?0.3:0)+(pw===c?0.6:0)
       +(skSim(g,c)>=0.5&&Math.abs(g.length-c.length)<=1?0.15:0);   // почти то же звучание или близкий согласный «скелет» (шучу → хочу) — сильный довод; служебное слово вместо полного — только для коротких
-    const sn=SND.get(c)||0;sc+=sn>=0.62?0.45*sn:0;                   // похоже по звучанию (с заменой и перестановкой звуков)
+    const sn=SND.get(c)||0;sc+=sn>=0.62?(SOWN.has(c)?0.45:0.2)*sn:0; // слово только из большого словаря — довод слабее                   // похоже по звучанию (с заменой и перестановкой звуков)
     if(a===0&&N===0&&ph<0.45&&pw!==c&&!sn)return;
     out.push([c,sc,sn]);
   });
   out.sort((x,y)=>y[1]-x[1]);
   let res=out.filter(x=>x[1]>=0.15).slice(0,5).map(x=>x[0]);
   // не меньше двух лучших вариантов по звучанию, даже если соседние слова тянут к другим (до 6 вариантов)
-  const bySnd=out.filter(x=>x[2]>=0.62).sort((x,y)=>y[2]-x[2]).slice(0,2).map(x=>x[0]);
+  const bySnd=out.filter(x=>x[2]>=0.62).sort((x,y)=>(SOWN.has(y[0])-SOWN.has(x[0]))||(y[2]-x[2])).slice(0,2).map(x=>x[0]);
   bySnd.forEach(w=>{if(!res.includes(w)){if(res.length>=6)res.pop();res.push(w)}});
   res.ins=ins;return res;
 }

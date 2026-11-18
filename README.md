@@ -119,12 +119,15 @@
 | `icon-192.png`, `icon-512.png` | Іконки застосунку |
 | `LICENSE` | Ліцензія MIT |
 | `lex/`, `tools/build-lexicon.py` | Необов’язкові списки слів і скрипт, що їх готує |
+| `tests/` | Автоматичні перевірки (Playwright): вигляд на малих екранах, плитки, «Абетка», 🎤, налаштування, довідка, навчання, оновлення й офлайн. Застосунку не потрібні, service worker їх не кешує |
+
+**Як запустити перевірки.** Потрібні Python 3 і Playwright (`pip install playwright`, потім `playwright install chromium`). У папці над `Govorim/` запустіть сервер `python3 -m http.server 8765`, в іншому вікні — `python3 Govorim/tests/run_all.py` (усі перевірки, наприкінці підсумок) або один файл, наприклад `python3 Govorim/tests/test_v74.py`. Без запущеного сервера перевірки піднімуть тимчасовий самі. Іншу адресу можна вказати так: `--url=https://…/Govorim/`. Перевірка оновлення (`test_v62.py`) будує власний тимчасовий сайт і бере стару версію з `tests/index.v61.html`, `sw.v61.js`, `manifest.v61.json`.
 
 ### Оновлення версії
 
 Встановлений застосунок оновлюється лише за зміни версії кешу. За будь-якої зміни файлів:
 
-1. У `sw.js` збільште номер: `const V = 'govorim-v74'` → `'govorim-v75'`.
+1. У `sw.js` збільште номер: `const V = 'govorim-v75'` → `'govorim-v76'`.
 2. В `index.html` збільште `APP_VERSION` (він показується внизу налаштувань).
 3. Завантажте файли. Застосунок підхопить нову версію під час наступного відкриття з інтернетом і один раз перезавантажиться.
 
@@ -343,12 +346,15 @@
 | `lex/` | Необязательные списки слов (создаются скриптом `tools/build-lexicon.py`) |
 | `tools/build-lexicon.py` | Скрипт, который скачивает и подготавливает списки слов |
 | `icon-192.png`, `icon-512.png` | Иконки приложения |
+| `tests/` | Автоматические проверки (Playwright): вид на маленьких экранах, плитки, «Азбука», 🎤, настройки, справка, обучение, обновление и офлайн. Приложению не нужны, service worker их не кэширует |
+
+**Как запустить проверки.** Нужны Python 3 и Playwright (`pip install playwright`, затем `playwright install chromium`). В папке над `Govorim/` запустите сервер `python3 -m http.server 8765`, в другом окне — `python3 Govorim/tests/run_all.py` (все проверки, в конце итог) или один файл, например `python3 Govorim/tests/test_v74.py`. Без запущенного сервера проверки поднимут временный сами. Другой адрес можно указать так: `--url=https://…/Govorim/`. Проверка обновления (`test_v62.py`) строит собственный временный сайт и берёт старую версию из `tests/index.v61.html`, `sw.v61.js`, `manifest.v61.json`.
 
 ### Обновление версии
 
 Установленное приложение обновляется только при смене версии кэша. При любом изменении файлов:
 
-1. В `sw.js` увеличьте номер: `const V = 'govorim-v74'` → `'govorim-v75'`.
+1. В `sw.js` увеличьте номер: `const V = 'govorim-v75'` → `'govorim-v76'`.
 2. В `index.html` увеличьте `APP_VERSION` (он показывается внизу настроек).
 3. Загрузите файлы. Приложение подхватит новую версию при следующем открытии с интернетом и один раз перезагрузится.
 
@@ -439,6 +445,7 @@
 - “Start on the last screen” (⚙️ → “Home screen and tiles”, off by default): the app opens where it was closed — on 🎤 (on the same tab), in ABC or in a tile section.
 - “ℹ️ About” (the last settings group): name and version, a short description, links to the author and to the source code with instructions, the license.
 - Static files only; deploy to GitHub Pages under `/Govorim/`. Bump the cache version in `sw.js` and `APP_VERSION` in `index.html` on every update.
+- `tests/` holds automated Playwright checks (not needed by the app, not cached). Install `playwright` and Chromium, start `python3 -m http.server 8765` in the folder above `Govorim/`, then run `python3 Govorim/tests/run_all.py` (or one `test_v*.py`). Without a running server the tests start a temporary one; another address can be given with `--url=https://…/Govorim/`.
 
 ### Getting started
 
