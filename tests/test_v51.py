@@ -230,7 +230,7 @@ with sync_playwright() as p:
             pg.locator('.hbuild .slotbox .chip.pick', has_text='хочу').first.click(); pg.wait_for_timeout(80)
         check('«шучу» replaced'+tag, pg.locator('.hbuild .hchips').first.locator('.chip').nth(1).inner_text().startswith('хочу'))
         pg.context.close()
-    pg = newpage(b, {**base, 'aac.settings': json.dumps({'hearSimple': True})})
+    pg = newpage(b, {**base, 'aac.settings': json.dumps({'hearSimple': True, 'typSys': True})})   # v78: клавиатура телефона — запасной вариант
     pg.click('#micBtn'); pg.click('#micGo'); pg.evaluate("window.__say('я шучу гулить')"); pg.wait_for_timeout(150)
     fr = pg.locator('.hbuild .hchips').first
     if pg.evaluate('hearSlot')!=1: fr.locator('.chip').nth(1).click()

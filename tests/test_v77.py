@@ -111,7 +111,7 @@ with sync_playwright() as p:
     # 6. Тёмная тема на новых частях
     pg = st(277, 492, 'ru', {'abcMode': 'free'}); openabc(pg, ['я', 'хочу'])
     bad = []
-    for js in ["abc.typed='по';render()", "abc.opts=true;render()", "abc.opts=false;abcFn=true;render()", "abcFn=false;abc.kbOff=true;render()", "abc.kbOff=false;abc.mode='prefix';abc.prefix='п';render()"]:
+    for js in ["abc.typed='по';render()", "abc.opts=true;render()", "abc.opts=false;abc.fn=true;render()", "abc.fn=false;abc.kbOff=true;render()", "abc.kbOff=false;abc.mode='prefix';abc.prefix='п';render()"]:
         pg.evaluate(js); pg.wait_for_timeout(60); f = pg.evaluate(AUDIT)
         if f: bad.append((js, f[:2]))
     check('dark: no light backgrounds under text in all ABC states', not bad)

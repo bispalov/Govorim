@@ -136,8 +136,8 @@ with sync_playwright() as p:
           ('hear', "closeOv();clearInterval(tmr);hearTab='sug';openHear();hearBuild=['я','хочу'];hearOpen=true;render()"),
           ('show', "hearTab='show';openHear();showShow('Добрый день, как дела?',false)"), ('bigshow', "bigShow('Привет')"),
           ('abc', "closeBigShow();abcLine=['я','хочу'];abcOpen()"), ('abc-pre', "abc.prefix='п';render()"),
-          ('abc-free', "abc.prefix='';abc.mode='free';abc.typed='по';settings.abcLayout='qw';render()"), ('abc-opts', "abc.opts=true;render()"), ('abc-fn', "abc.opts=false;abcFn=true;render()"), ('abc-hidden', "abcFn=false;abc.kbOff=true;render()"),
-          ('editor', "abcFn=false;abc.kbOff=false;path=[];render();$('#gear').click()"),
+          ('abc-free', "abc.prefix='';abc.mode='free';abc.typed='по';settings.abcLayout='qw';render()"), ('abc-opts', "abc.opts=true;render()"), ('abc-fn', "abc.opts=false;abc.fn=true;render()"), ('abc-hidden', "abc.fn=false;abc.kbOff=true;render()"),
+          ('editor', "abc.fn=false;abc.kbOff=false;path=[];render();$('#gear').click()"),
           ('help', "closeEd();$('#helpBtn').click();document.querySelectorAll('#help details').forEach(d=>d.open=true)")]
     SC += [('sett-' + g, f"document.querySelectorAll('.modal').forEach(m=>m.style.display='none');$('#settingsBtn').click();settSet('{g}')") for g in ['main', 'sos', 'voice', 'home', 'touch', 'mic', 'abc', 'net', 'data', 'about']]
     SC += [('tour', "document.querySelectorAll('.modal').forEach(m=>m.style.display='none');path=[];render();tourStart('home')")]
