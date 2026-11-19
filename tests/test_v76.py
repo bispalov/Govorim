@@ -58,10 +58,10 @@ with sync_playwright() as p:
     check('277x492: sticky header stays visible while list scrolls', pg.evaluate("(()=>{const p=document.querySelector('.abcfl').getBoundingClientRect(),t=document.querySelector('.abcfltop').getBoundingClientRect();return Math.abs(t.top-p.top)<6})()"))
     check('277x492: phrase line on the keyboard panel (low screen)', True)
     pg.locator('.abcflh .kbt').click(); pg.wait_for_timeout(80)
-    check('277x492: phrase shown on keyboard panel (low screen)', pg.locator('.kb .kbline').is_visible() and 'я хочу' in pg.inner_text('.kb .kbline'))
+    check('277x492: phrase visible at the top (no extra phrase field)', pg.locator('.abchead .build .bt').is_visible() and 'я хочу' in pg.inner_text('.abchead .build .bt') and pg.locator('.kbline').count() == 0)
     pg.context.close()
     pg = st((360, 640), 'ru'); openabc(pg, ['я', 'хочу'])
-    check('360x640: phrase line on keyboard hidden (phrase visible above)', not pg.locator('.kb .kbline').is_visible() and pg.locator('.build .bt').is_visible())
+    check('360x640: phrase visible at the top, no extra field', pg.locator('.kbline').count() == 0 and pg.locator('.build .bt').is_visible())
     # 3. Личная история пар: учится только на сказанной фразе
     letter(pg, 'п'); pg.locator('.abcfl .grid .wd', has_text='почитать').first.click(); pg.wait_for_timeout(60)
     check('picking a word alone does not teach', pg.evaluate("localStorage.getItem('aac.tw.ru')") is None)
@@ -93,24 +93,25 @@ with sync_playwright() as p:
         tag = f'free {L} {W}x{H}'
         pg = st((W, H), L, 'L3', {'abcMode': 'free'}); openabc(pg, CASES[L][0])
         first = {'ru': 'Й', 'uk': 'Й', 'en': 'Q'}[L]
-        pg.locator('.kbh .kbt', has_text=pg.evaluate("u('kbQw')")).click(); pg.wait_for_timeout(80)
+        pg.locator('.abcact .op').click(); pg.locator('.abcopts .ab', has_text=pg.evaluate("u('kbQw')")).click(); pg.wait_for_timeout(80)
         check(f'{tag}: QWERTY/ЙЦУКЕН — 3 rows, first key {first}', pg.locator('.letters.qw .kbrow').count() == 3 and pg.locator('.letters.qw .kbrow').first.locator('.lt').first.inner_text() == first)
         check(f'{tag}: layout saved', json.loads(pg.evaluate("localStorage.getItem('aac.settings')"))['abcLayout'] == 'qw')
         check(f'{tag}: keys fit the width', not pg.evaluate(HOVER) and pg.evaluate("[...document.querySelectorAll('.letters.qw .lt')].every(b=>b.getBoundingClientRect().width>=18)"))
         two = CASES[L][3]
         for c in two: pg.locator('.letters.qw .lt', has_text=c.upper()).first.click(); pg.wait_for_timeout(60)
-        check(f'{tag}: typed letters shown on keyboard panel', pg.locator('.kb .kbline').is_visible() and (two.upper() + '|') in pg.inner_text('.kb .kbline'))
+        check(f'{tag}: typed letters shown in the phrase at the top', pg.locator('.abchead .build .typed').inner_text() == two.upper() and pg.locator('.kbline').count() == 0)
         sw = pg.evaluate(SUG)
         check(f'{tag}: suggestions continue typed «{two}»', len(sw) == 3 and all(w.lower().startswith(two) or True for w in sw) and sw[0].lower().startswith(two))
-        pg.locator('.kb .kbline .ans.no').click(); pg.wait_for_timeout(60)
+        pg.locator('.kbbot .bk').click(); pg.wait_for_timeout(60)
         check(f'{tag}: ⌫ on panel removes a letter', pg.evaluate('abc.typed') == two[0])
         w0 = pg.evaluate(SUG)[0]; pg.locator('.kb .kbsug .wd').first.click(); pg.wait_for_timeout(60)
         check(f'{tag}: suggestion adds word, clears typed', pg.evaluate('abc.typed') == '' and pg.evaluate("abc.line[abc.line.length-1]") == w0)
         pg.reload(); pg.wait_for_timeout(250); pg.evaluate("abcOpen()"); pg.wait_for_timeout(80)
         check(f'{tag}: layout kept after restart', pg.locator('.letters.qw').count() == 1)
-        pg.locator('.kbh .kbt', has_text=pg.evaluate("u('kbAbc')")).click(); pg.wait_for_timeout(60)
+        pg.locator('.abcact .op').click(); pg.locator('.abcopts .ab', has_text=pg.evaluate("u('kbAbc')")).click(); pg.wait_for_timeout(60)
         check(f'{tag}: back to alphabetical', pg.locator('.letters.qw').count() == 0 and pg.locator('.letters.kbd .lt').count() > 20)
-        check(f'{tag}: keyboard header buttons fit', not pg.evaluate("[...document.querySelectorAll('.kbh .kbt')].some(b=>b.getBoundingClientRect().right>document.documentElement.clientWidth+1||b.scrollWidth>b.clientWidth+1)"))
+        pg.evaluate("abc.opts=true;render()")
+        check(f'{tag}: keyboard header buttons fit', not pg.evaluate("[...document.querySelectorAll('.abcact .ab,.abcopts .ab')].some(b=>b.getBoundingClientRect().right>document.documentElement.clientWidth+1||b.scrollWidth>b.clientWidth+1)"))
         pg.context.close()
     # 5. Обучение и справка «Азбуки»
     pg = st((360, 640), 'ru'); openabc(pg, ['я'])
@@ -135,8 +136,8 @@ with sync_playwright() as p:
           ('hear', "closeOv();clearInterval(tmr);hearTab='sug';openHear();hearBuild=['я','хочу'];hearOpen=true;render()"),
           ('show', "hearTab='show';openHear();showShow('Добрый день, как дела?',false)"), ('bigshow', "bigShow('Привет')"),
           ('abc', "closeBigShow();abcLine=['я','хочу'];abcOpen()"), ('abc-pre', "abc.prefix='п';render()"),
-          ('abc-free', "abc.prefix='';abc.mode='free';abc.typed='по';settings.abcLayout='qw';render()"), ('abc-fn', "abcFn=true;render()"),
-          ('editor', "abcFn=false;path=[];render();$('#gear').click()"),
+          ('abc-free', "abc.prefix='';abc.mode='free';abc.typed='по';settings.abcLayout='qw';render()"), ('abc-opts', "abc.opts=true;render()"), ('abc-fn', "abc.opts=false;abcFn=true;render()"), ('abc-hidden', "abcFn=false;abc.kbOff=true;render()"),
+          ('editor', "abcFn=false;abc.kbOff=false;path=[];render();$('#gear').click()"),
           ('help', "closeEd();$('#helpBtn').click();document.querySelectorAll('#help details').forEach(d=>d.open=true)")]
     SC += [('sett-' + g, f"document.querySelectorAll('.modal').forEach(m=>m.style.display='none');$('#settingsBtn').click();settSet('{g}')") for g in ['main', 'sos', 'voice', 'home', 'touch', 'mic', 'abc', 'net', 'data', 'about']]
     SC += [('tour', "document.querySelectorAll('.modal').forEach(m=>m.style.display='none');path=[];render();tourStart('home')")]

@@ -279,14 +279,63 @@ body.bar-nolbl #bar .i{font-size:clamp(26px,8vw,32px)}
 .abcfln .chip{flex:0 0 auto;min-width:58px;min-height:52px;padding:0 12px;font-size:20px;font-weight:800}
 .abcfl .grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,108px),1fr));gap:8px}
 .abcfl .wd{min-height:56px;padding:4px 6px;font-size:clamp(16px,5vw,23px);overflow-wrap:normal;word-break:normal;hyphens:auto}
-/* строка «фраза + набранное» на панели букв: в «Свободном наборе» всегда (набранное иначе под клавиатурой),
-   в наборе по первой букве — только на низком экране, где строка фразы уходит под панель */
-.kbline{display:flex;align-items:center;gap:6px;margin-bottom:6px;min-height:44px;padding:2px 4px 2px 10px;border:2px dashed var(--border);border-radius:12px;font-size:19px;font-weight:700}
-.kbline .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:rtl;text-align:left}
-.kbline .t b{font-size:1.15em}
-.kbline .ans.sm{flex:0 0 56px;min-height:40px;min-width:0;font-size:20px;margin:0}
-.kbline.lo{display:none}
-@media (max-height:600px){.kbline.lo{display:flex}}
+/* v77: «Азбука» как «⌨️ Писать» в «Мій голос»: закреплённый верх (фраза + «Сказать так», ряд значков, «⋯»),
+   клавиатура с нижним рядом «я, в, на…» / пробел / ⌫, высота клавиш — по свободному месту (abcFit) */
+.abchead{position:sticky;top:-10px;z-index:4;margin:-10px -10px 4px;padding:10px 10px 4px;background:var(--bg);display:flex;flex-direction:column;gap:5px}
+.abctop{display:flex;gap:6px;align-items:stretch}
+.abctop .build{flex:1;min-width:0;margin:0;min-height:58px;max-height:clamp(58px,14vh,120px);overflow-y:auto;display:flex;align-items:center}
+.abctop .build .bt{width:100%}
+.build .bt .typed{color:#FFE27A}
+[data-theme="light"] .build .bt .typed{color:#8A5A00}
+.build .bt .caret{display:inline-block;width:3px;height:1em;margin-left:2px;vertical-align:-0.12em;background:#F2B705;animation:abcblink 1.1s steps(1) infinite}
+@keyframes abcblink{50%{opacity:0}}
+.abctop .abcsay{flex:0 0 auto;width:clamp(84px,27vw,150px);min-height:58px;margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:2px 4px;font-size:clamp(15px,4.4vw,20px);line-height:1.1;border-radius:16px}
+.abctop .abcsay .ic{font-size:1.25em}
+.abctop .abcsay:disabled{opacity:.45}
+.abcact,.abcopts{display:flex;gap:5px}
+.ab{flex:1 1 0;min-width:0;min-height:46px;padding:2px 4px;border-radius:12px;background:var(--card-bg);border:2px solid var(--border);color:var(--ink);font-size:clamp(14px,4vw,17px);font-weight:700;line-height:1.05;overflow:hidden;text-overflow:ellipsis}
+.ab:disabled{opacity:.4}
+.abcact .ab{font-size:clamp(17px,5vw,21px)}
+.abcact .ab .w{font-size:clamp(13px,3.7vw,16px)}
+.abcact .cl,.abcact .op{flex:0 0 48px}
+.abcact .ab.undo{border-color:var(--accent)}
+.ab.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.abcopts .ab{white-space:normal}
+@media (max-width:340px){.abcact .ab .w{display:none}}
+.abcres .kb{position:static;margin:2px 0 8px;padding:0;border-top:0;background:none}
+.kb .letters.kbd:not(.qw){grid-auto-rows:var(--kh,44px)}
+.kb .letters.kbd .lt{min-height:0;height:var(--kh,44px)}
+.letters.kbd.qw .kbrow{height:var(--kh,44px)}
+.kbbot{display:flex;gap:4px;margin-top:4px;height:clamp(42px,var(--kh,44px),56px)}
+.kbbot .lt{min-height:0;height:100%;border-radius:10px;font-size:clamp(15px,4.4vw,19px);padding:0 6px}
+.kbbot .fnk{flex:2 1 0;min-width:0;font-weight:700;background:var(--card-bg)}
+.kbbot .sp{flex:3 1 0;min-width:0;font-weight:700}
+.kbbot .sp .w{font-size:.9em}
+.kbbot .bk{flex:0 0 clamp(48px,15vw,70px);font-size:22px}
+.kbbot .lt:disabled{opacity:.4}
+@media (max-width:340px){.kbbot .sp .w{display:none}}
+.abcres .kb .letters.kbd:not(.qw){grid-template-columns:repeat(auto-fill,minmax(30px,1fr));gap:3px}
+/* низкий экран (крупный системный шрифт): верх и ряды компактнее — клавиатура помещается целиком */
+@media (max-height:600px){
+  .abcres .abchead{gap:4px;padding-bottom:3px}
+  .abctop .build,.abctop .abcsay{min-height:48px}
+  .abctop .build .bt{font-size:clamp(18px,5.4vw,24px)}
+  .abctop .abcsay{flex-direction:row;gap:4px;font-size:clamp(14px,4.2vw,18px)}
+  .abcact .ab{min-height:40px}
+  .abcres .kbsug{margin-bottom:4px}
+  .abcres .kbsug .wd{min-height:40px}
+  .kbbot{height:clamp(38px,var(--kh,40px),50px);margin-top:3px}
+}
+.kbfnh{display:flex;gap:6px;align-items:center;margin-bottom:2px}
+.kbfnh .ab{flex:0 0 auto;padding:2px 12px}
+.kbfnt{flex:1;font-weight:800;font-size:19px}
+.kb .fnp{margin:2px 0 0;max-height:min(52vh,330px);overflow-y:auto;overscroll-behavior:auto}
+.kbshow{width:100%;min-height:52px}
+@media (max-width:639px){
+  body.in-abc header h1{display:none}
+  body.in-abc header{grid-template-areas:"home mic abc set help ed"}
+  body.in-abc.no-abc header{grid-template-areas:"home mic set help ed"}
+}
 .kbsug{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:6px}
 .kbsug .wd{min-height:46px;padding:0 4px;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .kb.small .kbsug .wd{min-height:38px;font-size:15px}
@@ -519,7 +568,7 @@ button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 76;   // держите в соответствии с V = 'govorim-v76' в sw.js
+const APP_VERSION = 77;   // держите в соответствии с V = 'govorim-v77' в sw.js
 // Логин автора на GitHub: ссылки «Автор» и «Исходный код» в ⚙️ → «ℹ️ О приложении» (работают и в копиях на других сайтах).
 // Если оставить пустым, логин берётся из адреса <логин>.github.io.
 const APP_AUTHOR_GH = 'bispalov';
@@ -539,7 +588,7 @@ ru:{title:'Говорим вместе',g_sos:'👥 Близкие: звонок
   built:'Ваша фраза',sayso:'Сказать так',cont:'Продолжите фразу — выберите слово:',pick:'Выберите тему:',ver:'Версия приложения',
   aHome:'Домой',aLang:'Язык',aSet:'Настройки',aEd:'Редактор',nomem:'Не хватает памяти',testSay:'Это проверка голоса',
   aHelp:'Справка',v_auto:'Автоматически (голос по умолчанию)',v_none:'Для этого языка в телефоне нет голосов. Как их установить — см. «Справка» → «Голос и озвучка».',
-  abc:'Азбука',abcFree:'Свободный набор',abcShow:'Показать буквы',abcHide:'Скрыть буквы',abcType:'Набирайте слово так, как вы его себе представляете (можно с ошибками):',abcFit:'Подходящие буквы',abcLetters:'Буквы',kbAbc:'АБВ',kbQw:'ЙЦУКЕН',abcWords:'Подходящие слова — нажмите, чтобы добавить:',abcHint:'Нажмите первую букву слова',abcNext:'Следующая буква:',abcNone:'Слов на эти буквы нет',slow:'Медленно',
+  abc:'Азбука',abcFree:'Свободный набор',abcShow:'Показать буквы',abcHide:'Скрыть буквы',abcType:'Набирайте слово так, как вы его себе представляете (можно с ошибками):',abcFit:'Подходящие буквы',abcLetters:'Буквы',kbAbc:'АБВ',kbQw:'ЙЦУКЕН',abcWord:'Слово',abcSpace:'пробел',abcMore:'Ещё: скрыть буквы, раскладка, размер',abcModeFree:'Набор',abcModeFit:'Буквы',abcWords:'Подходящие слова — нажмите, чтобы добавить:',abcHint:'Нажмите первую букву слова',abcNext:'Следующая буква:',abcNone:'Слов на эти буквы нет',slow:'Медленно',
   s_lex:'Словари слов для «Азбуки» и исправления искажённых слов (загружаются один раз, потом работают без интернета)',b_lex_get:'⬇️ Загрузить словари слов',b_lex_del:'🗑️ Удалить словари слов',lex_none:'не загружен',lex_words:'слов',lex_loading:'Загружаю: ',lex_done:'Готово. Словари сохранены на этом телефоне.',lex_err:'Не удалось загрузить: ',lex_confirm_del:'Удалить загруженные словари слов?',lex_src:'Источник списков: FrequencyWords (hermitdave) на основе субтитров OpenSubtitles, лицензия CC BY-SA 4.0. Нецензурные слова отфильтрованы не полностью.',
   m_words:'Слова из словаря — нажмите, и слово прозвучит:',m_lex_off:'Чтобы подсказывать отдельные слова, загрузите словари слов: ⚙️ → «Данные».',
   s_wonline:'Искать слова онлайн (Викисловарь; для английского ещё Datamuse). Бесплатно, ключ не нужен. Набранные буквы и слова отправляются этим сервисам. Выбранные слова запоминаются на телефоне.',w_err:'Не удалось связаться с сервисом словарей. Проверьте интернет.',ext_policy:'OpenRouter не нашёл подходящих бесплатных моделей из-за настроек приватности. Откройте openrouter.ai/settings/privacy и разрешите использование бесплатных моделей, либо выберите другую модель.',ext_diag:'Ответ сервиса',
@@ -578,7 +627,7 @@ ru:{title:'Говорим вместе',g_sos:'👥 Близкие: звонок
    ['Часто используемое','На главном экране показываются до четырёх самых частых фраз — так нужное находится быстрее. Чтобы убрать ненужную фразу, нажмите ✏️ рядом с заголовком «Часто» и коснитесь фразы; «Убрать все» очищает блок. Счётчик фразы обнуляется и начнёт набираться заново, только если её снова произнести. Ниже может быть ряд «Недавно сказанные»: последние фразы, произнесённые через 🎤 и «Азбуку». Сколько их показывать (0, 2, 4 или 6), задаётся в ⚙️ → «Главный экран и плитки»; убирают их тем же ✏️.'],
    ['Здоровье и лекарства','Темы «Здоровье» и «Лекарства» просят второе подтверждение «Точно?», чтобы случайное нажатие не ввело в заблуждение. Приложение не заменяет врача. В опасной ситуации звоните 103 (скорая помощь) или 112.'],
    ['Голос и озвучка',['Озвучку делает синтезатор речи телефона. В настройках показываются только голоса текущего языка фраз (⚙️ → «Основное» → «Язык фраз и озвучки»).','Если голосов нет: Настройки Android → Система → Язык и ввод → Синтез речи → Google → установите голосовые данные русского или украинского языка.','Лучше немного снизить скорость речи (0,7–0,85) — так проще разобрать слова. Кнопка «Проверить голос» позволяет послушать результат.']],
-   ['Азбука (подсказка по первой букве)',['Кнопка «Азбука» находится в шапке рядом с 🎤 (на тяжёлом уровне её нет). Буквы всегда закреплены внизу экрана, а найденные слова показываются над ними; кнопка «Скрыть буквы» освобождает место для слов, «Показать буквы» возвращает их. В настройках можно включить автоматическое сворачивание панели после каждой нажатой буквы: после выбора слова или удаления буквы или слова панель появляется снова.','Нажмите первую букву слова: на месте панели букв появится список слов, которые с неё начинаются. Первыми идут слова, которые обычно стоят после предыдущего слова фразы (после «я хочу» — «пить», «позвонить», «пойти»), и слова, которые человек сам часто говорит. Приложение запоминает это на телефоне, когда фраза, собранная в «Азбуке» или в рамке 🎤, прозвучала. Вверху списка — строка уточнения следующей буквой («ПА», «ПЕ», «ПО»…; в ней только те сочетания, с которых есть слова), «⌨️ Буквы» возвращает панель букв, ⌫ стирает последнюю букву. Список прокручивается пальцем, верх списка остаётся на месте.','Над буквами — строка из трёх подсказок: слова, которые подходят после последнего слова фразы (в «Свободном наборе» — продолжение набранного). Нажатие добавляет слово в строку. На низком экране над буквами показывается и сама фраза.','Нажатие на слово добавляет его в строку фразы (если в ⚙️ включено «слово одним нажатием», нажатие произносит слово, а долгое нажатие добавляет его). «Сказать так» произносит всю строку и очищает её для следующей фразы; ⌫ убирает последнее слово, «↶ Вернуть» возвращает убранное. «Назад» стирает сначала букву, потом последнее слово, потом закрывает «Азбуку»; собранная строка сохраняется и после перезапуска приложения; очищается, когда фраза прозвучала.','Кнопка «Я, в, на, не…» под строкой открывает короткие служебные слова по группам: местоимения («я», «ты», «мы»), предлоги («в», «на», «с») и другие («не», «да», «это»). Нажатие добавляет слово в строку, и блок сворачивается (такие слова редко идут подряд). Однобуквенные слова («я», «в», «с») находятся и по первой букве.','Кнопка «🔡 Мельче» на панели букв уменьшает кнопки с буквами, чтобы на экране помещалось больше найденных слов; «🔠 Крупнее» возвращает обычный размер. Выбор запоминается.','Кнопка вверху экрана переключает режим: «Свободный набор» показывает всю азбуку, человек набирает слово так, как его себе представляет (можно с ошибками), а приложение предлагает подходящие слова и готовые фразы, как на экране 🎤. Набранные буквы видны на панели над клавиатурой (⌫ рядом стирает букву). Кнопка «⌨️ ЙЦУКЕН» ставит привычную раскладку телефона, «🔤 АБВ» возвращает буквы по алфавиту; выбор запоминается. «Подходящие буквы» показывает лишь те буквы, после которых в словаре есть слова.']],
+   ['Азбука (подсказка по первой букве)',['Кнопка «Азбука» находится в шапке рядом с 🎤 (на тяжёлом уровне её нет). Вверху экрана закреплены фраза (вместе с набираемыми буквами) и кнопка «Сказать так», под ними — «⌫ Слово», 🗑, переключатель режима («✍️ Набор» / «🔤 Буквы») и «⋯». Клавиатура — сразу под ними, высота клавиш подбирается по экрану; подсказки слов и готовые фразы — ниже, их видно прокруткой. За «⋯» — «Скрыть буквы» (место для слов; «Показать буквы» возвращает их), раскладка и размер букв. В настройках можно включить автоматическое сворачивание букв после каждой нажатой буквы: после выбора слова или удаления буквы или слова они появляются снова.','Нажмите первую букву слова: на месте панели букв появится список слов, которые с неё начинаются. Первыми идут слова, которые обычно стоят после предыдущего слова фразы (после «я хочу» — «пить», «позвонить», «пойти»), и слова, которые человек сам часто говорит. Приложение запоминает это на телефоне, когда фраза, собранная в «Азбуке» или в рамке 🎤, прозвучала. Вверху списка — строка уточнения следующей буквой («ПА», «ПЕ», «ПО»…; в ней только те сочетания, с которых есть слова), «⌨️ Буквы» возвращает панель букв, ⌫ стирает последнюю букву. Список прокручивается пальцем, верх списка остаётся на месте.','Над буквами — строка из трёх подсказок: слова, которые подходят после последнего слова фразы (в «Свободном наборе» — продолжение набранного). Нажатие добавляет слово в строку. На низком экране над буквами показывается и сама фраза.','Нажатие на слово добавляет его в строку фразы (если в ⚙️ включено «слово одним нажатием», нажатие произносит слово, а долгое нажатие добавляет его). «Сказать так» произносит всю строку и очищает её для следующей фразы; «⌫ Слово» убирает последнее слово, «↶ Вернуть» возвращает убранное, 🗑 убирает всю строку. «Назад» стирает сначала букву, потом последнее слово, потом закрывает «Азбуку»; собранная строка сохраняется и после перезапуска приложения; очищается, когда фраза прозвучала.','Кнопка «Я, в, на, не…» в нижнем ряду клавиатуры открывает на месте букв короткие служебные слова по группам: местоимения («я», «ты», «мы»), предлоги («в», «на», «с») и другие («не», «да», «это»). Нажатие добавляет слово в строку, и снова появляется клавиатура (такие слова редко идут подряд); «⌨️ Буквы» возвращает клавиатуру без выбора. Однобуквенные слова («я», «в», «с») находятся и по первой букве.','Кнопка «🔡 Мельче» (за «⋯») уменьшает кнопки с буквами, чтобы на экране помещалось больше найденных слов; «🔠 Крупнее» возвращает обычный размер. Выбор запоминается.','Кнопка режима вверху («✍️ Набор» / «🔤 Буквы») переключает: «Свободный набор» показывает всю азбуку, человек набирает слово так, как его себе представляет (можно с ошибками), а приложение предлагает подходящие слова и готовые фразы, как на экране 🎤. Набранные буквы видны во фразе вверху. В нижнем ряду клавиатуры: «␣ пробел» добавляет набранное в строку словом как есть (если нужного слова нет в подсказках), ⌫ стирает букву, а если букв нет — последнее слово. За «⋯» кнопка «⌨️ ЙЦУКЕН» ставит привычную раскладку телефона, «🔤 АБВ» возвращает буквы по алфавиту; выбор запоминается. «Подходящие буквы» показывает лишь те буквы, после которых в словаре есть слова.']],
    ['Поиск слов онлайн (⚙️, бесплатно)',['Если нужного слова нет в словаре (например, «кукуруза»), включите в настройках «Искать слова онлайн». Тогда на экране «Азбука» и на экране 🎤 появится кнопка «Найти слова в интернете».','Слова ищутся в Викисловаре (для английского ещё в Datamuse): продолжения начатого слова и исправления опечаток. Ключ и регистрация не нужны. Набранные буквы и слова отправляются этим сервисам.','Выбранное слово произносится и запоминается на телефоне: дальше оно находится и без интернета.']],
    ['Словари слов (⚙️)',['В настройках можно один раз загрузить частотные списки слов (около 20 000 форм слов для русского и украинского и 10 000 для английского). После этого они хранятся на телефоне и работают без интернета.','Они расширяют «Азбуку»: на каждую букву появляются сотни самых употребительных слов, а наши слова идут первыми. На экране 🎤 они дают блок «Слова из словаря»: услышанные слова исправляются (например, «мошина» → «машина»), недоговорённое начало слова дополняется, и слово произносится по нажатию. Это работает и для слов, которых нет в наших фразах.','Списки не создают новые фразы, а только слова. Источник: FrequencyWords (hermitdave), лицензия CC BY-SA 4.0. В списках из субтитров есть шум и редкие грубые слова, фильтрация неполная.']],
    ['Говорит собеседник: показать и проговорить (🎤)',['Если человек не понимает живую речь или слышит другие слова, но понимает синтезированный голос или читает, откройте 🎤 и перейдите на вкладку «Говорит собеседник».','Нажмите «Говорить» и скажите фразу: она распознаётся, появляется крупным текстом (размер меняют кнопками A− и A+) и проговаривается голосом телефона; проговариваемое слово подсвечивается, если голос это поддерживает.','«Повторить» и «Медленно» произносят фразу снова. Если распознано неточно, исправьте текст в поле и нажмите «Показать и проговорить»; так же можно просто вписать фразу. Недавние фразы можно показать снова, а значок 🗑 справа от фразы удаляет её. Последние пять фраз хранятся на этом телефоне, пока вы их не удалите.','Нажатие на слово в крупном тексте произносит его отдельно и медленно. Рядом со знакомыми приложению словами показываются картинки-эмодзи. Под текстом есть быстрые ответы собеседнику: «Повторите», «Говорите медленнее», «Я не понимаю», «Напишите». Кнопка «👁 На весь экран» показывает фразу во весь экран самым крупным шрифтом (с «⟳ Перевернуть»). Эмодзи и «проговаривать распознанное сразу» настраиваются в ⚙️ → «🎤 Подсказка по сказанному».','Распознавание выполняет браузер и обычно требует интернета; без него используйте поле для ввода.']],
@@ -638,7 +687,7 @@ uk:{title:'Говоримо разом',g_sos:'👥 Близькі: дзвіно
   built:'Ваша фраза',sayso:'Сказати так',cont:'Продовжте фразу — оберіть слово:',pick:'Оберіть тему:',ver:'Версія застосунку',
   aHome:'Додому',aLang:'Мова',aSet:'Налаштування',aEd:'Редактор',nomem:'Не вистачає пам’яті',testSay:'Це перевірка голосу',
   aHelp:'Довідка',v_auto:'Автоматично (голос за замовчуванням)',v_none:'Для цієї мови в телефоні немає голосів. Як їх встановити — див. «Довідка» → «Голос і озвучення».',
-  abc:'Абетка',abcFree:'Вільний набір',abcShow:'Показати літери',abcHide:'Сховати літери',abcType:'Набирайте слово так, як ви його собі уявляєте (можна з помилками):',abcFit:'Відповідні літери',abcLetters:'Літери',kbAbc:'АБВ',kbQw:'ЙЦУКЕН',abcWords:'Відповідні слова — натисніть, щоб додати:',abcHint:'Натисніть першу літеру слова',abcNext:'Наступна літера:',abcNone:'Слів на ці літери немає',slow:'Повільно',
+  abc:'Абетка',abcFree:'Вільний набір',abcShow:'Показати літери',abcHide:'Сховати літери',abcType:'Набирайте слово так, як ви його собі уявляєте (можна з помилками):',abcFit:'Відповідні літери',abcLetters:'Літери',kbAbc:'АБВ',kbQw:'ЙЦУКЕН',abcWord:'Слово',abcSpace:'пробіл',abcMore:'Ще: сховати літери, розкладка, розмір',abcModeFree:'Набір',abcModeFit:'Літери',abcWords:'Відповідні слова — натисніть, щоб додати:',abcHint:'Натисніть першу літеру слова',abcNext:'Наступна літера:',abcNone:'Слів на ці літери немає',slow:'Повільно',
   s_lex:'Словники слів для «Абетки» та виправлення спотворених слів (завантажуються один раз, потім працюють без інтернету)',b_lex_get:'⬇️ Завантажити словники слів',b_lex_del:'🗑️ Видалити словники слів',lex_none:'не завантажено',lex_words:'слів',lex_loading:'Завантажую: ',lex_done:'Готово. Словники збережено на цьому телефоні.',lex_err:'Не вдалося завантажити: ',lex_confirm_del:'Видалити завантажені словники слів?',lex_src:'Джерело списків: FrequencyWords (hermitdave) на основі субтитрів OpenSubtitles, ліцензія CC BY-SA 4.0. Нецензурні слова відфільтровано не повністю.',
   m_words:'Слова зі словника — натисніть, і слово пролунає:',m_lex_off:'Щоб підказувати окремі слова, завантажте словники слів: ⚙️ → «Дані».',
   s_wonline:'Шукати слова онлайн (Вікісловник; для англійської ще Datamuse). Безкоштовно, ключ не потрібен. Набрані літери й слова надсилаються цим сервісам. Обрані слова запам’ятовуються на телефоні.',w_err:'Не вдалося зв’язатися із сервісом словників. Перевірте інтернет.',ext_policy:'OpenRouter не знайшов відповідних безкоштовних моделей через налаштування приватності. Відкрийте openrouter.ai/settings/privacy і дозвольте використання безкоштовних моделей або оберіть іншу модель.',ext_diag:'Відповідь сервісу',
@@ -677,7 +726,7 @@ uk:{title:'Говоримо разом',g_sos:'👥 Близькі: дзвіно
    ['Часто вживане','На головному екрані показуються до чотирьох найчастіших фраз — так потрібне знаходиться швидше. Щоб прибрати непотрібну фразу, натисніть ✏️ поруч із заголовком «Часто» і торкніться фрази; «Прибрати всі» очищає блок. Лічильник фрази обнуляється й почне набиратися знову, лише якщо її знову вимовити. Нижче може бути ряд «Нещодавно сказані»: останні фрази, вимовлені через 🎤 і «Абетку». Скільки їх показувати (0, 2, 4 або 6), задається в ⚙️ → «Головний екран і плитки»; прибирають їх тим самим ✏️.'],
    ['Здоров’я та ліки','Теми «Здоров’я» та «Ліки» просять друге підтвердження «Точно?», щоб випадкове натискання не ввело в оману. Застосунок не замінює лікаря. У небезпечній ситуації телефонуйте 103 (швидка допомога) або 112.'],
    ['Голос і озвучення',['Озвучення виконує синтезатор мовлення телефона. У налаштуваннях показуються лише голоси поточної мови фраз (⚙️ → «Основне» → «Мова фраз та озвучення»).','Якщо голосів немає: Налаштування Android → Система → Мова та введення → Синтез мовлення → Google → встановіть голосові дані російської або української мови.','Краще трохи знизити швидкість мовлення (0,7–0,85) — так легше розібрати слова. Кнопка «Перевірити голос» дає змогу послухати результат.']],
-   ['Абетка (підказка за першою літерою)',['Кнопка «Абетка» розташована в шапці поруч із 🎤 (на важкому рівні її немає). Літери завжди закріплені внизу екрана, а знайдені слова показуються над ними; кнопка «Сховати літери» вивільняє місце для слів, «Показати літери» повертає їх. У налаштуваннях можна ввімкнути автоматичне згортання панелі після кожної натиснутої літери: після вибору слова або видалення літери чи слова панель з’являється знову.','Натисніть першу літеру слова: на місці панелі літер з’явиться список слів, що з неї починаються. Першими йдуть слова, які зазвичай стоять після попереднього слова фрази (після «я хочу» — «пити», «подзвонити», «піти»), і слова, які людина сама часто каже. Застосунок запам’ятовує це на телефоні, коли фраза, зібрана в «Абетці» або в рамці 🎤, пролунала. Угорі списку — рядок уточнення наступною літерою («ПА», «ПЕ», «ПО»…; у ньому тільки ті сполучення, з яких є слова), «⌨️ Літери» повертає панель літер, ⌫ стирає останню літеру. Список прокручується пальцем, верх списку лишається на місці.','Над літерами — рядок із трьох підказок: слова, що підходять після останнього слова фрази (у «Вільному наборі» — продовження набраного). Натискання додає слово до рядка. На низькому екрані над літерами показується й сама фраза.','Натискання на слово додає його до рядка фрази (якщо в ⚙️ увімкнено «слово одним натисканням», натискання вимовляє слово, а довге натискання додає його). «Сказати так» вимовляє весь рядок і очищає його для наступної фрази; ⌫ прибирає останнє слово, «↶ Повернути» повертає прибране. «Назад» стирає спершу літеру, потім останнє слово, потім закриває «Абетку»; зібраний рядок зберігається й після перезапуску застосунку; очищається, коли фраза пролунала.','Кнопка «Я, в, на, не…» під рядком відкриває короткі службові слова за групами: займенники («я», «ти», «ми»), прийменники («в», «на», «з») та інші («не», «так», «це»). Натискання додає слово до рядка, і блок згортається (такі слова рідко йдуть поспіль). Однолітерні слова («я», «в», «з») знаходяться й за першою літерою.','Кнопка «🔡 Дрібніше» на панелі літер зменшує кнопки з літерами, щоб на екрані вміщалося більше знайдених слів; «🔠 Крупніше» повертає звичайний розмір. Вибір запам’ятовується.','Кнопка вгорі екрана перемикає режим: «Вільний набір» показує всю абетку, людина набирає слово так, як його собі уявляє (можна з помилками), а застосунок пропонує відповідні слова й готові фрази, як на екрані 🎤. Набрані літери видно на панелі над клавіатурою (⌫ поруч стирає літеру). Кнопка «⌨️ ЙЦУКЕН» ставить звичну розкладку телефона, «🔤 АБВ» повертає літери за абеткою; вибір запам’ятовується. «Відповідні літери» показує тільки ті літери, після яких у словнику є слова.']],
+   ['Абетка (підказка за першою літерою)',['Кнопка «Абетка» розташована в шапці поруч із 🎤 (на важкому рівні її немає). Угорі екрана закріплені фраза (разом із набраними літерами) і кнопка «Сказати так», під ними — «⌫ Слово», 🗑, перемикач режиму («✍️ Набір» / «🔤 Літери») і «⋯». Клавіатура — одразу під ними, висота клавіш добирається за екраном; підказки слів і готові фрази — нижче, їх видно прокручуванням. За «⋯» — «Сховати літери» (місце для слів; «Показати літери» повертає їх), розкладка й розмір літер. У налаштуваннях можна ввімкнути автоматичне згортання літер після кожної натиснутої літери: після вибору слова або видалення літери чи слова вони з’являються знову.','Натисніть першу літеру слова: на місці панелі літер з’явиться список слів, що з неї починаються. Першими йдуть слова, які зазвичай стоять після попереднього слова фрази (після «я хочу» — «пити», «подзвонити», «піти»), і слова, які людина сама часто каже. Застосунок запам’ятовує це на телефоні, коли фраза, зібрана в «Абетці» або в рамці 🎤, пролунала. Угорі списку — рядок уточнення наступною літерою («ПА», «ПЕ», «ПО»…; у ньому тільки ті сполучення, з яких є слова), «⌨️ Літери» повертає панель літер, ⌫ стирає останню літеру. Список прокручується пальцем, верх списку лишається на місці.','Над літерами — рядок із трьох підказок: слова, що підходять після останнього слова фрази (у «Вільному наборі» — продовження набраного). Натискання додає слово до рядка. На низькому екрані над літерами показується й сама фраза.','Натискання на слово додає його до рядка фрази (якщо в ⚙️ увімкнено «слово одним натисканням», натискання вимовляє слово, а довге натискання додає його). «Сказати так» вимовляє весь рядок і очищає його для наступної фрази; «⌫ Слово» прибирає останнє слово, «↶ Повернути» повертає прибране, 🗑 прибирає весь рядок. «Назад» стирає спершу літеру, потім останнє слово, потім закриває «Абетку»; зібраний рядок зберігається й після перезапуску застосунку; очищається, коли фраза пролунала.','Кнопка «Я, в, на, не…» у нижньому ряду клавіатури відкриває на місці літер короткі службові слова за групами: займенники («я», «ти», «ми»), прийменники («в», «на», «з») та інші («не», «так», «це»). Натискання додає слово до рядка, і знову з’являється клавіатура (такі слова рідко йдуть поспіль); «⌨️ Літери» повертає клавіатуру без вибору. Однолітерні слова («я», «в», «з») знаходяться й за першою літерою.','Кнопка «🔡 Дрібніше» (за «⋯») зменшує кнопки з літерами, щоб на екрані вміщалося більше знайдених слів; «🔠 Крупніше» повертає звичайний розмір. Вибір запам’ятовується.','Кнопка режиму вгорі («✍️ Набір» / «🔤 Літери») перемикає: «Вільний набір» показує всю абетку, людина набирає слово так, як його собі уявляє (можна з помилками), а застосунок пропонує відповідні слова й готові фрази, як на екрані 🎤. Набрані літери видно у фразі вгорі. У нижньому ряду клавіатури: «␣ пробіл» додає набране до рядка словом як є (якщо потрібного слова немає в підказках), ⌫ стирає літеру, а якщо літер немає — останнє слово. За «⋯» кнопка «⌨️ ЙЦУКЕН» ставить звичну розкладку телефона, «🔤 АБВ» повертає літери за абеткою; вибір запам’ятовується. «Відповідні літери» показує тільки ті літери, після яких у словнику є слова.']],
    ['Пошук слів онлайн (⚙️, безкоштовно)',['Якщо потрібного слова немає у словнику (наприклад, «кукурудза»), увімкніть у налаштуваннях «Шукати слова онлайн». Тоді на екрані «Абетка» та на екрані 🎤 з’явиться кнопка «Знайти слова в інтернеті».','Слова шукаються у Вікісловнику (для англійської ще в Datamuse): продовження початого слова й виправлення помилок. Ключ і реєстрація не потрібні. Набрані літери й слова надсилаються цим сервісам.','Обране слово вимовляється й запам’ятовується на телефоні: далі воно знаходиться й без інтернету.']],
    ['Словники слів (⚙️)',['У налаштуваннях можна один раз завантажити частотні списки слів (близько 20 000 форм слів для російської й української та 10 000 для англійської). Після цього вони зберігаються на телефоні й працюють без інтернету.','Вони розширюють «Абетку»: на кожну літеру з’являються сотні найуживаніших слів, а наші слова йдуть першими. На екрані 🎤 вони дають блок «Слова зі словника»: почуті слова виправляються (наприклад, «мошина» → «машина»), недоказаний початок слова доповнюється, і слово вимовляється після натискання. Це працює й для слів, яких немає в наших фразах.','Списки не створюють нових фраз, а лише слова. Джерело: FrequencyWords (hermitdave), ліцензія CC BY-SA 4.0. У списках із субтитрів є шум і рідкісні грубі слова, фільтрація неповна.']],
    ['Говорить співрозмовник: показати й проговорити (🎤)',['Якщо людина не розуміє живе мовлення або чує інші слова, але розуміє синтезований голос чи читає, відкрийте 🎤 і перейдіть на вкладку «Говорить співрозмовник».','Натисніть «Говорити» і скажіть фразу: вона розпізнається, з’являється великим текстом (розмір змінюють кнопками A− і A+) і проговорюється голосом телефона; слово, що проговорюється, підсвічується, якщо голос це підтримує.','«Повтор» і «Повільно» вимовляють фразу знову. Якщо розпізнано неточно, виправте текст у полі й натисніть «Показати й проговорити»; так само можна просто вписати фразу. Нещодавні фрази можна показати знову, а значок 🗑 праворуч від фрази видаляє її. Останні п’ять фраз зберігаються на цьому телефоні, доки ви їх не видалите.','Натискання на слово у великому тексті вимовляє його окремо й повільно. Поруч зі знайомими застосунку словами показуються картинки-емодзі. Під текстом є швидкі відповіді співрозмовнику: «Повторіть», «Говоріть повільніше», «Я не розумію», «Напишіть». Кнопка «👁 На весь екран» показує фразу на весь екран найбільшим шрифтом (з «⟳ Перевернути»). Емодзі та «проговорювати розпізнане одразу» налаштовуються в ⚙️ → «🎤 Підказка за сказаним».','Розпізнавання виконує браузер і зазвичай потребує інтернету; без нього користуйтеся полем для введення.']],
@@ -737,7 +786,7 @@ en:{title:'Let’s talk together',g_sos:'👥 Loved ones: call and message',s_so
   built:'Your phrase',sayso:'Say it',cont:'Continue the phrase — choose a word:',pick:'Choose a topic:',ver:'App version',
   aHome:'Home',aLang:'Language',aSet:'Settings',aEd:'Editor',nomem:'Not enough storage',testSay:'This is a voice test',
   aHelp:'Help',v_auto:'Automatic (default voice)',v_none:'This phone has no voices for this language. See Help → “Voice and speech” to install them.',
-  abc:'ABC',abcFree:'Free typing',abcShow:'Show letters',abcHide:'Hide letters',abcType:'Type the word the way you imagine it (mistakes are fine):',abcFit:'Matching letters',abcLetters:'Letters',kbAbc:'ABC',kbQw:'QWERTY',abcWords:'Matching words — tap to add:',abcHint:'Tap the first letter of the word',abcNext:'Next letter:',abcNone:'No words for these letters',slow:'Slowly',
+  abc:'ABC',abcFree:'Free typing',abcShow:'Show letters',abcHide:'Hide letters',abcType:'Type the word the way you imagine it (mistakes are fine):',abcFit:'Matching letters',abcLetters:'Letters',kbAbc:'ABC',kbQw:'QWERTY',abcWord:'Word',abcSpace:'space',abcMore:'More: hide letters, layout, size',abcModeFree:'Typing',abcModeFit:'Letters',abcWords:'Matching words — tap to add:',abcHint:'Tap the first letter of the word',abcNext:'Next letter:',abcNone:'No words for these letters',slow:'Slowly',
   s_lex:'Word lists for ABC and for correcting garbled words (downloaded once, then they work offline)',b_lex_get:'⬇️ Download the word lists',b_lex_del:'🗑️ Delete the word lists',lex_none:'not downloaded',lex_words:'words',lex_loading:'Downloading: ',lex_done:'Done. The word lists are saved on this phone.',lex_err:'Could not download: ',lex_confirm_del:'Delete the downloaded word lists?',lex_src:'List source: FrequencyWords (hermitdave), based on OpenSubtitles subtitles, license CC BY-SA 4.0. Profanity is filtered only partly.',
   m_words:'Words from the dictionary — tap and the word is spoken:',m_lex_off:'To suggest single words, download the word lists: ⚙️ → “Data”.',
   s_wonline:'Look up words online (Wiktionary; for English also Datamuse). Free, no key needed. The typed letters and words are sent to these services. Chosen words are remembered on the phone.',w_err:'Could not reach the dictionary service. Check the internet.',ext_policy:'OpenRouter found no free models allowed by your privacy settings. Open openrouter.ai/settings/privacy and allow free models, or choose another model.',ext_diag:'Service reply',
@@ -787,7 +836,7 @@ en:{title:'Let’s talk together',g_sos:'👥 Loved ones: call and message',s_so
    ['Often used','The home screen shows up to four of the most frequent phrases so they are quicker to find. To remove an unwanted phrase, tap ✏️ next to the “Often” heading and touch the phrase; “Remove all” clears the block. The phrase’s counter is reset and starts growing again only if the phrase is spoken again. Below there may be a “Recently said” row: the last phrases spoken through 🎤 and ABC. How many to show (0, 2, 4 or 6) is set in ⚙️ → “Home screen and tiles”; remove them with the same ✏️.'],
    ['Health and medicines','The Health and Medicines topics ask for a second confirmation, “Sure?”, so that an accidental tap does not mislead anyone. The app does not replace a doctor. In danger, call your local emergency number (103 or 112 in Ukraine).'],
    ['Voice and speech',['Speech comes from the phone’s speech synthesizer. Settings list only the voices of the language currently used for phrases (⚙️ → “General” → “Language of phrases and speech”).','If there are none: Android Settings → System → Languages and input → Text-to-speech → Google → install the voice data for the language.','A slightly slower speech rate (0.7–0.85) is easier to follow. The “Test voice” button plays a sample.']],
-   ['ABC (first-letter help)',['The “ABC” button is in the header next to 🎤 (it is not shown in the severe level). The letters are always pinned to the bottom of the screen and the words found appear above them; “Hide letters” makes room for more words and “Show letters” brings them back. In Settings you can turn on automatic collapsing of the panel after every letter tapped: after a word is chosen or a letter or word is deleted the panel reappears.','Tap the first letter of a word: a list of words starting with it replaces the letter panel. Words that usually follow the previous word of the phrase come first (after “I want” — “to”), together with words the person often says. The app learns this on the phone when a phrase built in ABC or in the 🎤 frame has been spoken. At the top of the list is a row to narrow it by the next letter (“TA”, “TH”, “TO”…; only combinations that have words), “⌨️ Letters” brings the letter panel back and ⌫ deletes the last letter. The list scrolls with a finger; its top stays in place.','Above the letters is a row of three suggestions: words that fit after the last word of the phrase (in “Free typing” — words continuing what has been typed). A tap adds the word to the line. On a low screen the phrase itself is also shown above the letters.','Tapping a word adds it to the phrase line (if “one tap speaks a word” is on in ⚙️, a tap speaks the word and a long press adds it). “Say it” speaks the whole line and clears it for the next phrase; ⌫ removes the last word and “↶ Undo” brings it back. “Back” first deletes a letter, then the last word, then closes ABC; the line is kept even after the app restarts; it is cleared once the phrase has been spoken.','The “I, to, the, not…” button below the line opens short function words in groups: pronouns (“I”, “you”, “we”), prepositions (“to”, “in”, “on”) and others (“not”, “yes”, “this”). A tap adds the word to the line and the block collapses (such words rarely come one after another). One-letter words (“I”, “a”) are also found by their first letter.','The “🔡 Smaller” button on the letter panel makes the letter buttons smaller so more found words fit on the screen; “🔠 Larger” brings back the normal size. The choice is remembered.','The button at the top switches the mode: “Free typing” shows the whole alphabet, the person types the word as they imagine it (spelling mistakes are fine) and the app suggests matching words and ready phrases, as on the 🎤 screen. The typed letters are shown on the panel above the keyboard (⌫ next to them deletes a letter). The “⌨️ QWERTY” button sets the usual phone layout, “🔤 ABC” brings back alphabetical order; the choice is remembered. “Matching letters” shows only the letters that can follow in the vocabulary.']],
+   ['ABC (first-letter help)',['The “ABC” button is in the header next to 🎤 (it is not shown in the severe level). At the top of the screen the phrase (together with the letters being typed) and “Say it” stay in place; below them are “⌫ Word”, 🗑, the mode switch (“✍️ Typing” / “🔤 Letters”) and “⋯”. The keyboard comes right below, its key height fits the screen; word suggestions and ready phrases are further down (scroll). Behind “⋯”: “Hide letters” (room for words; “Show letters” brings them back), layout and letter size. In Settings you can turn on automatic hiding of the letters after every letter tapped: after a word is chosen or a letter or word is deleted they reappear.','Tap the first letter of a word: a list of words starting with it replaces the letter panel. Words that usually follow the previous word of the phrase come first (after “I want” — “to”), together with words the person often says. The app learns this on the phone when a phrase built in ABC or in the 🎤 frame has been spoken. At the top of the list is a row to narrow it by the next letter (“TA”, “TH”, “TO”…; only combinations that have words), “⌨️ Letters” brings the letter panel back and ⌫ deletes the last letter. The list scrolls with a finger; its top stays in place.','Above the letters is a row of three suggestions: words that fit after the last word of the phrase (in “Free typing” — words continuing what has been typed). A tap adds the word to the line. On a low screen the phrase itself is also shown above the letters.','Tapping a word adds it to the phrase line (if “one tap speaks a word” is on in ⚙️, a tap speaks the word and a long press adds it). “Say it” speaks the whole line and clears it for the next phrase; “⌫ Word” removes the last word, “↶ Undo” brings it back, 🗑 clears the whole line. “Back” first deletes a letter, then the last word, then closes ABC; the line is kept even after the app restarts; it is cleared once the phrase has been spoken.','The “I, to, the, not…” key in the bottom row of the keyboard opens short function words in groups in place of the letters: pronouns (“I”, “you”, “we”), prepositions (“to”, “in”, “on”) and others (“not”, “yes”, “this”). A tap adds the word to the line and the keyboard comes back (such words rarely come one after another); “⌨️ Letters” brings the keyboard back without choosing. One-letter words (“I”, “a”) are also found by their first letter.','The “🔡 Smaller” button (behind “⋯”) makes the letter buttons smaller so more found words fit on the screen; “🔠 Larger” brings back the normal size. The choice is remembered.','The mode button at the top (“✍️ Typing” / “🔤 Letters”) switches: “Free typing” shows the whole alphabet, the person types the word as they imagine it (spelling mistakes are fine) and the app suggests matching words and ready phrases, as on the 🎤 screen. The typed letters are shown in the phrase at the top. In the bottom row of the keyboard “␣ space” adds what was typed to the line as a word, as is (if the word you need is not among the suggestions), ⌫ deletes a letter or, when no letters are typed, the last word. Behind “⋯” the “⌨️ QWERTY” button sets the usual phone layout, “🔤 ABC” brings back alphabetical order; the choice is remembered. “Matching letters” shows only the letters that can follow in the vocabulary.']],
    ['Online word search (⚙️, free)',['If the word you need is not in the dictionary (for example “corn”), turn on “Look up words online” in Settings. A “Find words online” button then appears on the ABC screen and on the 🎤 screen.','Words are looked up in Wiktionary (and Datamuse for English): completions of a started word and spelling corrections. No key or sign-up is needed. The typed letters and words are sent to these services.','A chosen word is spoken and remembered on the phone, so later it is found without the internet.']],
    ['Word lists (⚙️)',['In Settings you can download frequency word lists once (about 20,000 word forms for Russian and Ukrainian and 10,000 for English). After that they are kept on the phone and work offline.','They extend ABC: each letter gets hundreds of the most common words, with our own words first. On the 🎤 screen they provide a “Words from the dictionary” block: heard words are corrected (for example “mashina” → “machine”), an unfinished word start is completed, and the word is spoken when tapped. This also works for words that are not in our phrases.','The lists provide words, not new phrases. Source: FrequencyWords (hermitdave), license CC BY-SA 4.0. Lists built from subtitles contain noise and a few rude words; the filtering is incomplete.']],
    ['The other person speaks: show and speak (🎤)',['If the person does not understand live speech or hears other words, but understands a synthesized voice or can read, open 🎤 and switch to the “The other person speaks” tab.','Tap “Speak” and say a phrase: it is recognized, shown in large text (change the size with the A− and A+ buttons) and spoken in the phone’s voice; the word being spoken is highlighted if the voice supports it.','“Repeat” and “Slowly” say the phrase again. If it was recognized inaccurately, correct the text in the field and press “Show and speak”; you can also just type a phrase. Recent phrases can be shown again, and the 🗑 icon next to a phrase deletes it. The last five phrases are kept on this phone until you delete them.','Tap a word in the large text to hear it separately and slowly. Emoji pictures appear next to words the app knows. Below the text there are quick replies to the speaker: “Please repeat”, “Please speak more slowly”, “I don’t understand”, “Please write it down”. The “👁 Full screen” button shows the phrase across the whole screen in the largest text that fits (with “⟳ Flip”). The emoji and “speak the recognized text right away” are set in ⚙️ → “🎤 Suggestions from what was said”.','Recognition is done by the browser and usually needs the internet; without it, use the input field.']],
@@ -2036,7 +2085,8 @@ function render(){
   if(TOUR&&TOUR.scr!=='offer'&&tourScreen()!==TOUR.scr)tourEnd();
   if(TOUR&&TOUR.scr==='offer')tourEnd();
   tourSchedule();
-  document.body.classList.toggle('at-home',!path.length&&!abc&&!hearOn);   // на главном экране кнопки 🎤 и «Азбука» крупные
+  document.body.classList.toggle('at-home',!path.length&&!abc&&!hearOn);
+  document.body.classList.toggle('in-abc',!!abc&&!hearOn);   // v77: на узком экране без строки заголовка — место клавиатуре   // на главном экране кнопки 🎤 и «Азбука» крупные
   if(path.length||abc||hearOn)freqEdit=false;
   if(hearOn){renderHearScreen();return}
   if(abc){renderAbc();return}
@@ -2275,47 +2325,52 @@ function abcPanelFit(){
   if(!TOUR)m.scrollTop=Math.max(0,m.scrollTop+pr.top-mr.top-4);
 }
 addEventListener('resize',()=>{if(abc&&abc.prefix)abcPanelFit()});
-function abcModeBtn(){
-  const free=abc.mode==='free';
-  return h('button','kbt',(free?'🔤 ':'✍️ ')+u(free?'abcFit':'abcFree'),()=>{
-    const pre=abc.prefix;                               // уже набранное начало переносится в свободный набор
-    abc.mode=free?'prefix':'free';abc.prefix='';abc.typed=free?'':pre;
-    settings.abcMode=abc.mode;try{localStorage.setItem('aac.settings',JSON.stringify(settings))}catch(e){}
-    render();
-  });
-}
 function renderAbc(){
   const m=$('#main');m.innerHTML='';m.scrollTop=0;$('#ttl').textContent=u('abc');
   const free=abc.mode==='free';
   const wrap=h('div','abcwrap'),res=h('div','abcres');wrap.append(res);
-  const bx=h('div','build cmp');
-  bx.append(h('div','bl',u('built')),h('div','bt',abc.line.length?abc.line.join(' '):'…'));
-  res.append(bx);
-  if(abc.line.length||abcUndo){
-    const r=h('div','row');
-    // «Сказать так»: строка звучит и очищается для следующей фразы (повторить — кнопкой «Повтор»)
-    if(abc.line.length){
-      r.append(h('button','ans neu sm','🔊 '+u('sayso'),()=>{const t2=abc.line.join(' ');twLearn(t2);abc.line.length=0;abcUndo=null;draftSave();say(t2,false,{recent:1,e:'🔤'})}),
-        h('button','ans no sm','⌫',()=>{abcUndo=abc.line.pop();abcWordDone();render()}));
-      // 🗑 — убрать всю строку сразу (массив в abcUndo — «Вернуть» возвращает строку целиком)
-      if(abc.line.length>1){const cl=h('button','ans no sm','🗑',()=>{abcUndo=abc.line.splice(0);abcWordDone();render()});cl.setAttribute('aria-label',u('abc_clr'));r.append(cl)}
-    }
-    if(abcUndo)r.append(h('button','undo','↶ '+u('undo')+': '+(Array.isArray(abcUndo)?abcUndo.join(' '):abcUndo),()=>{Array.isArray(abcUndo)?abc.line.push(...abcUndo):abc.line.push(abcUndo);abcUndo=null;render()}));
-    res.append(r);
+  // v77: верх закреплён (как «⌨️ Писать» в «Мій голос»): фраза вместе с набираемыми буквами и «Сказать так» рядом,
+  // под ними ряд кнопок-значков; редкие настройки панели букв — за «⋯»
+  const head=h('div','abchead'),top=h('div','abctop');
+  const bx=h('div','build cmp'),bt=h('div','bt');bx.setAttribute('aria-label',u('built'));
+  const typed=free?abc.typed:'';
+  if(abc.line.length||typed){
+    bt.append(abc.line.join(' ')+(abc.line.length&&typed?' ':''));
+    if(typed)bt.append(h('b','typed',typed.toLocaleUpperCase(lang)));
+    if(free)bt.append(h('span','caret'));
+  }else{bt.textContent='…';if(free)bt.append(h('span','caret'))}
+  bx.append(bt);
+  // «Сказать так»: строка (и набранное «как есть») звучит и очищается для следующей фразы
+  const sy=h('button','ans neu sm abcsay',null,()=>{
+    const ws=[...abc.line];if(typed)ws.push(typed);const t2=ws.join(' ');if(!t2)return;
+    twLearn(t2);abc.line.length=0;abc.typed='';abcUndo=null;draftSave();render();say(t2,false,{recent:1,e:'🔤'});
+  });
+  sy.append(h('span','ic','🔊'),h('span',null,u('sayso')));sy.disabled=!(abc.line.length||typed);
+  top.append(bx,sy);head.append(top);
+  const act=h('div','abcact');
+  const mk=(ic,lbl,fn,cls,dis,aria)=>{const b=h('button','ab'+(cls?' '+cls:''),ic,fn);if(lbl)b.append(h('span','w',' '+lbl));b.setAttribute('aria-label',aria||lbl||ic);if(dis)b.disabled=true;act.append(b);return b};
+  if(abcUndo)mk('↶',u('undo'),()=>{Array.isArray(abcUndo)?abc.line.push(...abcUndo):abc.line.push(abcUndo);abcUndo=null;render()},'undo',false,u('undo')+': '+(Array.isArray(abcUndo)?abcUndo.join(' '):abcUndo));
+  else mk('⌫',u('abcWord'),()=>{abcUndo=abc.line.pop();abcWordDone();render()},'dw',!abc.line.length);
+  mk('🗑',null,()=>{abcUndo=abc.line.splice(0);abc.typed='';abcWordDone();render()},'cl',abc.line.length<2,u('abc_clr'));
+  // режим: по первой букве ↔ свободный набор (уже набранное начало переносится)
+  mk(free?'🔤':'✍️',free?u('abcModeFit'):u('abcModeFree'),()=>{
+    const pre=abc.prefix;abc.mode=free?'prefix':'free';abc.prefix='';abc.typed=free?'':pre;abcFn=false;
+    settings.abcMode=abc.mode;saveSettings();render();
+  },'md',false,free?u('abcFit'):u('abcFree'));
+  mk('⋯',null,()=>{abc.opts=!abc.opts;render()},'op'+(abc.opts?' on':''),false,u('abcMore'));
+  head.append(act);
+  if(abc.opts){
+    const o=h('div','abcopts');
+    const ob=(t,fn)=>o.append(h('button','ab',t,()=>{fn();abc.opts=false;render()}));
+    ob(abc.kbOff?'⌨️ ▴ '+u('abcShow'):'⌨️ ▾ '+u('abcHide'),()=>{abc.kbOff=!abc.kbOff});
+    if(free)ob(settings.abcLayout==='qw'?'🔤 '+u('kbAbc'):'⌨️ '+u('kbQw'),()=>{settings.abcLayout=settings.abcLayout==='qw'?'abc':'qw';saveSettings()});
+    ob(settings.abcKbSmall?'🔠 '+u('kbBig'):'🔡 '+u('kbSmall'),()=>{settings.abcKbSmall=!settings.abcKbSmall;saveSettings()});
+    head.append(o);
   }
-  // «Я, в, на, не…»: короткие служебные слова одним нажатием (как в рамке на экране 🎤); начатое слово при этом сбрасывается
-  const fb=h('button','mini fnbtn',null,()=>{abcFn=!abcFn;render()});
-  fb.append(h('span','arr',abcFn?'▼':'▶'),h('span',null,u('m_fn')));fb.setAttribute('aria-expanded',abcFn?'true':'false');
-  res.append(fb);
-  if(abcFn)res.append(fnPanel(w=>{abcFn=false;abcAdd(w);abc.prefix='';abc.typed='';abcWordDone();render()}));   // блок сворачивается после выбора
+  res.append(head);
   let letters;
   if(free){
     // Свободный набор: любые буквы, как человек себе представляет слово; приложение предлагает слова и фразы
-    const tr=h('div','row tr');
-    tr.append(h('div','pfx',abc.typed?abc.typed.toUpperCase()+'|':'|'),
-      h('button','ans no sm','⌫',()=>{abc.typed=abc.typed.slice(0,-1);abcWordDone();render()}));
-    if(abc.typed)tr.append(h('button','ans neu sm','✖',()=>{abc.typed='';abcWordDone();render()}));
-    res.append(tr);
     const words=abcFuzzy(abc.typed,abc.dict);
     if(words.length){
       res.append(h('div','sec',u('abcWords')));
@@ -2373,8 +2428,10 @@ function renderAbc(){
       res.append(pnl);
     }
   }
-  if(letters)wrap.append(abcKeyboard(free,letters));
+  // клавиатура — сразу под закреплённым верхом; подсказки слов и готовые фразы — под ней (прокруткой)
+  if(letters)head.after(abcKeyboard(free,letters));
   m.append(wrap);
+  abcFit();
   abcPanelFit();
 }
 // Онлайн-поиск слов для «Азбуки»: выбранное слово добавляется в строку и запоминается
@@ -2392,31 +2449,26 @@ const ABC_QW={
 };
 function abcKeyboard(free,letters){
   const small=!!settings.abcKbSmall,qw=free&&settings.abcLayout==='qw';
-  const kb=h('div','kb'+(small?' small':'')),kh=h('div','kbh');
-  kh.append(h('button','kbt',abc.kbOff?'⌨️ ▴ '+u('abcShow'):'⌨️ ▾ '+u('abcHide'),()=>{abc.kbOff=!abc.kbOff;render()}),abcModeBtn());
-  // v76: в «Свободном наборе» — раскладка по алфавиту или ЙЦУКЕН / QWERTY (запоминается)
-  if(free)kh.append(h('button','kbt',qw?'🔤 '+u('kbAbc'):'⌨️ '+u('kbQw'),()=>{settings.abcLayout=qw?'abc':'qw';saveSettings();render()}));
-  // Размер кнопок букв: обычный или уменьшенный (запоминается)
-  if(!abc.kbOff)kh.append(h('button','kbt',small?'🔠 '+u('kbBig'):'🔡 '+u('kbSmall'),()=>{settings.abcKbSmall=!small;saveSettings();render()}));
-  kb.append(kh);
-  const typed=free?abc.typed:'';
-  if(abc.line.length||typed){
-    const ln=h('div','kbline'+(free?'':' lo')),tx=h('span','t');
-    // direction:rtl — при длинной фразе видно её окончание; текст внутри — обычный (bdi)
-    const bd=document.createElement('bdi');bd.append(abc.line.join(' ')+(typed?' ':''));
-    if(typed)bd.append(h('b',null,typed.toLocaleUpperCase(lang)+'|'));
-    tx.append(bd);ln.append(tx);
-    if(typed)ln.append(h('button','ans no sm','⌫',()=>{abc.typed=abc.typed.slice(0,-1);abcWordDone();render()}));
-    kb.append(ln);
+  const kb=h('div','kb'+(small?' small':''));
+  // v77: «Я, в, на, не…» — на месте клавиатуры (как в «Мій голос»); выбор слова или «⌨️ Буквы» возвращают клавиатуру
+  if(abcFn){
+    const hd=h('div','kbfnh');
+    const bk=h('button','ab',null,()=>{abcFn=false;render()});bk.append('⌨️',h('span','w',' '+u('abcLetters')));bk.setAttribute('aria-label',u('abcLetters'));
+    hd.append(bk,h('span','kbfnt',u('m_fn')));kb.append(hd);
+    kb.append(fnPanel(w=>{abcFn=false;abcAdd(w);abc.prefix='';abc.typed='';abcWordDone();render()}));
+    return kb;
   }
-  // v76: строка из трёх подсказок по смыслу (следующее слово или продолжение набранного)
+  if(abc.kbOff){
+    kb.append(h('button','ab kbshow','⌨️ ▴ '+u('abcShow'),()=>{abc.kbOff=false;render()}));
+    return kb;
+  }
+  // строка подсказок по смыслу (следующее слово или продолжение набранного)
   const sw=abcSugWords();
   if(sw.length){
     const r=h('div','kbsug');
     sw.forEach(w=>r.append(wordBtn(abcDisp(w),()=>{abcAdd(w);abc.typed='';abc.prefix='';abcWordDone();render()},()=>sayWord(abcDisp(w)))));
     kb.append(r);
   }
-  if(abc.kbOff)return kb;
   const lt=ch=>h('button','lt',ch==="'"?'’':ch.toLocaleUpperCase(lang),()=>{
     if(free)abc.typed+=ch;else abc.prefix+=ch;
     if(settings.abcAutoHide)abc.kbOff=true;      // по настройке: панель сворачивается до нажатия «Показать буквы»
@@ -2431,8 +2483,38 @@ function abcKeyboard(free,letters){
     letters.forEach(ch=>g.append(lt(ch)));
     kb.append(g);
   }
+  // нижний ряд: «я, в, на…», пробел (свободный набор: набранное — словом как есть), ⌫ (буква, без набранного — слово)
+  const br=h('div','kbbot');
+  br.append(h('button','lt fnk',u('m_fn'),()=>{abcFn=true;render()}));
+  if(free){
+    const sp=h('button','lt sp',null,()=>{if(!abc.typed)return;abcAdd(abc.typed);abc.typed='';abcWordDone();render()});
+    sp.append('␣',h('span','w',' '+u('abcSpace')));sp.setAttribute('aria-label',u('abcSpace'));sp.disabled=!abc.typed;br.append(sp);
+    const bk=h('button','lt bk','⌫',()=>{if(abc.typed)abc.typed=abc.typed.slice(0,-1);else if(abc.line.length)abcUndo=abc.line.pop();abcWordDone();render()});
+    bk.setAttribute('aria-label','⌫');bk.disabled=!abc.typed&&!abc.line.length;br.append(bk);
+  }
+  kb.append(br);
   return kb;
 }
+// Высота клавиш (как в «Мій голос»): клавиатура занимает свободное место под закреплённым верхом (40–64 px,
+// «Мельче» 32–50 px). Если и минимальная не помещается — панель не прилипает к низу и прокручивается под верхом.
+function abcFit(){
+  const m=$('#main'),kb=m&&m.querySelector('.kb'),hd=m&&m.querySelector('.abchead');if(!kb||!hd)return;
+  const g=kb.querySelector('.letters');if(!g)return;
+  const small=kb.classList.contains('small'),low=innerHeight<600,lo=small?30:(low?36:40),hi=small?50:64;
+  let rows;
+  if(g.classList.contains('qw'))rows=g.children.length;
+  else{const cols=getComputedStyle(g).gridTemplateColumns.split(' ').filter(Boolean).length||1;rows=Math.ceil(g.children.length/cols)}
+  const cs=getComputedStyle(m),pad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom);
+  const avail=m.clientHeight-pad-hd.getBoundingClientRect().height-8;
+  let kh=hi;
+  for(let i=0;i<4;i++){                                  // нижний ряд зависит от высоты клавиш — подгоняем за 2–3 шага
+    kb.style.setProperty('--kh',kh+'px');
+    const over=kb.getBoundingClientRect().height-avail;
+    if(over<=0.5||kh<=lo)break;
+    kh=Math.max(lo,Math.floor(kh-over/(rows+0.5)));
+  }
+}
+addEventListener('resize',()=>{if(abc&&!hearOn)abcFit()});
 
 /* ---------- Слоги (примерное деление) ---------- */
 const VOW={ru:'аеёиоуыэюя',uk:'аеєиіїоуюя',en:'aeiouy'};
@@ -2664,6 +2746,8 @@ function goBack(){
     stopRec();hearOn=false;render();return true;   // собранная фраза в рамке сохраняется до следующего открытия 🎤
   }
   if(abc){
+    if(abcFn){abcFn=false;render();return true}
+    if(abc.opts){abc.opts=false;render();return true}
     if(abc.mode==='free'&&abc.typed)abc.typed=abc.typed.slice(0,-1);
     else if(abc.mode!=='free'&&abc.prefix)abc.prefix=abc.prefix.slice(0,-1);
     else if(abc.line.length)abcUndo=abc.line.pop();
@@ -4554,9 +4638,9 @@ ru:{tour_btn:'Обучение',offer:'Показать, как здесь по�
  s_clip:'Ответ из WhatsApp: скопируйте сообщение и нажмите «{clip_show}».',
  a_kb:'Нажмите первую букву слова.',
  a_words:'Нажмите нужное слово — оно добавится во фразу.',
- a_fn:'Короткие слова: я, в, на, не…',
+ a_fn:'Короткие слова: я, в, на, не… — открываются на месте букв.',
  a_say:'«{sayso}» — сказать фразу. ⌫ — убрать последнее слово, 🗑 — всю строку.',
- a_kbh:'Буквы можно скрыть или сделать мельче, чтобы видеть больше слов.'},
+ a_kbh:'За кнопкой «⋯» — скрыть буквы, раскладка и размер букв.'},
 uk:{tour_btn:'Навчання',offer:'Показати, як тут користуватися?',offer_yes:'▶ Так, показати',offer_no:'Не зараз',next:'Далі ➔',done:'Готово ✔',stop:'✕ Завершити',hold:'Натисніть і потримайте.',try:'Спробуйте натиснути.',
  scr_home:'Головний екран',scr_tiles:'Плитки',scr_hear:'🎤 {t_sug}',scr_show:'🎤 {t_show}',scr_abc:'{abc}',
  h_tiles:'Плитки — теми розмови. Натисніть плитку, щоб вибрати тему або сказати фразу.',
@@ -4583,9 +4667,9 @@ uk:{tour_btn:'Навчання',offer:'Показати, як тут корис�
  s_clip:'Відповідь з WhatsApp: скопіюйте повідомлення й натисніть «{clip_show}».',
  a_kb:'Натисніть першу літеру слова.',
  a_words:'Натисніть потрібне слово — воно додасться до фрази.',
- a_fn:'Короткі слова: я, в, на, не…',
+ a_fn:'Короткі слова: я, в, на, не… — відкриваються на місці літер.',
  a_say:'«{sayso}» — сказати фразу. ⌫ — прибрати останнє слово, 🗑 — увесь рядок.',
- a_kbh:'Літери можна сховати або зробити дрібнішими, щоб бачити більше слів.'},
+ a_kbh:'За кнопкою «⋯» — сховати літери, розкладка й розмір літер.'},
 en:{tour_btn:'Tutorial',offer:'Show how to use this screen?',offer_yes:'▶ Yes, show me',offer_no:'Not now',next:'Next ➔',done:'Done ✔',stop:'✕ Stop',hold:'Press and hold.',try:'Try tapping it.',
  scr_home:'Home screen',scr_tiles:'Tiles',scr_hear:'🎤 {t_sug}',scr_show:'🎤 {t_show}',scr_abc:'{abc}',
  h_tiles:'Tiles are conversation topics. Tap a tile to choose a topic or say a phrase.',
@@ -4612,9 +4696,9 @@ en:{tour_btn:'Tutorial',offer:'Show how to use this screen?',offer_yes:'▶ Yes,
  s_clip:'A reply from WhatsApp: copy the message and tap “{clip_show}”.',
  a_kb:'Tap the first letter of the word.',
  a_words:'Tap the word you need — it is added to the phrase.',
- a_fn:'Short words: I, to, in, not…',
+ a_fn:'Short words: I, to, in, not… — they open in place of the letters.',
  a_say:'“{sayso}” says the phrase. ⌫ removes the last word, 🗑 the whole line.',
- a_kbh:'Letters can be hidden or made smaller to see more words.'}
+ a_kbh:'Behind “⋯”: hide letters, layout and letter size.'}
 };
 // Подписи кнопок в тексте — те же строки, что на самих кнопках (язык фраз), без значков
 const tourLbl=k=>String(u(k)||'').replace(/^[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\s]+/u,'');
@@ -4653,9 +4737,9 @@ const TOUR_STEPS={
   abc:[
     {t:'a_kb',el:()=>$('.kb .letters')||$('.abcfl'),tap:1},   // v76: после буквы панель сменяется списком слов — подсветка переходит на него
     {t:'a_words',el:()=>$('.abcres .grid'),tap:1},
-    {t:'a_fn',el:()=>$('.abcres .fnbtn'),tap:1},
-    {t:'a_say',el:()=>$$('.abcres .row .ans'),tap:1},
-    {t:'a_kbh',el:()=>$('.kb .kbh'),tap:1}]
+    {t:'a_fn',el:()=>$('.kb .fnk')||$('.kb .fnp'),tap:1},
+    {t:'a_say',el:()=>[$('.abchead .abcsay'),$('.abchead .abcact')],tap:1},
+    {t:'a_kbh',el:()=>$('.abchead .abcact .op'),tap:1}]
 };
 const tourVis=e=>{if(!e||!e.isConnected||e.closest('[hidden]'))return false;const cs=getComputedStyle(e);if(cs.display==='none'||cs.visibility==='hidden')return false;const r=e.getBoundingClientRect();return r.width>0&&r.height>0};
 function tourEls(st){let v=st.el();v=(Array.isArray(v)?v:[v]).filter(tourVis);return v}

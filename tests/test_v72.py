@@ -75,7 +75,7 @@ with sync_playwright() as p:
     check('draft: ru draft kept separately',json.loads(pg.evaluate("localStorage.getItem('aac.draft.ru')"))=={'abc':['привет'],'hear':['мне','плохо']})
     # после прозвучавшей фразы — пусто
     pg.click('#abcBtn');pg.wait_for_timeout(80)
-    pg.locator('.abcres .row .ans.neu').first.click();pg.wait_for_timeout(200);pg.evaluate("closeOv()")
+    pg.locator('.abcres .abcsay').first.click();pg.wait_for_timeout(200);pg.evaluate("closeOv()")
     pg.evaluate("hearDone()");pg.wait_for_timeout(100)
     check('draft: key removed after phrase spoken and frame done',pg.evaluate("localStorage.getItem('aac.draft.uk')") is None)
     pg.reload();pg.wait_for_timeout(300)
