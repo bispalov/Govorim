@@ -58,7 +58,7 @@
 
 ### Налаштування для апраксії, слабкості руки й утоми
 
-Усе вимкнено або нейтрально за замовчуванням (⚙️): «Спершу почути, потім обрати», розбір по складах із повільною вимовою (за рекомендацією логопеда), розмір плиток, захист від випадкових натискань, нижня панель для правої або лівої руки, «Говорити одразу», вібрація, «не гасити екран». Мова меню й довідки задається окремо від мови фраз.
+Усе вимкнено або нейтрально за замовчуванням (⚙️): «Спершу почути, потім обрати», розбір по складах із повільною вимовою (за рекомендацією логопеда), розмір плиток, захист від випадкових натискань, нижня панель для правої або лівої руки, «Говорити одразу», вібрація, звук під час натискання кнопок (тихе або гучне коротке низьке клацання — його легше почути при зниженому слуху; поки ввімкнено мікрофон, клацання немає), «не гасити екран». Мова меню й довідки задається окремо від мови фраз.
 
 ### Підказка за сказаним: як це працює й що врахувати
 
@@ -128,7 +128,7 @@
 
 Встановлений застосунок оновлюється лише за зміни версії кешу. За будь-якої зміни файлів:
 
-1. У `sw.js` збільште номер: `const V = 'govorim-v79'` → `'govorim-v80'`.
+1. У `sw.js` збільште номер: `const V = 'govorim-v80'` → `'govorim-v81'`.
 2. В `index.html` збільште `APP_VERSION` (він показується внизу налаштувань).
 3. Завантажте файли. Застосунок підхопить нову версію під час наступного відкриття з інтернетом і один раз перезавантажиться.
 
@@ -207,6 +207,7 @@
 | Говорить сразу | Фраза плитки или подсказки звучит без вопроса «…?». В темах «Здоровье» и «Лекарства» и для фраз из интернета вопрос сохраняется. |
 | Слово одним нажатием | В списках слов на экранах 🎤 и «Азбука» нажатие произносит слово, долгое нажатие добавляет его во фразу. |
 | Вибрация, не гасить экран | Отклик на нажатие и удержание экрана включённым (Wake Lock). |
+| Звук при нажатии кнопок | Выключен / тихий / громкий: короткий низкий щелчок — его легче расслышать при снижении слуха. Пока включён микрофон, щелчка нет. |
 | Язык меню и справки | Задаётся отдельно от языка фраз и озвучки (русский, украинский или английский), например фразы на украинском, а меню на английском. |
 
 #### Подсказка по сказанному (🎤): как это работает и что учесть
@@ -356,7 +357,7 @@
 
 Установленное приложение обновляется только при смене версии кэша. При любом изменении файлов:
 
-1. В `sw.js` увеличьте номер: `const V = 'govorim-v79'` → `'govorim-v80'`.
+1. В `sw.js` увеличьте номер: `const V = 'govorim-v80'` → `'govorim-v81'`.
 2. В `index.html` увеличьте `APP_VERSION` (он показывается внизу настроек).
 3. Загрузите файлы. Приложение подхватит новую версию при следующем открытии с интернетом и один раз перезагрузится.
 
@@ -415,6 +416,7 @@
 
 **Govorim** ("Let's talk together") is an offline-first PWA that helps people with post-stroke speech impairment (aphasia) communicate. Instead of searching for words, the user taps large emoji tiles and the phone speaks the phrase aloud.
 
+- Settings → “Controls and taps”: optional sound on button taps (off / quiet / loud) — a short low click (600→380 Hz) that is easier to hear with hearing loss; no click while the microphone is on.
 - Fully trilingual interface and speech: Ukrainian (the default on first launch), Russian and English (never mixed on screen); the phrase language and, separately, the menu language are chosen in Settings → General. English phrases are built by English grammar, not translated word for word.
 - Five levels matched to the degree of the person's speech impairment (the more severe, the simpler the interface), including a phrase builder (up to 5 steps) for people who cannot recall the last words of a sentence. It supports past tense with gender forms ("I have already taken my morning pills").
 - Emergency "Help" button, "Pain" shortcut, double confirmation for health and medication phrases.

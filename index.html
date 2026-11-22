@@ -530,6 +530,9 @@ button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15
     <select id="setBarLbl"></select>
     <label class="chk"><input type="checkbox" id="setWordTap"><span data-i="s_wordtap"></span></label>
     <label class="chk"><input type="checkbox" id="setVib"><span data-i="s_vib"></span></label>
+    <label data-i="s_tapsound"></label>
+    <select id="setTapSound"></select>
+    <div class="note" data-i="s_tapnote"></div>
     <label class="chk"><input type="checkbox" id="setAwake"><span data-i="s_awake"></span></label>
   </div></div>
   <div class="sg" data-g="mic"><button class="sgh" type="button" data-t="g_mic"></button><div class="sgb">
@@ -586,7 +589,7 @@ button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 79;   // держите в соответствии с V = 'govorim-v79' в sw.js
+const APP_VERSION = 80;   // держите в соответствии с V = 'govorim-v80' в sw.js
 // Логин автора на GitHub: ссылки «Автор» и «Исходный код» в ⚙️ → «ℹ️ О приложении» (работают и в копиях на других сайтах).
 // Если оставить пустым, логин берётся из адреса <логин>.github.io.
 const APP_AUTHOR_GH = 'bispalov';
@@ -623,7 +626,7 @@ ru:{title:'Говорим вместе',g_sos:'👥 Близкие: звонок
   s_hand:'Нижняя панель кнопок',hd_right:'Для правой руки (как сейчас)',hd_left:'Для левой руки (зеркально)',
   s_hear:'Сначала услышать, потом выбрать: первое нажатие на плитку произносит слово, второе выбирает её',
   s_syll:'Долгое нажатие на плитку открывает слово по слогам и произносит медленно (по рекомендации логопеда)',
-  s_vib:'Вибрация при нажатии',s_awake:'Не гасить экран, пока приложение открыто',
+  s_vib:'Вибрация при нажатии',s_tapsound:'Звук при нажатии кнопок',ts_0:'выключен',ts_1:'тихий',ts_2:'громкий',sm_tap:'звук',s_tapnote:'Короткий низкий щелчок — его легче расслышать при снижении слуха. Пока включён микрофон, щелчка нет.',s_awake:'Не гасить экран, пока приложение открыто',
   s_quick:'Говорить сразу, без вопроса «…?» (в темах «Здоровье» и «Лекарства» вопрос остаётся)',
   s_freq:'Показывать блок «Часто» на главном экране (если выключить, плитки всегда стоят на своих местах)',
   s_log:'Вести дневник общения (хранится только на этом телефоне)',
@@ -654,7 +657,7 @@ ru:{title:'Говорим вместе',g_sos:'👥 Близкие: звонок
    ['Ситуации','На уровнях «Лёгкое 1–3» в конце главного экрана есть плитка «Ситуации»: визит к врачу, аптека, магазин, гости, телефонный разговор. Фразы в них подобраны под конкретную ситуацию. Если вы раньше правили плитки лёгкого уровня, нажмите в редакторе «Сбросить уровень», чтобы получить новые темы.'],
    ['Услышать, потом выбрать (⚙️)','Если включено, первое нажатие на плитку только произносит слово и обводит плитку жёлтой рамкой, а второе нажатие на ту же плитку выбирает её. Нажатие на другую плитку снова только озвучивает её.'],
    ['Разбор по слогам (⚙️)','Если включено, долгое нажатие на плитку открывает слово по слогам: оно произносится медленно, а нажатие на слог произносит его отдельно. Деление на слоги примерное. Используйте по рекомендации логопеда.'],
-   ['Управление и защита от нажатий (⚙️)','Размер плиток (обычный, крупный, по одной в ряд); защита от случайных нажатий (повторные касания быстрее выбранного времени игнорируются); нижняя панель для правой или левой руки; «слово одним нажатием» для списков слов на экранах 🎤 и «Азбука»; вибрация; «не гасить экран».'],
+   ['Управление и защита от нажатий (⚙️)','Размер плиток (обычный, крупный, по одной в ряд); защита от случайных нажатий (повторные касания быстрее выбранного времени игнорируются); нижняя панель для правой или левой руки; «слово одним нажатием» для списков слов на экранах 🎤 и «Азбука»; вибрация; звук при нажатии кнопок (по умолчанию выключен; тихий или громкий короткий низкий щелчок — его легче расслышать при снижении слуха; пока включён микрофон, щелчка нет, вибрация остаётся); «не гасить экран».'],
    ['Меньше усталости (⚙️)','«Говорить сразу» убирает вопрос «…?»: фраза звучит сразу после нажатия на плитку или подсказку (в темах «Здоровье» и «Лекарства» и для фраз из интернета вопрос остаётся). Блок «Часто» можно отключить, чтобы плитки всегда стояли на своих местах.'],
    ['Дневник общения','Открывается из настроек. На телефоне хранятся произнесённые фразы с датой и временем (последние 1000). Видны активность за 7 дней и самые частые фразы; можно сохранить текстовый файл для логопеда. Дневник можно выключить и очистить.'],
    ['Резервная копия',['В настройках: «Сохранить копию данных» создаёт файл со всеми настройками, правками плиток и дневником, «Загрузить копию данных» восстанавливает их (например, на новом телефоне). Сделайте копию перед очисткой данных браузера или сменой телефона.','Переустановка. «Говорим вместе» и «Снова слова» устанавливаются рядом как отдельные приложения. Если после удаления Chrome не предлагает установить приложение снова, очистите данные сайта: настройки Chrome → «Настройки сайтов» → «Все сайты» → bispalov.github.io → «Очистить и сбросить» (названия пунктов могут немного отличаться).','⚠️ Оба приложения находятся на одном адресе (bispalov.github.io), поэтому очистка удаляет данные обоих: настройки, плитки, фразы, дневник, словари. Сначала сохраните резервную копию в каждом приложении, а после установки загрузите её обратно.']],
@@ -722,7 +725,7 @@ uk:{title:'Говоримо разом',g_sos:'👥 Близькі: дзвіно
   s_hand:'Нижня панель кнопок',hd_right:'Для правої руки (як зараз)',hd_left:'Для лівої руки (дзеркально)',
   s_hear:'Спершу почути, потім обрати: перше натискання на плитку вимовляє слово, друге обирає її',
   s_syll:'Довге натискання на плитку відкриває слово по складах і вимовляє повільно (за рекомендацією логопеда)',
-  s_vib:'Вібрація під час натискання',s_awake:'Не гасити екран, поки застосунок відкритий',
+  s_vib:'Вібрація під час натискання',s_tapsound:'Звук під час натискання кнопок',ts_0:'вимкнено',ts_1:'тихий',ts_2:'гучний',sm_tap:'звук',s_tapnote:'Коротке низьке клацання — його легше почути при зниженому слуху. Поки ввімкнено мікрофон, клацання немає.',s_awake:'Не гасити екран, поки застосунок відкритий',
   s_quick:'Говорити одразу, без запитання «…?» (у темах «Здоров’я» та «Ліки» запитання залишається)',
   s_freq:'Показувати блок «Часто» на головному екрані (якщо вимкнути, плитки завжди стоять на своїх місцях)',
   s_log:'Вести щоденник спілкування (зберігається лише на цьому телефоні)',
@@ -753,7 +756,7 @@ uk:{title:'Говоримо разом',g_sos:'👥 Близькі: дзвіно
    ['Ситуації','На рівнях «Легке 1–3» наприкінці головного екрана є плитка «Ситуації»: візит до лікаря, аптека, магазин, гості, телефонна розмова. Фрази в них підібрано під конкретну ситуацію. Якщо ви раніше правили плитки легкого рівня, натисніть у редакторі «Скинути рівень», щоб отримати нові теми.'],
    ['Почути, потім обрати (⚙️)','Якщо увімкнено, перше натискання на плитку лише вимовляє слово й обводить плитку жовтою рамкою, а друге натискання на ту саму плитку обирає її. Натискання на іншу плитку знову лише озвучує її.'],
    ['Розбір по складах (⚙️)','Якщо увімкнено, довге натискання на плитку відкриває слово по складах: воно вимовляється повільно, а натискання на склад вимовляє його окремо. Поділ на склади приблизний. Використовуйте за рекомендацією логопеда.'],
-   ['Керування й захист від натискань (⚙️)','Розмір плиток (звичайний, великий, по одній у ряд); захист від випадкових натискань (повторні торкання швидше за обраний час ігноруються); нижня панель для правої чи лівої руки; «слово одним натисканням» для списків слів на екранах 🎤 і «Абетка»; вібрація; «не гасити екран».'],
+   ['Керування й захист від натискань (⚙️)','Розмір плиток (звичайний, великий, по одній у ряд); захист від випадкових натискань (повторні торкання швидше за обраний час ігноруються); нижня панель для правої чи лівої руки; «слово одним натисканням» для списків слів на екранах 🎤 і «Абетка»; вібрація; звук під час натискання кнопок (за замовчуванням вимкнено; тихе або гучне коротке низьке клацання — його легше почути при зниженому слуху; поки ввімкнено мікрофон, клацання немає, вібрація лишається); «не гасити екран».'],
    ['Менше втоми (⚙️)','«Говорити одразу» прибирає запитання «…?»: фраза звучить одразу після натискання на плитку чи підказку (у темах «Здоров’я» та «Ліки» і для фраз з інтернету запитання залишається). Блок «Часто» можна вимкнути, щоб плитки завжди стояли на своїх місцях.'],
    ['Щоденник спілкування','Відкривається з налаштувань. На телефоні зберігаються вимовлені фрази з датою й часом (останні 1000). Видно активність за 7 днів і найчастіші фрази; можна зберегти текстовий файл для логопеда. Щоденник можна вимкнути й очистити.'],
    ['Резервна копія',['У налаштуваннях: «Зберегти копію даних» створює файл з усіма налаштуваннями, правками плиток і щоденником, «Завантажити копію даних» відновлює їх (наприклад, на новому телефоні). Зробіть копію перед очищенням даних браузера чи зміною телефона.','Переустановлення. «Говоримо разом» і «Знову слова» встановлюються поруч як окремі застосунки. Якщо після видалення Chrome не пропонує встановити застосунок знову, очистьте дані сайту: налаштування Chrome → «Налаштування сайтів» → «Усі сайти» → bispalov.github.io → «Очистити й скинути» (назви пунктів можуть трохи відрізнятися).','⚠️ Обидва застосунки розміщені на одній адресі (bispalov.github.io), тому очищення видаляє дані обох: налаштування, плитки, фрази, щоденник, словники. Спершу збережіть резервну копію в кожному застосунку, а після встановлення завантажте її назад.']],
@@ -821,7 +824,7 @@ en:{title:'Let’s talk together',g_sos:'👥 Loved ones: call and message',s_so
   s_hand:'Bottom button bar',hd_right:'For the right hand (as is)',hd_left:'For the left hand (mirrored)',
   s_hear:'Hear first, then choose: the first tap on a tile says the word, the second tap selects it',
   s_syll:'Long press on a tile shows the word in syllables and says it slowly (on a speech therapist’s advice)',
-  s_vib:'Vibrate on tap',s_awake:'Keep the screen on while the app is open',
+  s_vib:'Vibrate on tap',s_tapsound:'Sound on button taps',ts_0:'off',ts_1:'quiet',ts_2:'loud',sm_tap:'sound',s_tapnote:'A short low click — easier to hear with hearing loss. No click while the microphone is on.',s_awake:'Keep the screen on while the app is open',
   s_quick:'Speak immediately, without the “…?” question (the question stays in Health and Medicines)',
   s_freq:'Show the “Often” block on the home screen (if off, tiles always stay in the same place)',
   s_log:'Keep a communication diary (stored only on this phone)',
@@ -863,7 +866,7 @@ en:{title:'Let’s talk together',g_sos:'👥 Loved ones: call and message',s_so
    ['Situations','In the Mild 1–3 levels the last tile of the home screen is “Situations”: doctor visit, pharmacy, store, guests, phone call. The phrases are chosen for each situation. If you edited tiles of a mild level earlier, tap “Reset level” in the editor to get the new topics.'],
    ['Hear first, then choose (⚙️)','When on, the first tap on a tile only says the word and outlines the tile in yellow; a second tap on the same tile selects it. Tapping another tile only says that one.'],
    ['Syllable view (⚙️)','When on, a long press on a tile shows the word in syllables: it is spoken slowly and tapping a syllable says it alone. The syllable split is approximate. Use on a speech therapist’s advice.'],
-   ['Controls and tap protection (⚙️)','Tile size (normal, large, one per row); accidental-tap protection (repeat taps faster than the chosen time are ignored); bottom bar for the right or left hand; “one tap speaks a word” for word lists on the 🎤 and ABC screens; vibration; “keep screen on”.'],
+   ['Controls and tap protection (⚙️)','Tile size (normal, large, one per row); accidental-tap protection (repeat taps faster than the chosen time are ignored); bottom bar for the right or left hand; “one tap speaks a word” for word lists on the 🎤 and ABC screens; vibration; sound on button taps (off by default; a quiet or loud short low click — easier to hear with hearing loss; no click while the microphone is on, vibration stays); “keep screen on”.'],
    ['Less fatigue (⚙️)','“Speak immediately” removes the “…?” question: the phrase is spoken right after tapping a tile or a suggestion (in Health and Medicines and for phrases from the internet the question stays). The “Often” block can be turned off so tiles always stay in place.'],
    ['Communication diary','Opens from Settings. The phone stores the spoken phrases with date and time (the last 1000). You can see activity over 7 days and the most frequent phrases, and save a text file for a speech therapist. The diary can be turned off and cleared.'],
    ['Backup',['In Settings, “Save a data backup” creates a file with all settings, tile edits and the diary; “Load a data backup” restores them (for example, on a new phone). Make a backup before clearing browser data or changing phones.','Reinstalling. “Let’s talk together” and “Words Again” install side by side as separate apps. If Chrome does not offer to install the app again after you removed it, clear the site data: Chrome settings → “Site settings” → “All sites” → bispalov.github.io → “Clear & reset” (item names may differ slightly).','⚠️ Both apps live at the same address (bispalov.github.io), so clearing removes the data of both: settings, tiles, phrases, diary, word lists. First save a backup in each app, and load it back after installing.']],
@@ -932,7 +935,7 @@ const DEFAULTS = {
   abcMode: 'prefix',   // «Азбука»: prefix — только подходящие буквы, free — свободный набор
   typSys: false,       // v78: на экране 🎤 вводить слово клавиатурой телефона, а не клавиатурой приложения
   abcLayout: 'abc',    // v76: раскладка «Свободного набора»: abc — по алфавиту, qw — ЙЦУКЕН / QWERTY
-  hear: false, syll: false, quick: false, freq: true, vib: false, awake: false, log: true,
+  hear: false, syll: false, quick: false, freq: true, vib: false, tapSound: 0, awake: false, log: true,
   ext: {prov:'off', url:'', model:'', ok:false}   // онлайн-поиск фраз; сам ключ хранится отдельно (aac.secret.ext)
 };
 let settings = Object.assign({}, DEFAULTS, ld('aac.settings', {}));
@@ -2841,7 +2844,21 @@ document.addEventListener('pointerdown',e=>{
   tm=setTimeout(()=>{end();if(!b.isConnected)return;holdOK=b;try{b.click()}finally{holdOK=null}},HOLD_MS);
 },true);
 
-/* ---------- Защита от случайных нажатий, вибрация ---------- */
+/* ---------- Защита от случайных нажатий, вибрация, звук нажатия ---------- */
+// v80: короткий низкий щелчок (WebAudio, без файлов) — при сниженном слухе подтверждает, что нажатие принято.
+// 600→380 Гц нарочно: при возрастной потере слуха хуже всего слышны высокие звуки. level: 1 тихий, 2 громкий.
+let tapCtx=null;
+function tapClick(level){
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+    if(!tapCtx)tapCtx=new AC();
+    if(tapCtx.state==='suspended')tapCtx.resume();
+    const t0=tapCtx.currentTime,o=tapCtx.createOscillator(),g=tapCtx.createGain();
+    o.type='triangle';o.frequency.setValueAtTime(600,t0);o.frequency.exponentialRampToValueAtTime(380,t0+0.045);
+    g.gain.setValueAtTime(level>=2?0.55:0.18,t0);g.gain.exponentialRampToValueAtTime(0.001,t0+0.05);
+    o.connect(g);g.connect(tapCtx.destination);o.start(t0);o.stop(t0+0.06);
+  }catch(e){}
+}
 let lastTap=0;
 document.addEventListener('click',e=>{
   armBack();
@@ -2854,6 +2871,7 @@ document.addEventListener('click',e=>{
   if(g&&now-lastTap<g){e.stopPropagation();e.preventDefault();return}   // слишком быстрое повторное касание
   lastTap=now;
   if(settings.vib&&navigator.vibrate){try{navigator.vibrate(20)}catch(_){}}
+  if(settings.tapSound&&!rec&&!rec2)tapClick(settings.tapSound);   // во время распознавания щелчок попал бы в микрофон
 },true);
 
 /* ---------- Системная кнопка «Назад» Android работает как ↩ в приложении ----------
@@ -2959,7 +2977,7 @@ function settSum(g){
     case 'main':return selTxt('#setLang')+' · '+selTxt('#setSeg')+($('#setTourOffer').checked?' · 🎓':'');
     case 'voice':return selTxt('#setVoice')+' · '+$('#setRate').value;
     case 'home':return ($('#setResume').checked?uh('sm_resume')+' · ':'')+selTxt('#setSize')+' · '+uh('freq')+': '+onOff('#setFreq')+' · '+uh('sm_recent')+': '+$('#setRecent').value;
-    case 'touch':return uh('sm_guard')+': '+selTxt('#setGuard')+' · '+uh('sm_hold')+': '+onOff('#setHoldSel')+' · '+selTxt('#setHand');
+    case 'touch':return uh('sm_guard')+': '+selTxt('#setGuard')+' · '+uh('sm_hold')+': '+onOff('#setHoldSel')+' · '+selTxt('#setHand')+(+$('#setTapSound').value?' · '+uh('sm_tap')+': '+selTxt('#setTapSound'):'');
     case 'sos':{const ns=[0,1].map(i=>$('#setSosT'+i).value.trim()?($('#setSosN'+i).value.trim()||$('#setSosT'+i).value.trim()):'').filter(Boolean);const mv=$('#setMsg').value,ms=mv==='off'?'':' · ✉️ '+(mv==='wa'?'WhatsApp':mv==='sms'?'SMS':uh('msg_sharel'));return (ns.length?'📞 '+ns.join(', '):uh('sm_nosos'))+ms}
     case 'mic':return uh('sm_simple')+': '+onOff('#setHearSimple')+' · '+uh('sm_auto')+': '+onOff('#setShowAuto')+($('#setClipAuto').checked?' · 📋':'');
     case 'abc':return uh('sm_abchide')+': '+onOff('#setAbcAutoHide');
@@ -2992,6 +3010,8 @@ document.querySelectorAll('#sett .sgh').forEach(b=>b.addEventListener('click',()
 }));
 settModal.addEventListener('change',drawSettHeads);
 $('#tourReset').addEventListener('click',()=>{try{localStorage.removeItem('aac.tour.seen')}catch(_){}const n=$('#tourResetNote');n.textContent=uh('s_tour_done');n.hidden=false});
+// v80: при выборе громкости — сразу образец щелчка (кнопки и поля в окне настроек сами не щёлкают)
+$('#setTapSound').addEventListener('change',e=>{const v=+e.target.value;if(v)tapClick(v)});
 $('#setClipAuto').addEventListener('change',e=>{
   if(!e.target.checked||!navigator.clipboard||!navigator.clipboard.readText)return;
   navigator.clipboard.readText().then(t=>{const c=clipClean(t);if(c)try{localStorage.setItem('aac.clipLast',clipHash(c))}catch(_){}}).catch(()=>{});
@@ -3090,6 +3110,7 @@ function saveSettForm(keep){
   settings.uiLang = $('#setUiLang').value;
   settings.size = $('#setSize').value;
   settings.guard = +$('#setGuard').value;
+  settings.tapSound = Math.max(0,Math.min(2,+$('#setTapSound').value||0));
   settings.hand = $('#setHand').value;
   settings.recentN = +$('#setRecent').value;
   settings.barLbl = $('#setBarLbl').value;
@@ -5153,6 +5174,7 @@ function applyI18n(){
   fill('#setSize',[['s',uh('sz_s')],['m',uh('sz_m')],['l',uh('sz_l')],['xl',uh('sz_xl')]],settings.size);
   fill('#setGuard',[['0',uh('gd_0')],['400',uh('gd_400')],['800',uh('gd_800')],['1500',uh('gd_1500')]],String(settings.guard));
   fill('#setHand',[['right',uh('hd_right')],['left',uh('hd_left')]],settings.hand);
+  fill('#setTapSound',[['0',uh('ts_0')],['1',uh('ts_1')],['2',uh('ts_2')]],String([0,1,2].includes(+settings.tapSound)?+settings.tapSound:0));
   fill('#setMsg',[['off',uh('msg_off')],['wa','WhatsApp'],['sms','SMS'],['share',uh('msg_sharel')]].filter(x=>x[0]!=='share'||navigator.share),settings.msg);
   msgNoteSync();
   fill('#setBarLbl',[['big',uh('bl_big')],['off',uh('bl_off')]],settings.barLbl);
