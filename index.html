@@ -403,6 +403,15 @@ main .note,#stage .note{font-size:16px;font-weight:500;opacity:.8;line-height:1.
 .hbuild.editing{position:static;max-height:none;overflow:visible}
 .typin{display:block;width:100%;font:inherit;font-size:20px;font-weight:600;padding:10px 12px;margin:8px 0 4px;border:3px solid var(--accent);border-radius:12px;background:var(--card-bg);color:var(--ink);user-select:text}
 .hwrap .sug{flex:1 1 auto;min-width:0;margin:0}
+.brw{position:fixed;inset:0;z-index:85;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:10px;overscroll-behavior:contain}
+.brwp{box-sizing:border-box;width:100%;max-width:560px;max-height:100%;overflow-y:auto;overscroll-behavior:contain;background:var(--card-bg);color:var(--ink);border:3px solid #F2B705;border-radius:18px;padding:14px 14px 12px;font-size:clamp(16px,4.8vw,20px);line-height:1.3}
+.brwp h2{font-size:1.15em;margin:0 0 8px;overflow-wrap:anywhere}
+.brwp ul{list-style:none;margin:0;padding:0}
+.brwp li{border:3px solid #F2B705;border-radius:12px;padding:8px 10px;margin:8px 0;overflow-wrap:anywhere}
+.brwp p{margin:10px 0;overflow-wrap:anywhere}
+.brwb{display:flex;flex-wrap:wrap;gap:8px}
+.brwb .ans{flex:1 1 140px;min-height:56px;margin:0;text-decoration:none;display:flex;align-items:center;justify-content:center;text-align:center}
+.abbrw{font-weight:700}
 .iab{flex:none;background:#F2B705;color:#1A1A1A;padding:6px 8px 8px 12px;font-size:15px;font-weight:700;line-height:1.25}
 .iab .top{display:flex;align-items:flex-start;gap:6px;margin-bottom:6px}
 .iab p{margin:4px 0 0;flex:1;min-width:0}
@@ -589,7 +598,7 @@ button.prs:not(.chip){transform:scale(.95);filter:brightness(1.25) saturate(1.15
 <div id="diary" class="modal"></div>
 
 <script>
-const APP_VERSION = 80;   // держите в соответствии с V = 'govorim-v80' в sw.js
+const APP_VERSION = 81;   // держите в соответствии с V = 'govorim-v81' в sw.js
 // Логин автора на GitHub: ссылки «Автор» и «Исходный код» в ⚙️ → «ℹ️ О приложении» (работают и в копиях на других сайтах).
 // Если оставить пустым, логин берётся из адреса <логин>.github.io.
 const APP_AUTHOR_GH = 'bispalov';
@@ -619,6 +628,7 @@ ru:{title:'Говорим вместе',g_sos:'👥 Близкие: звонок
   s_abchide:'Азбука: сворачивать панель с буквами после каждой нажатой буквы, чтобы было видно больше слов (вернуть её можно кнопкой «Показать буквы»; после выбора слова или удаления буквы она появляется сама)',
   t_sug:'Говорю я',t_show:'Говорит собеседник',show_empty:'Нажмите «Говорить» и скажите фразу: она появится здесь крупным текстом и прозвучит голосом телефона.',show_ph:'Или впишите фразу и нажмите кнопку',show_btn:'Показать и проговорить',show_auto:'Проговаривать распознанное сразу',show_hist:'Последние пять фраз (нажмите, чтобы показать снова; 🗑 — удалить):',m_more:'Показать полностью',m_less:'Свернуть',
   m_show_note:'Говорит собеседник: фраза распознаётся, показывается крупным текстом и проговаривается голосом телефона. Это помогает, когда человек не узнаёт живую речь, но понимает синтезированный голос или читает. Фраза не обязана быть в словаре. Последние пять фраз хранятся на этом телефоне, пока вы их не удалите. Распознавание речи выполняет браузер (обычно нужен интернет, см. «Справка»); без интернета можно вписать фразу.',
+  brw_t:'В этом браузере часть функций не работает',brw_sr:'🎤 Распознавание речи не работает: «🎤 Подсказка по сказанному» здесь недоступна. Плитки, Азбука и озвучка работают.',brw_srp:'🎤 Распознавание речи в этом браузере работает с ограничениями: может не включиться или прерываться.',brw_tts:'🔊 Озвучка не работает: приложение не сможет произносить фразы.',brw_voice:'🔊 На телефоне нет голоса для языка «{l}»: фразы могут звучать с акцентом или не прозвучать. Голос можно установить в настройках телефона («Синтез речи» / «Преобразование текста в речь»).',brw_note:'Всё работает в Chrome. Данные (фразы, настройки) в каждом браузере свои — перенести их можно через копию данных: ⚙️ → «Данные» → «💾 Сохранить копию данных».',brw_ok:'Понятно',ab_brw:'Этот браузер',ab_sr:'распознавание речи',ab_tts:'озвучка',ab_part:'с ограничениями',
   g_main:'Основное',g_voice:'Озвучка',g_touch:'Управление и нажатия',g_ease:'Меньше усталости',g_data:'Данные',g_about:'ℹ️ О приложении',s_tour:'🎓 Предлагать обучение при первом входе на экран',s_tour_reset:'🔄 Начать обучение заново',s_tour_done:'Готово: обучение снова будет предложено на каждом экране.',hlp_all:'Вся справка',hlp_toc:'Нажмите на заголовок, чтобы прочитать пункт. В режимах (🎤, «Азбука», плитки) кнопка ❓ открывает справку только об этом режиме.',hlp_open:'Раскрыть все пункты',hlp_close:'Свернуть все пункты',ab_desc:'Коммуникационная доска для людей с афазией и апраксией после инсульта и их близких.',ab_f:['Бесплатно, без рекламы и регистрации.','Работает без интернета (распознаванию речи 🎤 обычно нужна сеть).','Данные хранятся только на этом устройстве, приложение не записывает голос.'],ab_auth:'Автор',ab_src:'Исходный код и инструкции',ab_lic:'Лицензия MIT. Код написан ИИ-ассистентом Claude (Anthropic) по заданию и под руководством автора.',
   s_lang:'Язык фраз и озвучки',s_uilang:'Язык меню и справки',ui_auto:'Как у фраз и озвучки',
   s_size:'Размер плиток',sz_s:'Маленький (3–4 в ряд)',sz_m:'Обычный (по две в ряд)',sz_l:'Крупный (по две, выше)',sz_xl:'Очень крупный (по одной в ряд)',
@@ -676,6 +686,11 @@ ru:{title:'Говорим вместе',g_sos:'👥 Близкие: звонок
    ['📋 Ответ близкого из мессенджера',['Если близкий ответил в WhatsApp или Telegram, его сообщение можно показать крупно и озвучить. В мессенджере нажмите на сообщение и выберите «Копировать» (в WhatsApp этот пункт может быть в меню ⋮). Затем откройте приложение: 🎤 → «Говорит собеседник» → «📋 Показать скопированное».','Можно ещё проще: включите в ⚙️ → «🎤 Подсказка по сказанному» пункт «…сразу показывать текст, скопированный в мессенджере». Тогда, если вкладка «Говорит собеседник» открыта, новый скопированный текст появится сам, как только вы переключитесь в приложение. Один и тот же текст второй раз сам не показывается; кнопка показывает его всегда.','Chrome один раз спросит разрешение на доступ к буферу обмена — разрешите. Скопированное не записывается в дневник. Если сам текст не появляется, пользуйтесь кнопкой: на некоторых телефонах Chrome разрешает читать буфер обмена только по нажатию.']],
    ['ℹ️ О приложении','В ⚙️ → «ℹ️ О приложении» (последняя группа): название и версия, кратко о приложении, ссылки на автора и на исходный код с инструкциями, лицензия.'],
    ['Установка и обновление',['В Chrome откройте меню ⋮ → «Установить приложение» (или «Добавить на главный экран»).','После первого запуска приложение работает без интернета.','Новая версия подгружается сама при открытии с интернетом. Номер версии виден внизу настроек.']],
+   ['🌐 Браузеры: что где работает',
+    'Приложение сделано для Chrome — в нём работает всё. Распознавание речи (🎤): Chrome ✔; Samsung Internet и Safari на iPhone — с ограничениями (может не включиться или прерываться); Firefox, Opera, Edge на телефоне ✖ — без него не работает «🎤 Подсказка по сказанному», остальное (плитки, Азбука, озвучка) работает.',
+    'Озвучка работает почти везде, но голос берётся из телефона: если для языка фраз голоса нет, установите его в настройках телефона («Синтез речи» / «Преобразование текста в речь»).',
+    'Данные (фразы, настройки) в каждом браузере свои, и во встроенном браузере Facebook, Viber, Telegram тоже. Перенести их можно копией данных: ⚙️ → «Данные».',
+    'Что умеет текущий браузер, написано в ⚙️ → «ℹ️ О приложении». При первом открытии не в Chrome приложение само скажет, что здесь не работает. Если что-то не так — сначала откройте приложение в Chrome и посмотрите номер версии там же.'],
    ['Советы по общению',['Давайте время: не торопите и не договаривайте за человека.','Задавайте вопросы, на которые можно ответить «да» или «нет».','Говорите короткими фразами, спокойно и не перебивая.','Хвалите попытки — важна сама попытка сказать, а не безошибочность.']]
   ]},
   s_title:'⚙️ Настройки',s_level:'Степень нарушения речи у человека',s_gender:'Пол говорящего (для глаголов в прошедшем времени)',s_theme:'Тема оформления',s_voice:'Голос озвучки',s_rate:'Скорость речи',s_pitch:'Высота тона',s_test:'🔊 Проверить голос',s_close:'Закрыть',
@@ -718,6 +733,7 @@ uk:{title:'Говоримо разом',g_sos:'👥 Близькі: дзвіно
   s_abchide:'Абетка: згортати панель з літерами після кожної натиснутої літери, щоб було видно більше слів (повернути її можна кнопкою «Показати літери»; після вибору слова або видалення літери вона з’являється сама)',
   t_sug:'Говорю я',t_show:'Говорить співрозмовник',show_empty:'Натисніть «Говорити» і скажіть фразу: вона з’явиться тут великим текстом і пролунає голосом телефона.',show_ph:'Або впишіть фразу й натисніть кнопку',show_btn:'Показати й проговорити',show_auto:'Проговорювати розпізнане одразу',show_hist:'Останні п’ять фраз (натисніть, щоб показати знову; 🗑 — видалити):',m_more:'Показати повністю',m_less:'Згорнути',
   m_show_note:'Говорить співрозмовник: фраза розпізнається, показується великим текстом і проговорюється голосом телефона. Це допомагає, коли людина не впізнає живе мовлення, але розуміє синтезований голос або читає. Фраза не мусить бути у словнику. Останні п’ять фраз зберігаються на цьому телефоні, доки ви їх не видалите. Розпізнавання мовлення виконує браузер (зазвичай потрібен інтернет, див. «Довідка»); без інтернету можна вписати фразу.',
+  brw_t:'У цьому браузері частина функцій не працює',brw_sr:'🎤 Розпізнавання мовлення не працює: «🎤 Підказка за сказаним» тут недоступна. Плитки, Абетка й озвучення працюють.',brw_srp:'🎤 Розпізнавання мовлення в цьому браузері працює з обмеженнями: може не ввімкнутися або перериватися.',brw_tts:'🔊 Озвучення не працює: застосунок не зможе вимовляти фрази.',brw_voice:'🔊 На телефоні немає голосу для мови «{l}»: фрази можуть звучати з акцентом або не прозвучати. Голос можна встановити в налаштуваннях телефона («Синтез мовлення» / «Перетворення тексту на мовлення»).',brw_note:'Усе працює в Chrome. Дані (фрази, налаштування) в кожному браузері свої — перенести їх можна через копію даних: ⚙️ → «Дані» → «💾 Зберегти копію даних».',brw_ok:'Зрозуміло',ab_brw:'Цей браузер',ab_sr:'розпізнавання мовлення',ab_tts:'озвучення',ab_part:'з обмеженнями',
   g_main:'Основне',g_voice:'Озвучення',g_touch:'Керування й натискання',g_ease:'Менше втоми',g_data:'Дані',g_about:'ℹ️ Про застосунок',s_tour:'🎓 Пропонувати навчання під час першого входу на екран',s_tour_reset:'🔄 Почати навчання заново',s_tour_done:'Готово: навчання знову буде запропоновано на кожному екрані.',hlp_all:'Уся довідка',hlp_toc:'Натисніть на заголовок, щоб прочитати пункт. У режимах (🎤, «Абетка», плитки) кнопка ❓ відкриває довідку лише про цей режим.',hlp_open:'Розгорнути всі пункти',hlp_close:'Згорнути всі пункти',ab_desc:'Комунікаційна дошка для людей з афазією та апраксією після інсульту та їхніх близьких.',ab_f:['Безкоштовно, без реклами й реєстрації.','Працює без інтернету (розпізнаванню мовлення 🎤 зазвичай потрібна мережа).','Дані зберігаються лише на цьому пристрої, застосунок не записує голос.'],ab_auth:'Автор',ab_src:'Вихідний код та інструкції',ab_lic:'Ліцензія MIT. Код написав ШІ-асистент Claude (Anthropic) за завданням і під керівництвом автора.',
   s_lang:'Мова фраз та озвучення',s_uilang:'Мова меню та довідки',ui_auto:'Як у фраз та озвучення',
   s_size:'Розмір плиток',sz_s:'Маленький (3–4 в ряд)',sz_m:'Звичайний (по дві в ряд)',sz_l:'Великий (по дві, вищі)',sz_xl:'Дуже великий (по одній у ряд)',
@@ -775,6 +791,11 @@ uk:{title:'Говоримо разом',g_sos:'👥 Близькі: дзвіно
    ['📋 Відповідь близької людини з месенджера',['Якщо близька людина відповіла у WhatsApp чи Telegram, її повідомлення можна показати крупно й озвучити. У месенджері натисніть на повідомлення й виберіть «Копіювати» (у WhatsApp цей пункт може бути в меню ⋮). Потім відкрийте застосунок: 🎤 → «Говорить співрозмовник» → «📋 Показати скопійоване».','Можна ще простіше: увімкніть у ⚙️ → «🎤 Підказка за сказаним» пункт «…одразу показувати текст, скопійований у месенджері». Тоді, якщо вкладка «Говорить співрозмовник» відкрита, новий скопійований текст з’явиться сам, щойно ви перемкнетеся в застосунок. Той самий текст удруге сам не показується; кнопка показує його завжди.','Chrome один раз спитає дозвіл на доступ до буфера обміну — дозвольте. Скопійоване не записується в щоденник. Якщо текст сам не з’являється, користуйтеся кнопкою: на деяких телефонах Chrome дозволяє читати буфер обміну лише за натисканням.']],
    ['ℹ️ Про застосунок','У ⚙️ → «ℹ️ Про застосунок» (остання група): назва й версія, коротко про застосунок, посилання на автора й на вихідний код з інструкціями, ліцензія.'],
    ['Встановлення й оновлення',['У Chrome відкрийте меню ⋮ → «Установити застосунок» (або «Додати на головний екран»).','Після першого запуску застосунок працює без інтернету.','Нова версія підтягується сама під час відкриття з інтернетом. Номер версії видно внизу налаштувань.']],
+   ['🌐 Браузери: що де працює',
+    'Застосунок зроблено для Chrome — у ньому працює все. Розпізнавання мовлення (🎤): Chrome ✔; Samsung Internet і Safari на iPhone — з обмеженнями (може не ввімкнутися або перериватися); Firefox, Opera, Edge на телефоні ✖ — без нього не працює «🎤 Підказка за сказаним», решта (плитки, Абетка, озвучення) працює.',
+    'Озвучення працює майже всюди, але голос береться з телефона: якщо для мови фраз голосу немає, встановіть його в налаштуваннях телефона («Синтез мовлення» / «Перетворення тексту на мовлення»).',
+    'Дані (фрази, налаштування) в кожному браузері свої, і у вбудованому браузері Facebook, Viber, Telegram теж. Перенести їх можна копією даних: ⚙️ → «Дані».',
+    'Що вміє поточний браузер, написано в ⚙️ → «ℹ️ Про застосунок». Під час першого відкриття не в Chrome застосунок сам скаже, що тут не працює. Якщо щось не так — спершу відкрийте застосунок у Chrome і подивіться номер версії там само.'],
    ['Поради щодо спілкування',['Давайте час: не поспішайте й не договорюйте за людину.','Ставте запитання, на які можна відповісти «так» або «ні».','Говоріть короткими фразами, спокійно й не перебиваючи.','Хваліть спроби — важлива сама спроба сказати, а не безпомилковість.']]
   ]},
   s_title:'⚙️ Налаштування',s_level:'Ступінь порушення мовлення в людини',s_gender:'Стать мовця (для дієслів минулого часу)',s_theme:'Тема оформлення',s_voice:'Голос озвучення',s_rate:'Швидкість мовлення',s_pitch:'Висота тону',s_test:'🔊 Перевірити голос',s_close:'Закрити',
@@ -817,6 +838,7 @@ en:{title:'Let’s talk together',g_sos:'👥 Loved ones: call and message',s_so
   s_abchide:'ABC: collapse the letter panel after every letter tapped so more words are visible (bring it back with the “Show letters” button; it reappears by itself after a word is chosen or a letter is deleted)',
   t_sug:'I’m speaking',t_show:'The other person speaks',show_empty:'Tap “Speak” and say a phrase: it appears here in large text and is spoken by the phone’s voice.',show_ph:'Or type a phrase and press the button',show_btn:'Show and speak',show_auto:'Speak the recognized text right away',show_hist:'Last five phrases (tap to show again; 🗑 deletes):',m_more:'Show all',m_less:'Collapse',
   m_show_note:'The other person speaks: the phrase is recognized, shown in large text and spoken in the phone’s voice. This helps when the person does not recognize live speech but understands a synthesized voice or can read. The phrase need not be in the vocabulary. The last five phrases are kept on this phone until you delete them. Speech recognition is done by the browser (usually needs the internet, see Help); without the internet you can type the phrase.',
+  brw_t:'Some features do not work in this browser',brw_sr:'🎤 Speech recognition does not work: “🎤 Suggestions from speech” is not available here. Tiles, ABC and speech output work.',brw_srp:'🎤 Speech recognition works with limitations in this browser: it may not start or may stop.',brw_tts:'🔊 Speech output does not work: the app cannot speak phrases.',brw_voice:'🔊 The phone has no voice for “{l}”: phrases may sound with an accent or not be spoken. A voice can be installed in the phone settings (“Text-to-speech”).',brw_note:'Everything works in Chrome. Data (phrases, settings) is separate in each browser — move it with a data backup: ⚙️ → “Data” → “💾 Save a data backup”.',brw_ok:'OK',ab_brw:'This browser',ab_sr:'speech recognition',ab_tts:'speech output',ab_part:'with limitations',
   g_main:'General',g_voice:'Speech',g_touch:'Controls and taps',g_ease:'Less fatigue',g_data:'Data',g_about:'ℹ️ About',s_tour:'🎓 Offer a tutorial the first time a screen is opened',s_tour_reset:'🔄 Restart the tutorial',s_tour_done:'Done: the tutorial will be offered again on every screen.',hlp_all:'Full help',hlp_toc:'Tap a heading to read the item. Inside a mode (🎤, ABC, tiles) the ❓ button opens help about that mode only.',hlp_open:'Expand all items',hlp_close:'Collapse all items',ab_desc:'A communication board for people with aphasia and apraxia after a stroke and their loved ones.',ab_f:['Free, no ads, no sign-up.','Works offline (speech recognition 🎤 usually needs the internet).','Data stays on this device only; the app never records the voice.'],ab_auth:'Author',ab_src:'Source code and instructions',ab_lic:'MIT license. The code was written by the AI assistant Claude (Anthropic) on the task and under the direction of the author.',
   s_lang:'Language of phrases and speech',s_uilang:'Menu and help language',ui_auto:'Same as phrases and speech',
   s_size:'Tile size',sz_s:'Small (3–4 per row)',sz_m:'Normal (two per row)',sz_l:'Large (two per row, taller)',sz_xl:'Extra large (one per row)',
@@ -885,6 +907,11 @@ en:{title:'Let’s talk together',g_sos:'👥 Loved ones: call and message',s_so
    ['📋 A reply from a messenger',['If your loved one replied in WhatsApp or Telegram, the message can be shown large and read aloud. In the messenger, tap the message and choose Copy (in WhatsApp it may be in the ⋮ menu). Then open the app: 🎤 → “The other person speaks” → “📋 Show copied text”.','Even simpler: in ⚙️ → “🎤 Suggestions from what was said” turn on “…show text copied in a messenger right away”. Then, while the “The other person speaks” tab is open, new copied text appears by itself as soon as you switch to the app. The same text is not shown again by itself; the button always shows it.','Chrome asks once for clipboard access — allow it. Copied text is not written to the diary. If the text does not appear by itself, use the button: on some phones Chrome lets a site read the clipboard only on a tap.']],
    ['ℹ️ About','In ⚙️ → “ℹ️ About” (the last group): the name and version, a short description, links to the author and to the source code with instructions, the license.'],
    ['Install and updates',['In Chrome open the menu ⋮ → “Install app” (or “Add to Home screen”).','After the first launch the app works without the internet.','A new version loads by itself when the app is opened online. The version number is at the bottom of Settings.']],
+   ['🌐 Browsers: what works where',
+    'The app is made for Chrome — everything works there. Speech recognition (🎤): Chrome ✔; Samsung Internet and Safari on iPhone — with limitations (it may not start or may stop); Firefox, Opera, Edge on phones ✖ — without it “🎤 Suggestions from speech” does not work, the rest (tiles, ABC, speech output) works.',
+    'Speech output works almost everywhere, but the voice comes from the phone: if there is no voice for the phrase language, install one in the phone settings (“Text-to-speech”).',
+    'Data (phrases, settings) is separate in each browser, including the built-in browser of Facebook, Viber, Telegram. Move it with a data backup: ⚙️ → “Data”.',
+    'What the current browser can do is shown in ⚙️ → “ℹ️ About”. When first opened outside Chrome the app tells you what does not work there. If something is wrong, first open the app in Chrome and check the version number there.'],
    ['Tips for communicating',['Give time: do not rush or finish the person’s sentences.','Ask questions that can be answered with “yes” or “no”.','Speak in short phrases, calmly and without interrupting.','Praise attempts: the effort to speak matters more than being error-free.']]
   ]},
   s_title:'⚙️ Settings',s_level:'Degree of the person’s speech impairment',s_gender:'Speaker’s gender (for Russian and Ukrainian past-tense verbs)',s_theme:'Theme',s_voice:'Speech voice',s_rate:'Speech rate',s_pitch:'Pitch',s_test:'🔊 Test voice',s_close:'Close',
@@ -2880,6 +2907,7 @@ document.addEventListener('click',e=>{
 let backArmed=false;
 function armBack(){if(backArmed)return;try{history.pushState({govorim:1},'');backArmed=true}catch(_){}}
 function appBack(){
+  if($('#brw')){brwClose();return true}
   if(TOUR){tourEnd();return true}
   if($('#diary').style.display==='block'){$('#diary').style.display='none';return true}
   if($('#help').style.display==='block'){$('#help').style.display='none';return true}
@@ -2921,6 +2949,64 @@ function drawIab(){
 }
 drawIab();
 
+/* ---------- v81: что умеет этот браузер ----------
+   Проверяются возможности, а не название браузера. При первом открытии не в Chrome — окно с тем, что не работает
+   (один раз на набор проблем: aac.brw.seen); во встроенном браузере соцсети его нет — там жёлтая плашка #iab. */
+const LANG_NAME={uk:'Українська',ru:'Русский',en:'English'};
+function brwCaps(){
+  const ua=navigator.userAgent||'';
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const sr=SR?(/SamsungBrowser/i.test(ua)?1:2):0;   // 2 — есть, 1 — с ограничениями (Samsung Internet), 0 — нет
+  const tts=!!window.speechSynthesis&&typeof window.SpeechSynthesisUtterance==='function';
+  let voice=null;                                    // null — список голосов пуст (ещё не загрузился): про голос молчим
+  if(tts){try{const vs=window.speechSynthesis.getVoices()||[];if(vs.length)voice=vs.some(v=>String(v.lang||'').toLowerCase().startsWith(lang))}catch(_){}}
+  return {sr,tts,voice,android:/Android/i.test(ua),
+    chrome:/Chrome\//.test(ua)&&!/SamsungBrowser|EdgA|Edg\/|OPR\/|YaBrowser|Firefox|FxiOS|CriOS/.test(ua)};
+}
+function brwIssues(c){
+  const a=[];
+  if(c.sr===0)a.push('sr');else if(c.sr===1)a.push('srPart');
+  if(!c.tts)a.push('tts');else if(c.voice===false)a.push('voice-'+lang);
+  return a.sort();
+}
+function brwClose(){
+  const d=$('#brw');if(!d)return;
+  try{localStorage.setItem('aac.brw.seen',d.dataset.key||'')}catch(_){}
+  d.remove();
+}
+function brwShow(c,is,key){
+  const old=$('#brw');if(old)old.remove();
+  const d=h('div','brw');d.id='brw';d.dataset.key=key;d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');
+  const p=h('div','brwp'),ul=h('ul');
+  is.forEach(k=>{const t=k==='sr'?uh('brw_sr'):k==='srPart'?uh('brw_srp'):k==='tts'?uh('brw_tts'):uh('brw_voice').replace('{l}',LANG_NAME[lang]||lang);ul.append(h('li',null,t))});
+  p.append(h('h2',null,'🌐 '+uh('brw_t')),ul,h('p',null,uh('brw_note')));
+  const r=h('div','brwb');
+  // «Открыть в Chrome» — на Android не в Chrome и не только из-за голоса (голоса нет и в Chrome — он из телефона)
+  if(c.android&&!c.chrome&&is.some(k=>!k.startsWith('voice-'))){
+    const url=location.href.split('#')[0],a=h('a','ans neu go','🌐 '+uh('iab_open'));
+    a.href='intent://'+location.host+location.pathname+location.search+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(url)+';end';
+    r.append(a);
+  }
+  r.append(h('button','ans yes ok',uh('brw_ok'),brwClose));
+  p.append(r);d.append(p);document.body.append(d);
+  armBack();
+}
+function brwCheck(){
+  if(inAppBrowser())return;
+  const go=()=>{
+    if($('#brw'))return;
+    const c=brwCaps(),is=brwIssues(c);if(!is.length)return;
+    const key=is.join(',');let seen='';try{seen=localStorage.getItem('aac.brw.seen')||''}catch(_){}
+    if(seen!==key)brwShow(c,is,key);
+  };
+  let empty=false;try{empty=!!window.speechSynthesis&&!(window.speechSynthesis.getVoices()||[]).length}catch(_){}
+  if(!empty){go();return}
+  // голоса ещё грузятся — ждём voiceschanged до 1,5 с
+  let done=false;const f=()=>{if(done)return;done=true;go()};
+  try{window.speechSynthesis.addEventListener('voiceschanged',f,{once:true})}catch(_){}
+  setTimeout(f,1500);
+}
+
 /* ---------- Не гасить экран (Wake Lock) ---------- */
 let wl=null;
 async function setAwake(){
@@ -2957,6 +3043,7 @@ function setLang(nl){
   if(isB()&&wasEn!==(lang==='en')){tree=ld(tk(),null)||getTreeForLevel();path=[];sel='';edCtx=''}
   // собранные строка «Азбуки» и рамка 🎤 относятся к прежнему языку: сохранить их черновик и взять черновик нового языка
   draftSave(wasLang);abcUndo=null;
+  setTimeout(brwCheck,0);   // v81: для нового языка может не быть голоса
   if(abc){IDX=phraseIndex();abc=newAbc()}
   if(hearOn)IDX=phraseIndex();
   hearKb=null;hearTxt='';hearAlt='';hearExt=undefined;hearSlot=-1;hearTyp=null;hearFn=false;hearMore=false;hearType=false;hearUndo=null;
@@ -4491,7 +4578,7 @@ function showListen(){
   r.interimResults=true;r.maxAlternatives=1;r.continuous=false;
   if(!navigator.onLine&&'processLocally' in r){try{r.processLocally=true}catch(e){}}
   let err='',got='';
-  speechSynthesis&&speechSynthesis.cancel&&speechSynthesis.cancel();       // чтобы микрофон не слушал синтезатор
+  try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(_){}       // чтобы микрофон не слушал синтезатор (v81: и без озвучки)
   r.onstart=()=>{mic.textContent='⏹ '+u('m_stop');mic.classList.add('rec');showStatus(u('m_listen'))};
   r.onresult=e=>{
     got=Array.from(e.results).map(x=>x[0].transcript).join(' ').trim();
@@ -4757,10 +4844,10 @@ const helpEl=$('#help');
    В режиме (🎤 по вкладкам, «Азбука», раздел плиток) — только пункты об этом режиме, раскрытые, и кнопка «📖 Вся справка».
    Пункты helpDoc.s во всех трёх языках идут в одном порядке; HELP_KEYS — их имена в том же порядке
    (новый пункт справки добавлять во все языки и сюда, на то же место). */
-const HELP_KEYS=['about','start','top','tour','bar','sett','level','build','mods','gender','often','health','voice','abc','wonline','dicts','show','hear','ponline','sit','hearfirst','syll','touch','fatigue','diary','backup','pain','dk','big','call','photo','hold','clear','iab','uilang','editor','resume','msg','clip','info','install','tips'];
+const HELP_KEYS=['about','start','top','tour','bar','sett','level','build','mods','gender','often','health','voice','abc','wonline','dicts','show','hear','ponline','sit','hearfirst','syll','touch','fatigue','diary','backup','pain','dk','big','call','photo','hold','clear','iab','uilang','editor','resume','msg','clip','info','install','browser','tips'];
 const HELP_CTX={
-  show:['show','big','clip','msg','resume','tour'],
-  hear:['hear','ponline','dicts','clear','big','msg','tour'],
+  show:['show','big','clip','msg','resume','tour','browser'],
+  hear:['hear','ponline','dicts','clear','big','msg','tour','browser'],
   abc:['abc','wonline','dicts','clear','big','msg','tour'],
   tiles:['build','mods','health','pain','dk','sit','hearfirst','syll','big','msg','tour']
 };
@@ -5120,7 +5207,7 @@ function tourEnd(){
 }
 // Предложить обучение при первом входе на экран — только в спокойный момент (не поверх окна, не во время записи и речи)
 function tourQuiet(){
-  return !ovOn()&&!$('#bigShow')&&!['#help','#sett','#diary','#ed'].some(q=>{const e=$(q);return e&&e.style.display==='block'})
+  return !ovOn()&&!$('#bigShow')&&!$('#brw')&&!['#help','#sett','#diary','#ed'].some(q=>{const e=$(q);return e&&e.style.display==='block'})
     &&!rec&&!rec2&&!(window.speechSynthesis&&speechSynthesis.speaking)&&!document.hidden;
 }
 function tourSchedule(){
@@ -5148,6 +5235,9 @@ function aboutRender(){
   const b=$('#aboutBox');if(!b)return;b.textContent='';
   b.append(h('h3',null,uh('title')),h('div','abv',uh('ver')+': '+APP_VERSION),h('p',null,uh('ab_desc')));
   const ul=h('ul');uh('ab_f').forEach(t=>ul.append(h('li',null,t)));b.append(ul);
+  // v81: что умеет этот браузер
+  const bc=brwCaps();
+  b.append(h('p','abbrw',uh('ab_brw')+': '+uh('ab_sr')+' '+(bc.sr===2?'✔':bc.sr===1?'— '+uh('ab_part'):'✖')+', '+uh('ab_tts')+' '+(bc.tts?'✔':'✖')));
   const gh=authorGh();
   const link=(href,ic,t,sub)=>{const a=h('a');a.href=href;a.target='_blank';a.rel='noopener';
     const tt=h('span');tt.append(document.createTextNode(t));tt.append(h('small',null,sub));a.append(h('span',null,ic),tt);return a};
@@ -5191,6 +5281,7 @@ applyUI();
 applyI18n();
 draftLoad();
 if(!resumeScreen())render();
+brwCheck();   // v81: что не работает в этом браузере (один раз на набор проблем)
 
 loadBundledLex(lang);
 // Просим браузер не удалять данные приложения при нехватке места

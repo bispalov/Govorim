@@ -98,6 +98,20 @@
 2. Settings → Pages → оберіть гілку й папку `/ (root)`.
 3. Відкрийте `https://<ім’я-користувача>.github.io/Govorim/`.
 
+### 🌐 Браузери: що де працює
+
+Застосунок зроблено для **Chrome** — у ньому працює все. В інших браузерах частина функцій може не працювати:
+
+| | Chrome (Android, комп’ютер) | Samsung Internet | Safari (iPhone) | Firefox, Opera, Edge на телефоні |
+|---|---|---|---|---|
+| 🎤 Розпізнавання мовлення | ✔ (на Android зазвичай потрібен інтернет) | з обмеженнями | з обмеженнями | ✖ |
+| 🔊 Озвучення | ✔ | ✔ | ✔ | ✔ |
+
+- Без розпізнавання не працює «🎤 Підказка за сказаним»; плитки, Абетка й озвучення працюють.
+- Голос для озвучення береться з телефона: якщо для мови фраз голосу немає, його встановлюють у налаштуваннях телефона («Синтез мовлення» / «Перетворення тексту на мовлення»).
+- Дані (фрази, налаштування) в кожному браузері свої, зокрема у вбудованому браузері Facebook, Viber, Telegram; перенести їх можна копією даних (⚙️ → «Дані»).
+- Під час першого відкриття не в Chrome застосунок показує вікно з тим, що тут не працює (один раз; на Android — кнопка «Відкрити в Chrome»). Що вміє поточний браузер — у ⚙️ → «ℹ️ Про застосунок».
+
 ### 🌐 Розміщення на власному сайті
 
 Копію застосунку можна викласти на будь-який сайт у будь-яку папку, і її можна буде встановити з того сайту.
@@ -128,7 +142,7 @@
 
 Встановлений застосунок оновлюється лише за зміни версії кешу. За будь-якої зміни файлів:
 
-1. У `sw.js` збільште номер: `const V = 'govorim-v80'` → `'govorim-v81'`.
+1. У `sw.js` збільште номер: `const V = 'govorim-v81'` → `'govorim-v82'`.
 2. В `index.html` збільште `APP_VERSION` (він показується внизу налаштувань).
 3. Завантажте файли. Застосунок підхопить нову версію під час наступного відкриття з інтернетом і один раз перезавантажиться.
 
@@ -326,6 +340,20 @@
 2. Settings → Pages → выберите ветку и папку `/ (root)`.
 3. Откройте `https://<имя-пользователя>.github.io/Govorim/`.
 
+### 🌐 Браузеры: что где работает
+
+Приложение сделано для **Chrome** — в нём работает всё. В других браузерах часть функций может не работать:
+
+| | Chrome (Android, компьютер) | Samsung Internet | Safari (iPhone) | Firefox, Opera, Edge на телефоне |
+|---|---|---|---|---|
+| 🎤 Распознавание речи | ✔ (на Android обычно нужен интернет) | с ограничениями | с ограничениями | ✖ |
+| 🔊 Озвучка | ✔ | ✔ | ✔ | ✔ |
+
+- Без распознавания не работает «🎤 Подсказка по сказанному»; плитки, Азбука и озвучка работают.
+- Голос для озвучки берётся из телефона: если для языка фраз голоса нет, его устанавливают в настройках телефона («Синтез речи» / «Преобразование текста в речь»).
+- Данные (фразы, настройки) в каждом браузере свои, в том числе во встроенном браузере Facebook, Viber, Telegram; перенести их можно копией данных (⚙️ → «Данные»).
+- При первом открытии не в Chrome приложение показывает окно с тем, что здесь не работает (один раз; на Android — кнопка «Открыть в Chrome»). Что умеет текущий браузер — в ⚙️ → «ℹ️ О приложении».
+
 ### 🌐 Размещение на своём сайте
 
 Копию приложения можно выложить на любой сайт в любую папку, и её можно будет установить с этого сайта.
@@ -357,7 +385,7 @@
 
 Установленное приложение обновляется только при смене версии кэша. При любом изменении файлов:
 
-1. В `sw.js` увеличьте номер: `const V = 'govorim-v80'` → `'govorim-v81'`.
+1. В `sw.js` увеличьте номер: `const V = 'govorim-v81'` → `'govorim-v82'`.
 2. В `index.html` увеличьте `APP_VERSION` (он показывается внизу настроек).
 3. Загрузите файлы. Приложение подхватит новую версию при следующем открытии с интернетом и один раз перезагрузится.
 
@@ -461,6 +489,20 @@ Open the app in Chrome on Android and choose ⋮ → “Install app”. After th
 **Reinstalling.** “Говоримо разом” (Let’s talk together) and “Знову слова” (Words Again) install side by side as separate apps. If Chrome does not offer to install the app again after you removed it, clear the site data: *Chrome settings → “Site settings” → “All sites” → bispalov.github.io → “Clear & reset”* (item names may differ slightly).
 
 > ⚠️ Both apps live at the same address (`bispalov.github.io`), so clearing removes the data of **both**: settings, tiles, phrases, diary, word lists. First save a backup in each app (here: ⚙️ → “Data” → “Save a data backup”), and load it back after installing.
+
+### 🌐 Browsers: what works where
+
+The app is made for **Chrome** — everything works there. In other browsers some features may not work:
+
+| | Chrome (Android, desktop) | Samsung Internet | Safari (iPhone) | Firefox, Opera, Edge on phones |
+|---|---|---|---|---|
+| 🎤 Speech recognition | ✔ (on Android usually needs internet) | with limitations | with limitations | ✖ |
+| 🔊 Speech output | ✔ | ✔ | ✔ | ✔ |
+
+- Without recognition “🎤 Suggestions from speech” does not work; tiles, ABC and speech output work.
+- The voice comes from the phone: if there is no voice for the phrase language, install one in the phone settings (“Text-to-speech”).
+- Data (phrases, settings) is separate in each browser, including the built-in browser of Facebook, Viber, Telegram; move it with a data backup (⚙️ → “Data”).
+- When first opened outside Chrome the app shows a window with what does not work there (once; on Android with an “Open in Chrome” button). What the current browser can do is shown in ⚙️ → “ℹ️ About”.
 
 ### 🌐 Hosting on your own site
 

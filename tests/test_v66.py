@@ -37,7 +37,7 @@ with sync_playwright() as p:
     check('keys point to the right items (en)', t['en'][0].startswith('ABC') and t['en'][1].startswith('The other person speaks') and '📋' in t['en'][2] and '✉️' in t['en'][3] and t['en'][4].startswith('Pain'))
     # главный экран: вся справка оглавлением
     opn(pg); it = items(pg)
-    check('home: full help, all items', len(it) == 42)
+    check('home: full help, all items', len(it) == pg.evaluate('HELP_KEYS.length'))
     check('home: all collapsed (table of contents)', not any(o for _, o in it))
     check('home: no «Full help» button', pg.locator('#help .hall').count() == 0)
     check('home: title plain', pg.inner_text('#help h2') == '❓ Справка')
@@ -50,11 +50,11 @@ with sync_playwright() as p:
     close(pg)
     # 🎤 «Говорит собеседник»
     pg.evaluate("settings.hearTab='show';hearTab='show'"); pg.click('#micBtn'); opn(pg); it = items(pg)
-    check('🎤 show: only its items, open', 3 <= len(it) <= 6 and all(o for _, o in it))
+    check('🎤 show: only its items, open', 3 <= len(it) <= 7 and all(o for _, o in it))
     check('🎤 show: right items', it[0][0].startswith('Говорит собеседник') and any('📋' in x for x, _ in it))
     check('🎤 show: title names the mode', 'Говорит собеседник' in pg.inner_text('#help h2'))
     pg.click('#help .hall'); pg.wait_for_timeout(50)
-    check('«Full help» → whole help', len(items(pg)) == 42 and pg.evaluate('#help'.replace('#help', 'helpEl.scrollTop')) == 0)
+    check('«Full help» → whole help', len(items(pg)) == pg.evaluate('HELP_KEYS.length') and pg.evaluate('#help'.replace('#help', 'helpEl.scrollTop')) == 0)
     close(pg)
     pg.locator('.tabs .tab').nth(0).click(); opn(pg); it = items(pg)
     check('🎤 person: its items', it[0][0].startswith('Подсказка по сказанному') and 'Говорю я' in pg.inner_text('#help h2'))
@@ -74,7 +74,7 @@ with sync_playwright() as p:
     else:
         check('tiles: section items (entered a section)', False)
     pg.click('#home'); opn(pg)
-    check('back on home → full help again', len(items(pg)) == 42)
+    check('back on home → full help again', len(items(pg)) == pg.evaluate('HELP_KEYS.length'))
     check('no script errors', not errors)
     pg.context.close()
     # вёрстка
